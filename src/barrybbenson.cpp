@@ -19,6 +19,9 @@ public:
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
 
+		m_CANTalon1 = new CANTalon(1);
+		m_CANTalon2 = new CANTalon(2);
+
 	}
 	void RobotInit() {
 		}
@@ -46,6 +49,8 @@ public:
 	}
 
 	void TeleopShoot() {
+		m_CANTalon1->Set(0);
+		m_CANTalon2->Set(0);
 
 		if (m_driver->ButtonA()) {
 			m_CANTalon1-> Set (.5);
