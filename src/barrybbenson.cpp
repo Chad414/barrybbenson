@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
+#include "Gear.h"
 
 class barrybbenson: public HotBot {
 private:
