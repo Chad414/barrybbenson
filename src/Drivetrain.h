@@ -18,16 +18,17 @@
 #define TALON_DRIVE_RF 2
 #define TALON_DRIVE_RR 3
 
-#define DRIVE_ENCODER_LF 0
-#define DRIVE_ENCODER_LR 1
+#define DRIVE_ENCODER_LF 4
+#define DRIVE_ENCODER_LR 3
 #define DRIVE_ENCODER_RF 2
-#define DRIVE_ENCODER_RR 3
-
+#define DRIVE_ENCODER_RR 1
 class Drivetrain {
 public:
 	Drivetrain();
 	void ArcadeDrive(double speed, double angle);
 	void startMP();
+	void resetMP();
+	void controlMP();
 	virtual ~Drivetrain();
 
 private:

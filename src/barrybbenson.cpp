@@ -40,10 +40,11 @@ public:
 
 
 	void AutonomousInit() {
-
+		m_drivetrain.resetMP();
 	}
 
 	void AutonomousPeriodic() {
+		m_drivetrain.controlMP();
 		m_drivetrain.startMP();
 	}
 

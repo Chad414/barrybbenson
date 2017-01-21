@@ -19,6 +19,9 @@ Drivetrain::Drivetrain()
 {
 	m_turn = 0;
 	m_speed = 0;
+
+	m_lDriveR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveR.SetSensorDirection(true);
 }
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
@@ -29,6 +32,14 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 
 void Drivetrain::startMP() {
 	m_MotionProfile.Start();
+}
+
+void Drivetrain::resetMP() {
+	m_MotionProfile.Reset();
+}
+
+void Drivetrain::controlMP() {
+	m_MotionProfile.Control();
 }
 
 Drivetrain::~Drivetrain() {
