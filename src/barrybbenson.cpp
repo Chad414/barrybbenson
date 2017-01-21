@@ -13,9 +13,13 @@ private:
 	CANTalon* m_CANmotor1;
 	CANTalon* m_CANmotor2;
 
+	Encoder * m_encoder;
+
 	PowerDistributionPanel* m_pdp;
 
 	AnalogPotentiometer* m_pot;
+
+	SmartDashboard * m_smartDashboard;
 
 	double speed;
 	bool previousAButton;
@@ -34,12 +38,20 @@ public:
 		m_CANmotor2 = new CANTalon(2);
 		//m_motor1->SetControlMode(CANSpeedController::kSpeed);
 
+		m_encoder = new Encoder(0); //that zero is a placeholder value
+
 		m_pdp = new PowerDistributionPanel(0);
 
 		AnalogInput *ai = new AnalogInput(0);
+
+		m_smartDashboard = new SmartDashboard;
+
 		m_pot = new AnalogPotentiometer(ai, 360, 0);
 	}
 	void RobotInit() {
+
+		m_encoder->Reset();
+
 	}
 
 
@@ -63,6 +75,14 @@ public:
 
 	 previousAButton= m_driver->ButtonA();
 	 previousXButton= m_driver->ButtonX();
+
+	 m_smartDashboard->PutNumber( "Encoder rate", m_encoder->GetRate() );
+
+	 double y;
+	 y = int ( m_encoder->Get() );
+	 m_smartDashboard->PutNumber( "Encoder count", y );
+
+
 	}
 
 	void TeleopShoot() {
