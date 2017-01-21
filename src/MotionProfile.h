@@ -16,27 +16,27 @@
 class MotionProfile {
 public:
 	MotionProfile(CANTalon & talon);
-	void PeriodicTask();
-	void Reset();
-	void Control();
-	void startFilling();
-	void startFilling(const double profile[][3], int totalCnt);
-	void Start();
-	CANTalon::SetValueMotionProfile getSetValue() const;
+	void PeriodicTask(); // Moves bottom buffer to top buffer each iteration
+	void Reset(); // Resets Talon memory and buffer
+	void Control(); // Called every loop
+	void startFilling(); // Fills first Trajectory points
+	void startFilling(const double profile[][3], int totalCnt); // Fills Trajectory Points to buffer
+	void Start(); // Sets bStart to true and starts firing trajectories
+	CANTalon::SetValueMotionProfile getSetValue() const; // setValue getter function
 
 	virtual ~MotionProfile();
 
-	CANTalon & m_talon;
+	CANTalon & m_talon; // Local talon
 	Notifier m_notifer;
 	CANTalon::MotionProfileStatus status;
-	CANTalon::SetValueMotionProfile setValue = CANTalon::SetValueMotionProfileDisable;
-	CANTalon::TrajectoryPoint point;
+	CANTalon::SetValueMotionProfile setValue = CANTalon::SetValueMotionProfileDisable; // setValue automatically set to Disable
+	CANTalon::TrajectoryPoint point; // Local trajectory point
 
-	int state = 0;
+	int state = 0; // Current state disabled
 	int loopTimeout = -1;
 	bool bStart = false;
-	static const int kMinPointsInTalon = 5;
-	static const int kNumLoopsTimeout = 10;
+	static const int kMinPointsInTalon = 5; // Hoe many trajectory points the Talon should wait fore before firing
+	static const int kNumLoopsTimeout = 10; // Timeout every 10 loops
 
 private:
 

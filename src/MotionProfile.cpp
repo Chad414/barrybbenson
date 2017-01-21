@@ -8,7 +8,7 @@
 #include "MotionProfile.h"
 
 MotionProfile::MotionProfile(CANTalon & talon) : m_talon(talon), m_notifer(&MotionProfile::PeriodicTask, this) {
-	m_talon.ChangeMotionControlFramePeriod(5);
+	m_talon.ChangeMotionControlFramePeriod(5); // Set to half of trajectory point time
 	m_notifer.StartPeriodic(0.005);
 }
 
@@ -41,7 +41,7 @@ void MotionProfile::Control() {
 		state = 0;
 	} else {
 		switch (state) {
-		case 0:
+		case 0: // When disabled
 			if (bStart) {
 				bStart = false;
 
