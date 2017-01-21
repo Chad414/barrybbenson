@@ -31,15 +31,16 @@ public:
 		m_pdp = new PowerDistributionPanel(0);
 	}
 	void RobotInit() {
-		}
+	}
 
-
-	void AutonomousInit() {
+	void DisabledPeriodic() {
 
 	}
 
-	void AutonomousPeriodic() {
+	void AutonomousInit() {
+	}
 
+	void AutonomousPeriodic() {
 	}
 
 	void TeleopInit() {
@@ -55,6 +56,11 @@ public:
 	void TestPeriodic() {
 	}
 
+	void PrintData() {
+		SmartDashboard::PutNumber("Gear Left Arm", m_gear.GetLGearPosition());
+		SmartDashboard::PutNumber("Gear Right Arm", m_gear.GetRGearPosition());
+		SmartDashboard::PutNumber("Gear Average Arm", m_gear.GetGearPosition());
+	}
 };
 
 START_ROBOT_CLASS(barrybbenson)
