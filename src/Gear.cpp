@@ -17,6 +17,21 @@ Gear::Gear()
 	// TODO Auto-generated constructor stub
 }
 
+/*
+ * Sensors
+ */
+double Gear::GetLGearPosition() {
+	return (m_lGearEncoder.GetDistance());
+}
+
+double Gear::GetRGearPosition() {
+	return (m_rGearEncoder.GetDistance());
+}
+
+double Gear::GetGearPosition() {
+	return ((GetLGearPosition() + GetRGearPosition()*(-1.0)) / 2);
+}
+
 Gear::~Gear() {
 	// TODO Auto-generated destructor stub
 }
