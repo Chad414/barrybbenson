@@ -11,6 +11,7 @@
 #include "WPILib.h"
 #include <cmath>
 #include "CANTalon.h"
+#include "MotionProfile.h"
 
 #define TALON_DRIVE_LF 0
 #define TALON_DRIVE_LR 1
@@ -26,6 +27,7 @@ class Drivetrain {
 public:
 	Drivetrain();
 	void ArcadeDrive(double speed, double angle);
+	void startMP();
 	virtual ~Drivetrain();
 
 private:
@@ -38,6 +40,8 @@ private:
 
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
+
+	MotionProfile m_MotionProfile;
 
 	Timer m_timer;
 

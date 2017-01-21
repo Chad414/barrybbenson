@@ -20,8 +20,9 @@ private:
 	bool previousXButton;
 
 	Drivetrain m_drivetrain;
+
 public:
-	barrybbenson(){
+	barrybbenson() {
 		speed = 0;
 		previousAButton = false;
 		previousXButton = false;
@@ -43,7 +44,7 @@ public:
 	}
 
 	void AutonomousPeriodic() {
-
+		m_drivetrain.startMP();
 	}
 
 	void TeleopInit() {
