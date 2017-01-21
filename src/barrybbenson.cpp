@@ -13,6 +13,8 @@ private:
 
 	PowerDistributionPanel* m_pdp;
 
+	Gear m_gear;
+
 	double speed;
 	//int timesPressed;
 	bool previousAButton;
@@ -41,49 +43,13 @@ public:
 	}
 
 	void TeleopInit() {
-		speed = 0;
-		previousAButton = false;
-		previousXButton = false;
 	}
 
 	void TeleopPeriodic() {
-	 TeleopShoot();
-
-	 previousAButton= m_driver->ButtonA();
-	 previousXButton= m_driver->ButtonX();
 	}
 
 	void TeleopShoot() {
 
-		if (m_driver->ButtonX() && (previousXButton == false) && speed > 0.0) {
-			speed -= 0.05;
-			}
-		else if (m_driver->ButtonA() && (previousAButton == false) && speed < 1.0) {
-			speed+= 0.05;
-			}
-
-		else if (m_driver->ButtonB() && speed > 0.0) {
-			speed = 0.0;
-		}
-		else {
-			m_shooter1->Set(speed);
-		}
-
-
-
-		/*
-		if ((fabs(m_driver->AxisLY())) > 0.2) {
-			m_shooter1->Set(m_driver->AxisLY());
-		}
-		else {
-			m_shooter1->Set(0);
-		}
-		//m_shooter1->Set(0.2);
-		 *
-		 */
-		SmartDashboard::PutNumber("speed", speed);
-		SmartDashboard::PutBoolean("A Button", previousAButton);
-		SmartDashboard::PutBoolean("X Button", previousXButton);
 	}
 
 	void TestPeriodic() {
