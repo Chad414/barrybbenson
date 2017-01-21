@@ -22,6 +22,9 @@
 #define DRIVE_ENCODER_LR 3
 #define DRIVE_ENCODER_RF 2
 #define DRIVE_ENCODER_RR 1
+
+#define ENCODER_CODES_PER_REVOLUTION 256
+
 class Drivetrain {
 public:
 	Drivetrain();
@@ -41,6 +44,8 @@ private:
 
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
+
+
 
 	MotionProfile m_MotionProfile;
 

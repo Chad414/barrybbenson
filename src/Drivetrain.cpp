@@ -17,11 +17,14 @@ Drivetrain::Drivetrain()
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_MotionProfile(m_lDriveR)
 {
+
 	m_turn = 0;
 	m_speed = 0;
 
-	m_lDriveR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveR.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_lDriveR.SetSensorDirection(true);
+
+	m_lDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 }
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
