@@ -1,5 +1,7 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
+#include "Drivetrain.h"
+#include "MotionProfile.h"
 
 class barrybbenson: public HotBot {
 private:
@@ -17,8 +19,13 @@ private:
 	bool previousAButton;
 	bool previousXButton;
 
+	Drivetrain m_drivetrain;
 public:
-	barrybbenson() {
+	barrybbenson(){
+		speed = 0;
+		previousAButton = false;
+		previousXButton = false;
+
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
 
@@ -46,10 +53,17 @@ public:
 	}
 
 	void TeleopPeriodic() {
-	 TeleopShoot();
+		TeleopDrive();
+		TeleopShoot();
 
-	 previousAButton= m_driver->ButtonA();
-	 previousXButton= m_driver->ButtonX();
+		previousAButton = m_driver->ButtonA();
+		previousXButton = m_driver->ButtonX();
+	}
+
+	void TeleopDrive() {
+		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
+					m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), m_driver->AxisRX());
+				}
 	}
 
 	void TeleopShoot() {

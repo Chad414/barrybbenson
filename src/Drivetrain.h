@@ -25,6 +25,7 @@
 class Drivetrain {
 public:
 	Drivetrain();
+	void ArcadeDrive(double speed, double angle);
 	virtual ~Drivetrain();
 
 private:
@@ -33,12 +34,14 @@ private:
 	CANTalon m_rDriveF;
 	CANTalon m_rDriveR;
 
-	Encoder m_lEncode;
-	Encoder m_rEncode;
+	RobotDrive m_drive;
+
+	Encoder m_lEncoder;
+	Encoder m_rEncoder;
 
 	Timer m_timer;
 
-	RobotDrive m_drive;
+	double m_turn, m_speed;
 };
 
 #endif /* SRC_DRIVETRAIN_H_ */
