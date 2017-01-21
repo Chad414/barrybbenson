@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
+#include "CANTalon.h"
 
 class barrybbenson: public HotBot {
 private:
@@ -7,28 +8,39 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	Victor* m_shooter1;
-	Victor* m_shooter2;
+	Victor* m_PWMmotor0;
+	Victor* m_PWMmotor1;
+	CANTalon* m_CANmotor1;
+	CANTalon* m_CANmotor2;
 
 	PowerDistributionPanel* m_pdp;
 
+	AnalogPotentiometer* m_pot;
+
 	double speed;
-	//int timesPressed;
 	bool previousAButton;
 	bool previousXButton;
+	double potentio;
 
 public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
 
-		m_shooter1 = new Victor(0);
-		m_shooter2 = new Victor(1);
+		m_PWMmotor0 = new Victor(0);
+		m_PWMmotor1 = new Victor(1);
+
+		m_CANmotor1 = new CANTalon(1);
+		m_CANmotor2 = new CANTalon(2);
+		//m_motor1->SetControlMode(CANSpeedController::kSpeed);
 
 		m_pdp = new PowerDistributionPanel(0);
+
+		AnalogInput *ai = new AnalogInput(0);
+		m_pot = new AnalogPotentiometer(ai, 360, 0);
 	}
 	void RobotInit() {
-		}
+	}
 
 
 	void AutonomousInit() {
@@ -43,6 +55,7 @@ public:
 		speed = 0;
 		previousAButton = false;
 		previousXButton = false;
+		potentio = 0.0F;
 	}
 
 	void TeleopPeriodic() {
@@ -54,35 +67,27 @@ public:
 
 	void TeleopShoot() {
 
-		if (m_driver->ButtonX() && (previousXButton == false) && speed > 0.0) {
-			speed -= 0.05;
-			}
-		else if (m_driver->ButtonA() && (previousAButton == false) && speed < 1.0) {
-			speed+= 0.05;
-			}
+		potentio = m_pot->Get();
+		speed = potentio/360;
+		double slider0 = SmartDashboard::GetNumber("DB/Slider 0", 0.0);
+		double slider1 = SmartDashboard::GetNumber("DB/Slider 1", 0.0);
+		double slider2 = SmartDashboard::GetNumber("DB/Slider 2", 0.0);
+		double slider3 = SmartDashboard::GetNumber("DB/Slider 3", 0.0);
 
-		else if (m_driver->ButtonB() && speed > 0.0) {
-			speed = 0.0;
-		}
-		else {
-			m_shooter1->Set(speed);
-		}
+		m_CANmotor1->Set(slider0);
+		m_CANmotor2->Set(slider1);
+		m_PWMmotor0->Set(slider2);
+		m_PWMmotor1->Set(slider3);
 
 
-
-		/*
-		if ((fabs(m_driver->AxisLY())) > 0.2) {
-			m_shooter1->Set(m_driver->AxisLY());
-		}
-		else {
-			m_shooter1->Set(0);
-		}
-		//m_shooter1->Set(0.2);
-		 *
-		 */
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
+		SmartDashboard::PutNumber("Pot", potentio);
+		SmartDashboard::PutNumber("CAN1", slider0);
+		SmartDashboard::PutNumber("CAN2", slider1);
+		SmartDashboard::PutNumber("PWM0", slider2);
+		SmartDashboard::PutNumber("PWM1", slider3);
 	}
 
 	void TestPeriodic() {
