@@ -85,6 +85,7 @@ void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 		Instrumentation::OnUnderrun();
 		m_talon.ClearMotionProfileHasUnderrun();
 	}
+	CANTalon::TrajectoryPoint point; // Local trajectory point
 
 	m_talon.ClearMotionProfileTrajectories();
 

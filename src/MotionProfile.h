@@ -30,7 +30,6 @@ public:
 	Notifier m_notifer;
 	CANTalon::MotionProfileStatus status;
 	CANTalon::SetValueMotionProfile setValue = CANTalon::SetValueMotionProfileDisable; // setValue automatically set to Disable
-	CANTalon::TrajectoryPoint point; // Local trajectory point
 
 	int state = 0; // Current state disabled
 	int loopTimeout = -1;
