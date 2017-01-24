@@ -34,6 +34,9 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 }
 
 void Drivetrain::startMP() {
+	m_rDriveR.SetControlMode(CANTalon::ControlMode::kFollower);
+	m_rDriveR.Set(TALON_DRIVE_LR);
+
 	m_MotionProfile.Start();
 }
 
