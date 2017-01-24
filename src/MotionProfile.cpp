@@ -56,6 +56,7 @@ void MotionProfile::Control() {
 			if (status.btmBufferCnt > kMinPointsInTalon) {
 				setValue = CANTalon::SetValueMotionProfileEnable;
 
+				m_talon.Set(setValue);
 				state = 2;
 				loopTimeout = kNumLoopsTimeout;
 			}
@@ -79,6 +80,8 @@ void MotionProfile::Control() {
 void MotionProfile::startFilling() {
 	startFilling(kMotionProfile, kMotionProfileSz);
 }
+
+CANTalon::SetValueMotionProfile var;
 
 void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 	if(status.hasUnderrun) {
