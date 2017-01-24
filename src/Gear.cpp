@@ -8,11 +8,11 @@
 #include "Gear.h"
 
 Gear::Gear()
-	: m_lGearArm(TALON_LEFT_GEAR_ARM),
-	  m_rGearArm(TALON_RIGHT_GEAR_ARM),
+	: m_gearArm(TALON_GEAR_ARM),
+	  m_gearWrist(TALON_GEAR_WRIST),
 	  m_adjustArm(TALON_ADJUST_GEAR),
-	  m_lGearEncoder(GEAR_L_ENCODER_LEFT, GEAR_L_ENCODER_RIGHT, true),
-	  m_rGearEncoder(GEAR_R_ENCODER_LEFT, GEAR_R_ENCODER_RIGHT, false)
+	  m_gearWristEncoder(GEAR_WRIST_ENCODER_L, GEAR_WRIST_ENCODER_R, true),
+	  m_gearArmEncoder(GEAR_ARM_ENCODER_L, GEAR_ARM_ENCODER_R, false)
 {
 	// TODO Auto-generated constructor stub
 }
@@ -20,16 +20,12 @@ Gear::Gear()
 /*
  * Sensors
  */
-double Gear::GetLGearPosition() {
-	return (m_lGearEncoder.GetDistance());
+double Gear::GetGearWristPosition() {
+	return (m_gearWristEncoder.GetDistance());
 }
 
-double Gear::GetRGearPosition() {
-	return (m_rGearEncoder.GetDistance());
-}
-
-double Gear::GetGearPosition() {
-	return ((GetLGearPosition() + GetRGearPosition()*(-1.0)) / 2);
+double Gear::GetGearArmPosition() {
+	return (m_gearArmEncoder.GetDistance());
 }
 
 Gear::~Gear() {

@@ -34,7 +34,6 @@ public:
 	}
 
 	void DisabledPeriodic() {
-
 	}
 
 	void AutonomousInit() {
@@ -57,9 +56,24 @@ public:
 	}
 
 	void PrintData() {
-		SmartDashboard::PutNumber("Gear Left Arm", m_gear.GetLGearPosition());
-		SmartDashboard::PutNumber("Gear Right Arm", m_gear.GetRGearPosition());
-		SmartDashboard::PutNumber("Gear Average Arm", m_gear.GetGearPosition());
+		SmartDashboard::PutNumber("Gear Arm Position", m_gear.GetGearArmPosition());
+		SmartDashboard::PutNumber("Gear Wrist Position", m_gear.GetGearWristPosition());
+
+		/*
+		 * What to Print
+		 *
+		 * Shooter speed actual
+		 * Shooter speed commanded
+		 *
+		 * Drivetrain left encoder
+		 * Drivetrain right encoder
+		 * Drivetrain average encoder
+		 *
+		 * Gear arm encoder
+		 * Gear wrist encoder
+		 *
+		 *
+		 */
 	}
 };
 
