@@ -13,10 +13,10 @@
 #include "CANTalon.h"
 #include "MotionProfile.h"
 
-#define TALON_DRIVE_LF 0
-#define TALON_DRIVE_LR 1
-#define TALON_DRIVE_RF 2
-#define TALON_DRIVE_RR 3
+#define TALON_DRIVE_LF 11
+#define TALON_DRIVE_LR 12
+#define TALON_DRIVE_RF 21
+#define TALON_DRIVE_RR 20
 
 #define DRIVE_ENCODER_LF 4
 #define DRIVE_ENCODER_LR 3
