@@ -10,7 +10,7 @@
 Gear::Gear()
 	: m_gearArm(TALON_GEAR_ARM),
 	  m_gearWrist(TALON_GEAR_WRIST),
-	  m_adjustArm(TALON_ADJUST_GEAR),
+	  m_gearRoll(TALON_GEAR_ROLL),
 	  m_gearWristEncoder(GEAR_WRIST_ENCODER_L, GEAR_WRIST_ENCODER_R, true),
 	  m_gearArmEncoder(GEAR_ARM_ENCODER_L, GEAR_ARM_ENCODER_R, false)
 {

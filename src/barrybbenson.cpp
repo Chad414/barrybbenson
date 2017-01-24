@@ -16,7 +16,7 @@ private:
 	Gear m_gear;
 
 	double speed;
-	//int timesPressed;
+
 	bool previousAButton;
 	bool previousXButton;
 
@@ -40,6 +40,9 @@ public:
 	}
 
 	void AutonomousPeriodic() {
+		/*
+		 *
+		 */
 	}
 
 	void TeleopInit() {
