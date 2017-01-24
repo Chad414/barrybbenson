@@ -72,6 +72,9 @@ public:
 		 * Gear arm encoder
 		 * Gear wrist encoder
 		 *
+		 * Motion profiling trajectory points
+		 *
+		 *
 		 */
 	}
 };

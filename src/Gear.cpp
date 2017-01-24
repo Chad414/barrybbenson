@@ -2,7 +2,7 @@
  * Gear.cpp
  *
  *  Created on: Jan 21, 2017
- *      Author: HOT Team
+ *      Author: Marlina
  */
 
 #include "Gear.h"

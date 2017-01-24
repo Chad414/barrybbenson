@@ -2,7 +2,7 @@
  * Gear.h
  *
  *  Created on: Jan 21, 2017
- *      Author: HOT Team
+ *      Author: Marlina
  */
 
 #ifndef SRC_GEAR_H_
