@@ -72,7 +72,6 @@ public:
 		 * Gear arm encoder
 		 * Gear wrist encoder
 		 *
-		 *
 		 */
 	}
 };
