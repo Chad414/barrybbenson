@@ -25,6 +25,8 @@ Drivetrain::Drivetrain()
 	m_lDriveR.SetSensorDirection(true);
 
 	m_lDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
+
+	m_drive.SetSafetyEnabled(false);
 }
 
 void Drivetrain::ArcadeDrive(double speed, double angle){

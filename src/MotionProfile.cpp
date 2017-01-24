@@ -37,7 +37,7 @@ void MotionProfile::Control() {
 		}
 	}
 
-	if (m_talon.GetControlMode() != CANSpeedController::kMotionProfile) {
+	if (m_talon.GetControlMode() != CANTalon::ControlMode::kMotionProfile) {
 		state = 0;
 	} else {
 		switch (state) {
