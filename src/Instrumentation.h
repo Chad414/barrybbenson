@@ -9,6 +9,7 @@
 #define SRC_INSTRUMENTATION_H_
 
 #include <iomanip>
+#include <iostream>
 #include "WPILib.h"
 #include "CANTalon.h"
 

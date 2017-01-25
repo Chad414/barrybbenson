@@ -8,6 +8,7 @@
 #ifndef SRC_MOTIONPROFILE_H_
 #define SRC_MOTIONPROFILE_H_
 
+#include <iostream>
 #include "WPILib.h"
 #include "CANTalon.h"
 #include "TrajectoryPoints.h"

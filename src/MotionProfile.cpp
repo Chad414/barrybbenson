@@ -121,7 +121,7 @@ void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 
 void MotionProfile::Start() {
 	bStart = true;
-	std::cout << "MotionProfiling Start Function Called and bStart set to: true" << std::end;
+	std::cout << "StartMP called and bStart set to true" << std::endl;
 }
 
 CANTalon::SetValueMotionProfile MotionProfile::getSetValue() const {

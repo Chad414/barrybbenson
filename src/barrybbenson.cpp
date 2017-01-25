@@ -44,7 +44,7 @@ public:
 	}
 
 	void AutonomousPeriodic() {
-		m_drivetrain.startMP();
+		m_drivetrain.startMP(); // We have to call Start before Control
 		m_drivetrain.controlMP();
 	}
 
