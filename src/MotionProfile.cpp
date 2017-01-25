@@ -8,7 +8,7 @@
 #include "MotionProfile.h"
 
 MotionProfile::MotionProfile(CANTalon & talon) : m_talon(talon), m_notifer(&MotionProfile::PeriodicTask, this) {
-	m_talon.ChangeMotionControlFramePeriod(5); // Set to half of trajectory point time
+	m_talon.ChangeMotionControlFramePeriod(.5); // Set to half of trajectory point time
 	m_notifer.StartPeriodic(0.005);
 }
 
@@ -115,6 +115,7 @@ void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 
 void MotionProfile::Start() {
 	bStart = true;
+	std::cout << "MotionProfiling Start Function Called" << std::end;
 }
 
 CANTalon::SetValueMotionProfile MotionProfile::getSetValue() const {
