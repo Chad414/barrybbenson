@@ -20,6 +20,7 @@ void MotionProfile::Reset() {
 	m_talon.ClearMotionProfileTrajectories();
 	setValue = CANTalon::SetValueMotionProfileDisable;
 	state = 0;
+	std::cout << "MP State set to: 0" << std::endl;
 	loopTimeout = -1;
 	bStart = false;
 }
@@ -39,6 +40,7 @@ void MotionProfile::Control() {
 
 	if (m_talon.GetControlMode() != CANTalon::ControlMode::kMotionProfile) {
 		state = 0;
+		std::cout << "MP State set to: 0" << std::endl;
 	} else {
 		switch (state) {
 		case 0: // When disabled
@@ -49,6 +51,7 @@ void MotionProfile::Control() {
 				startFilling();
 
 				state = 1;
+				std::cout << "MP State set to: 1" << std::endl;
 				loopTimeout = kNumLoopsTimeout;
 			}
 			break;
@@ -58,6 +61,7 @@ void MotionProfile::Control() {
 
 				m_talon.Set(setValue);
 				state = 2;
+				std::cout << "MP state set to: 2" << std::cout;
 				loopTimeout = kNumLoopsTimeout;
 			}
 			break;
@@ -69,6 +73,7 @@ void MotionProfile::Control() {
 			if (status.activePointValid && status.activePoint.isLastPoint) {
 				setValue = CANTalon::SetValueMotionProfileHold;
 				state = 0;
+				std::cout << "MP State set to: 0" << std::endl;
 				loopTimeout = -1;
 			}
 			break;
@@ -110,12 +115,13 @@ void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 		}
 
 		m_talon.PushMotionProfileTrajectory(point);
+		std::cout << "Pushed Trajectory Points to Talon Buffer" << std::endl;
 	}
 }
 
 void MotionProfile::Start() {
 	bStart = true;
-	std::cout << "MotionProfiling Start Function Called" << std::end;
+	std::cout << "MotionProfiling Start Function Called and bStart set to: true" << std::end;
 }
 
 CANTalon::SetValueMotionProfile MotionProfile::getSetValue() const {

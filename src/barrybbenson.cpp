@@ -44,8 +44,8 @@ public:
 	}
 
 	void AutonomousPeriodic() {
-		m_drivetrain.controlMP();
 		m_drivetrain.startMP();
+		m_drivetrain.controlMP();
 	}
 
 	void TeleopInit() {
