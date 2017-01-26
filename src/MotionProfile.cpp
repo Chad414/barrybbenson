@@ -7,6 +7,8 @@
 
 #include "MotionProfile.h"
 
+using namespace std;
+
 MotionProfile::MotionProfile(CANTalon & talon) : m_talon(talon), m_notifer(&MotionProfile::PeriodicTask, this) {
 	m_talon.ChangeMotionControlFramePeriod(.5); // Set to half of trajectory point time
 	m_notifer.StartPeriodic(0.005);
@@ -38,22 +40,25 @@ void MotionProfile::Control() {
 		}
 	}
 
+	if (bStart) {
+		bStart = false;
+
+		setValue = CANTalon::SetValueMotionProfileDisable;
+		m_talon.SetControlMode(CANTalon::ControlMode::kMotionProfile);
+		startFilling();
+
+		state = 1;
+		std::cout << "MP State set to: 1" << std::endl;
+		//loopTimeout = kNumLoopsTimeout;
+	}
+
 	if (m_talon.GetControlMode() != CANTalon::ControlMode::kMotionProfile) {
 		state = 0;
 		std::cout << "MP State set to: 0" << std::endl;
 	} else {
 		switch (state) {
 		case 0: // When disabled
-			if (bStart) {
-				bStart = false;
 
-				setValue = CANTalon::SetValueMotionProfileDisable;
-				startFilling();
-
-				state = 1;
-				std::cout << "MP State set to: 1" << std::endl;
-				loopTimeout = kNumLoopsTimeout;
-			}
 			break;
 		case 1:
 			if (status.btmBufferCnt > kMinPointsInTalon) {
@@ -61,19 +66,24 @@ void MotionProfile::Control() {
 
 				m_talon.Set(setValue);
 				state = 2;
-				std::cout << "MP state set to: 2" << std::cout;
+				std::cout << "MP state set to: 2" << endl;
 				loopTimeout = kNumLoopsTimeout;
 			}
 			break;
 		case 2:
-			if (status.isUnderrun == false) {
+
+			cout << "Position State: " << status.activePoint.position << endl;
+			cout << "Velocity State: " << status.activePoint.velocity << endl;
+
+			if (!status.isUnderrun) {
+				cout << "MP State set to: 3. Not underrun" << endl;
 				loopTimeout = kNumLoopsTimeout;
 			}
 
 			if (status.activePointValid && status.activePoint.isLastPoint) {
 				setValue = CANTalon::SetValueMotionProfileHold;
 				state = 0;
-				std::cout << "MP State set to: 0" << std::endl;
+				std::cout << "MP State set to: 3" << std::endl;
 				loopTimeout = -1;
 			}
 			break;
@@ -103,6 +113,7 @@ void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 		point.velocity = profile[i][1];
 		point.timeDurMs = (int) profile[i][2];
 		point.profileSlotSelect = 1;
+
 
 		point.velocityOnly = false;
 		point.zeroPos = false;

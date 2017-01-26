@@ -42,10 +42,10 @@ public:
 	void AutonomousInit() {
 		m_drivetrain.resetMP();
 		m_drivetrain.startMP(); // We have to call Start before Control
-		m_drivetrain.controlMP();
 	}
 
 	void AutonomousPeriodic() {
+		m_drivetrain.controlMP();
 	}
 
 	void TeleopInit() {

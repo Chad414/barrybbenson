@@ -26,10 +26,11 @@ Drivetrain::Drivetrain()
 
 	m_lDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
-	// m_drive.SetSafetyEnabled(false);
+	m_drive.SetSafetyEnabled(false);
 }
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
+	m_drive.SetSafetyEnabled(true);
 	m_speed = speed;
 	m_turn = angle;
 	m_drive.ArcadeDrive(speed, angle);
@@ -40,6 +41,7 @@ void Drivetrain::startMP() {
 	m_rDriveR.Set(TALON_DRIVE_LR);
 
 	m_MotionProfile.Start();
+
 }
 
 void Drivetrain::resetMP() {
