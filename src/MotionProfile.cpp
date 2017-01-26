@@ -32,7 +32,7 @@ void MotionProfile::Control() {
 		// Do Nothing, loopTimeout set to -1 when disabled
 	} else {
 		if (loopTimeout == 0) {
-			Instrumentation::OnNoProgress();
+			//Instrumentation::OnNoProgress();
 		} else {
 			--loopTimeout;
 		}
@@ -79,7 +79,7 @@ void MotionProfile::Control() {
 			break;
 		}
 	}
-	Instrumentation::Process(status);
+	//Instrumentation::Process(status);
 }
 
 void MotionProfile::startFilling() {
@@ -90,7 +90,7 @@ CANTalon::SetValueMotionProfile var;
 
 void MotionProfile::startFilling(const double profile[][3], int totalCnt) {
 	if(status.hasUnderrun) {
-		Instrumentation::OnUnderrun();
+		//Instrumentation::OnUnderrun();
 		m_talon.ClearMotionProfileHasUnderrun();
 	}
 	CANTalon::TrajectoryPoint point; // Local trajectory point
