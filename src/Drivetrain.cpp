@@ -14,8 +14,8 @@ Drivetrain::Drivetrain()
 	m_rDriveR(TALON_DRIVE_RR),
 	m_drive(&m_lDriveF, &m_lDriveR, &m_rDriveF, &m_rDriveR),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
-	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
-	m_MotionProfile(m_lDriveR)
+	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false)
+	//, m_motionProfile(&m_rDriveF)
 {
 
 	m_turn = 0;
@@ -40,16 +40,16 @@ void Drivetrain::startMP() {
 	m_rDriveR.SetControlMode(CANTalon::ControlMode::kFollower);
 	m_rDriveR.Set(TALON_DRIVE_LR);
 
-	m_MotionProfile.Start();
+	// Starte the mp
 
 }
 
 void Drivetrain::resetMP() {
-	m_MotionProfile.Reset();
+	// end the mp
 }
 
 void Drivetrain::controlMP() {
-	m_MotionProfile.Control();
+	// mp periodic
 }
 
 Drivetrain::~Drivetrain() {

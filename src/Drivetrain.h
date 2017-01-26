@@ -45,10 +45,6 @@ private:
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
 
-
-
-	MotionProfile m_MotionProfile;
-
 	Timer m_timer;
 
 	double m_turn, m_speed;
