@@ -16,10 +16,15 @@
 
 class Intake {
 private:
-	CANTalon m_intakeRoller;
-	Solenoid m_intakeArm;
+	CANTalon* m_intakeRoller;
+	Solenoid* m_intakeArm;
 public:
 	Intake();
+	void SetArm(bool on);
+	void ApplyArm();
+	void ReleaseArm();
+	void ApplyRoller();
+	void StopRoller();
 	virtual ~Intake();
 
 
