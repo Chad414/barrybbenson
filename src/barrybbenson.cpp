@@ -1,6 +1,7 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include "CANTalon.h"
+#include "AHRS.h"
 
 class barrybbenson: public HotBot {
 private:
@@ -12,14 +13,11 @@ private:
 	Victor* m_PWMmotor1;
 	CANTalon* m_CANmotor1;
 	CANTalon* m_CANmotor2;
-
-	Encoder * m_encoder;
+	AHRS *ahrs;
 
 	PowerDistributionPanel* m_pdp;
 
 	AnalogPotentiometer* m_pot;
-
-	SmartDashboard * m_smartDashboard;
 
 	double speed;
 	bool previousAButton;
@@ -38,20 +36,12 @@ public:
 		m_CANmotor2 = new CANTalon(2);
 		//m_motor1->SetControlMode(CANSpeedController::kSpeed);
 
-		m_encoder = new Encoder(0); //that zero is a placeholder value
-
 		m_pdp = new PowerDistributionPanel(0);
 
 		AnalogInput *ai = new AnalogInput(0);
-
-		m_smartDashboard = new SmartDashboard;
-
 		m_pot = new AnalogPotentiometer(ai, 360, 0);
 	}
 	void RobotInit() {
-
-		m_encoder->Reset();
-
 	}
 
 
@@ -75,14 +65,6 @@ public:
 
 	 previousAButton= m_driver->ButtonA();
 	 previousXButton= m_driver->ButtonX();
-
-	 m_smartDashboard->PutNumber( "Encoder rate", m_encoder->GetRate() );
-
-	 double y;
-	 y = int ( m_encoder->Get() );
-	 m_smartDashboard->PutNumber( "Encoder count", y );
-
-
 	}
 
 	void TeleopShoot() {
@@ -99,7 +81,26 @@ public:
 		m_PWMmotor0->Set(slider2);
 		m_PWMmotor1->Set(slider3);
 
+		try {
+					/***********************************************************************
+					 * navX-MXP:
+					 * - Communication via RoboRIO MXP (SPI, I2C, TTL UART) and USB.
+					 * - See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface.
+					 *
+					 * navX-Micro:
+					 * - Communication via I2C (RoboRIO MXP or Onboard) and USB.
+					 * - See http://navx-micro.kauailabs.com/guidance/selecting-an-interface.
+					 *
+					 * Multiple navX-model devices on a single robot are supported.
+					 ************************************************************************/
+		            ahrs = new AHRS(I2C::Port::kMXP);
+		        } catch (std::exception& ex ) {
+		            std::string err_string = "Error instantiating navX MXP:  ";
+		            err_string += ex.what();
+		            DriverStation::ReportError(err_string.c_str());
+		        }
 
+        SmartDashboard::PutNumber("NavX", ahrs->GetAngle());
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
