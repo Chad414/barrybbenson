@@ -12,7 +12,6 @@
 #include "WPILib.h"
 #include "CANTalon.h"
 #include "TrajectoryPoints.h"
-#include "Instrumentation.h"
 
 using namespace std;
 

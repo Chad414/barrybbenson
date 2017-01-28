@@ -10,7 +10,7 @@
 using namespace std;
 
 MotionProfile::MotionProfile(CANTalon & talon) : m_talon(talon), m_notifer(&MotionProfile::PeriodicTask, this) {
-	m_talon.ChangeMotionControlFramePeriod(.5); // Set to half of trajectory point time
+	m_talon.ChangeMotionControlFramePeriod(.5*kMotionProfile[0][2]); // Set to half of trajectory point time
 	m_notifer.StartPeriodic(0.005);
 }
 
@@ -83,7 +83,7 @@ void MotionProfile::Control() {
 			if (status.activePointValid && status.activePoint.isLastPoint) {
 				setValue = CANTalon::SetValueMotionProfileHold;
 				state = 0;
-				std::cout << "MP State set to: 3" << std::endl;
+				std::cout << "MP State set to: 3. Last Point." << std::endl;
 				loopTimeout = -1;
 			}
 			break;

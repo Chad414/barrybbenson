@@ -13,10 +13,17 @@
 #include "CANTalon.h"
 #include "MotionProfile.h"
 
+#define USE_TEST_BENCH
+
 #define TALON_DRIVE_LF 11
 #define TALON_DRIVE_LR 12
 #define TALON_DRIVE_RF 21
+
+#ifndef USE_TEST_BENCH
 #define TALON_DRIVE_RR 20
+#else
+#define TALON_DRIVE_RR 1
+#endif
 
 #define DRIVE_ENCODER_LF 4
 #define DRIVE_ENCODER_LR 3
@@ -28,6 +35,7 @@
 class Drivetrain {
 public:
 	Drivetrain();
+	void InitTeleop();
 	void ArcadeDrive(double speed, double angle);
 	void startMP();
 	void resetMP();
