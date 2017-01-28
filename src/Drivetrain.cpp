@@ -13,6 +13,8 @@ Drivetrain::Drivetrain()
 	m_rDriveF(TALON_DRIVE_RF),
 	m_rDriveR(TALON_DRIVE_RR),
 	m_drive(&m_lDriveF, &m_lDriveR, &m_rDriveF, &m_rDriveR),
+	m_victor(HOT_BENCH_VICTOR),
+	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_MotionProfile(m_rDriveR)
@@ -60,6 +62,14 @@ void Drivetrain::resetMP() {
 
 void Drivetrain::controlMP() {
 	m_MotionProfile.Control();
+}
+
+float Drivetrain::getYaw(){
+	m_gyro.GetYaw();
+}
+
+void Drivetrain::setVictor(double x){
+	m_victor.Set(x);
 }
 
 Drivetrain::~Drivetrain() {

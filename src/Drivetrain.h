@@ -12,6 +12,7 @@
 #include <cmath>
 #include "CANTalon.h"
 #include "MotionProfile.h"
+#include "AHRS.h"
 
 #define USE_TEST_BENCH
 
@@ -24,6 +25,8 @@
 #else
 #define TALON_DRIVE_RR 1
 #endif
+
+#define HOT_BENCH_VICTOR 0
 
 #define DRIVE_ENCODER_LF 4
 #define DRIVE_ENCODER_LR 3
@@ -40,6 +43,8 @@ public:
 	void startMP();
 	void resetMP();
 	void controlMP();
+	float getYaw();
+	void setVictor(double x);
 	virtual ~Drivetrain();
 
 private:
@@ -49,6 +54,9 @@ private:
 	CANTalon m_rDriveR;
 
 	RobotDrive m_drive;
+
+	Victor m_victor;
+	AHRS m_gyro;
 
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;

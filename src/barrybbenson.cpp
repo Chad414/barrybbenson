@@ -55,8 +55,10 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		TeleopDrive();
-		TeleopShoot();
+		/*TeleopDrive();
+		TeleopShoot();*/
+
+		SmartDashboard::PutNumber("Gyro Yaw", m_drivetrain.getYaw());
 
 		previousAButton = m_driver->ButtonA();
 		previousXButton = m_driver->ButtonX();
