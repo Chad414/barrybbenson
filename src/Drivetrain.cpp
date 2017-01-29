@@ -9,11 +9,14 @@
 
 Drivetrain::Drivetrain()
 	: m_lDriveF(TALON_DRIVE_LF),
+	m_lDriveM(TALON_DRIVE_LM),
 	m_lDriveR(TALON_DRIVE_LR),
 	m_rDriveF(TALON_DRIVE_RF),
+	m_rDriveM(TALON_DRIVE_RM),
 	m_rDriveR(TALON_DRIVE_RR),
-	m_drive(&m_lDriveF, &m_lDriveR, &m_rDriveF, &m_rDriveR),
-	m_victor(HOT_BENCH_VICTOR),
+	m_driveWrapperL(m_lDriveF, m_lDriveM),
+	m_driveWrapperR(m_rDriveF, m_rDriveM),
+	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
@@ -23,13 +26,54 @@ Drivetrain::Drivetrain()
 	m_turn = 0;
 	m_speed = 0;
 
-	m_rDriveR.SetFeedbackDevice(CANTalon::QuadEncoder);
-	m_rDriveR.SetSensorDirection(true);
+	/*m_lDriveF.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveF.SetSensorDirection(true);*/
 
 	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
 	m_drive.SetSafetyEnabled(false);
 }
+
+// DriveWrapper Functions
+
+Drivetrain::DriveWrapper::DriveWrapper(SpeedController* talon1, SpeedController* talon2) {
+	m_drive1 = talon1;
+	m_drive2 = talon2;
+}
+
+void Drivetrain::DriveWrapper::Set(float speed) {
+	m_drive1->Set(speed);
+	m_drive2->Set(speed);
+}
+
+double Drivetrain::DriveWrapper::Get() {
+	return m_drive1->Get();
+}
+
+void Drivetrain::DriveWrapper::PIDWrite(double output) {
+	Set(output);
+}
+
+void Drivetrain::DriveWrapper::SetInverted(bool isInverted) {
+	m_drive1->SetInverted(isInverted);
+	m_drive2->SetInverted(isInverted);
+}
+
+void Drivetrain::DriveWrapper::GetInverted() {
+	m_drive1->GetInverted();
+}
+
+void Drivetrain::DriveWrapper::Disable() {
+	m_drive1->Disable();
+	m_drive2->Disable();
+}
+
+void Drivetrain::DriveWrapper::StopMotor() {
+	m_drive1->StopMotor();
+	m_drive2->StopMotor();
+}
+
+// Drivetrain Functions
 
 void Drivetrain::InitTeleop()
 {
@@ -66,10 +110,6 @@ void Drivetrain::controlMP() {
 
 float Drivetrain::getYaw(){
 	m_gyro.GetYaw();
-}
-
-void Drivetrain::setVictor(double x){
-	m_victor.Set(x);
 }
 
 Drivetrain::~Drivetrain() {

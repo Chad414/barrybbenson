@@ -19,6 +19,9 @@
 #define TALON_DRIVE_LF 11
 #define TALON_DRIVE_LR 12
 #define TALON_DRIVE_RF 21
+//#define TALON_DRIVE_RR 13
+#define TALON_DRIVE_LM 14
+#define TALON_DRIVE_RM 41
 
 #ifndef USE_TEST_BENCH
 #define TALON_DRIVE_RR 20
@@ -44,18 +47,37 @@ public:
 	void resetMP();
 	void controlMP();
 	float getYaw();
-	void setVictor(double x);
 	virtual ~Drivetrain();
 
 private:
+	class DriveWrapper: public SpeedController {
+	   public:
+		DriveWrapper(SpeedController* talon1, SpeedController* talon2);
+		virtual void Set(double speed);
+		virtual double Get() const;
+		virtual void PIDWrite (double output);
+		virtual void SetInverted (bool isInverted);
+		virtual void GetInverted() const;
+		virtual void Disable();
+		virtual void StopMotor();
+	   private:
+		SpeedController* m_drive1;
+		SpeedController* m_drive2;
+	};
+
 	CANTalon m_lDriveF;
+	CANTalon m_lDriveM;
 	CANTalon m_lDriveR;
 	CANTalon m_rDriveF;
+	CANTalon m_rDriveM;
 	CANTalon m_rDriveR;
+
+
+	DriveWrapper m_driveWrapperL;
+	DriveWrapper m_driveWrapperR;
 
 	RobotDrive m_drive;
 
-	Victor m_victor;
 	AHRS m_gyro;
 
 	Encoder m_lEncoder;

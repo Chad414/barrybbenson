@@ -67,7 +67,8 @@ public:
 	void TeleopDrive() {
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 					m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), m_driver->AxisRX());
-				}
+			}
+
 	}
 
 	void TeleopShoot() {
