@@ -14,8 +14,8 @@ Drivetrain::Drivetrain()
 	m_rDriveF(TALON_DRIVE_RF),
 	m_rDriveM(TALON_DRIVE_RM),
 	m_rDriveR(TALON_DRIVE_RR),
-	m_driveWrapperL(m_lDriveF, m_lDriveM),
-	m_driveWrapperR(m_rDriveF, m_rDriveM),
+	m_driveWrapperL(&m_lDriveF, &m_lDriveM),
+	m_driveWrapperR(&m_rDriveF, &m_rDriveM),
 	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
@@ -41,12 +41,12 @@ Drivetrain::DriveWrapper::DriveWrapper(SpeedController* talon1, SpeedController*
 	m_drive2 = talon2;
 }
 
-void Drivetrain::DriveWrapper::Set(float speed) {
+void Drivetrain::DriveWrapper::Set(double speed) {
 	m_drive1->Set(speed);
 	m_drive2->Set(speed);
 }
 
-double Drivetrain::DriveWrapper::Get() {
+double Drivetrain::DriveWrapper::Get() const {
 	return m_drive1->Get();
 }
 
@@ -59,8 +59,8 @@ void Drivetrain::DriveWrapper::SetInverted(bool isInverted) {
 	m_drive2->SetInverted(isInverted);
 }
 
-void Drivetrain::DriveWrapper::GetInverted() {
-	m_drive1->GetInverted();
+bool Drivetrain::DriveWrapper::GetInverted() const {
+	return m_drive1->GetInverted();
 }
 
 void Drivetrain::DriveWrapper::Disable() {
@@ -109,7 +109,7 @@ void Drivetrain::controlMP() {
 }
 
 float Drivetrain::getYaw(){
-	m_gyro.GetYaw();
+	return m_gyro.GetYaw();
 }
 
 Drivetrain::~Drivetrain() {

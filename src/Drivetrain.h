@@ -50,14 +50,14 @@ public:
 	virtual ~Drivetrain();
 
 private:
-	class DriveWrapper: public SpeedController {
+	class DriveWrapper : public SpeedController {
 	   public:
 		DriveWrapper(SpeedController* talon1, SpeedController* talon2);
 		virtual void Set(double speed);
 		virtual double Get() const;
 		virtual void PIDWrite (double output);
 		virtual void SetInverted (bool isInverted);
-		virtual void GetInverted() const;
+		virtual bool GetInverted() const;
 		virtual void Disable();
 		virtual void StopMotor();
 	   private:
