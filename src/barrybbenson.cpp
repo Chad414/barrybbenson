@@ -1,6 +1,7 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include "CANTalon.h"
+#include "AHRS.h"
 
 class barrybbenson: public HotBot {
 private:
@@ -12,6 +13,8 @@ private:
 	Victor* m_PWMmotor1;
 	CANTalon* m_CANmotor1;
 	CANTalon* m_CANmotor2;
+
+	AHRS *ahrs;
 
 	PowerDistributionPanel* m_pdp;
 
@@ -35,6 +38,8 @@ public:
 		//m_motor1->SetControlMode(CANSpeedController::kSpeed);
 
 		m_pdp = new PowerDistributionPanel(0);
+
+		ahrs = new AHRS(I2C::Port::kMXP);
 
 		AnalogInput *ai = new AnalogInput(0);
 		m_pot = new AnalogPotentiometer(ai, 360, 0);
@@ -80,6 +85,7 @@ public:
 		m_PWMmotor1->Set(slider3);
 
 
+		SmartDashboard::PutNumber("Gyro", ahrs->GetYaw());
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
