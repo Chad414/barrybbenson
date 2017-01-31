@@ -17,12 +17,13 @@
 #define USE_TEST_BENCH
 
 #define TALON_DRIVE_LF 11
-#define TALON_DRIVE_LR 12
+#define TALON_DRIVE_LR 17
 #define TALON_DRIVE_RF 21
-//#define TALON_DRIVE_RR 13
-#define TALON_DRIVE_LM 14
-#define TALON_DRIVE_RM 41
+#define TALON_DRIVE_RR 20
+#define TALON_DRIVE_LM 0
+#define TALON_DRIVE_RM 0
 
+/*
 #ifndef USE_TEST_BENCH
 #define TALON_DRIVE_RR 20
 #else
@@ -30,6 +31,7 @@
 #endif
 
 #define HOT_BENCH_VICTOR 0
+*/
 
 #define DRIVE_ENCODER_LF 4
 #define DRIVE_ENCODER_LR 3

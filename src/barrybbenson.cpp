@@ -36,7 +36,7 @@ public:
 		m_pdp = new PowerDistributionPanel(0);
 	}
 	void RobotInit() {
-		}
+	}
 
 
 	void AutonomousInit() {
@@ -55,8 +55,8 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		/*TeleopDrive();
-		TeleopShoot();*/
+		TeleopDrive();
+		//TeleopShoot();
 
 		SmartDashboard::PutNumber("Gyro Yaw", m_drivetrain.getYaw());
 
@@ -68,6 +68,8 @@ public:
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 					m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), m_driver->AxisRX());
 			}
+
+
 
 	}
 

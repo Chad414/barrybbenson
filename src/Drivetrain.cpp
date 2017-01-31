@@ -16,7 +16,7 @@ Drivetrain::Drivetrain()
 	m_rDriveR(TALON_DRIVE_RR),
 	m_driveWrapperL(&m_lDriveF, &m_lDriveM),
 	m_driveWrapperR(&m_rDriveF, &m_rDriveM),
-	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
+	m_drive(m_lDriveF, m_lDriveR, m_rDriveF, m_rDriveR),
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
