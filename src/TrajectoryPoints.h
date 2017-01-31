@@ -36,7 +36,7 @@ const int kMotionProfileSz = 128;
  */
 
 
-const double kMotionProfile[][3] = {
+const double kMotionProfile[128][3] = {
 		{ 1.45038 , 8.47369 , 1.71163 },
 		{ 7.25192 , 33.8948 , 1.71163 },
 		{ 20.3054 , 76.2632 , 1.71163 },
