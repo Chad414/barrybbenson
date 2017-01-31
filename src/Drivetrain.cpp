@@ -26,8 +26,18 @@ Drivetrain::Drivetrain()
 	m_turn = 0;
 	m_speed = 0;
 
-	/*m_lDriveF.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
-	m_lDriveF.SetSensorDirection(true);*/
+	m_lDriveF.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveF.SetSensorDirection(true);
+	m_lDriveM.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveM.SetSensorDirection(true);
+	m_lDriveR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveR.SetSensorDirection(true);
+	m_rDriveF.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_rDriveF.SetSensorDirection(true);
+	m_rDriveM.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_rDriveM.SetSensorDirection(true);
+	m_rDriveR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_rDriveR.SetSensorDirection(true);
 
 	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
@@ -104,11 +114,11 @@ void Drivetrain::resetMP() {
 	m_MotionProfile.Reset();
 }
 
-void Drivetrain::controlMP() {
+void Drivetrain::controlMP() { // Calls Control() from MotionProfile
 	m_MotionProfile.Control();
 }
 
-float Drivetrain::getYaw(){
+float Drivetrain::getYaw(){ // Get Gyro Yaw
 	return m_gyro.GetYaw();
 }
 
