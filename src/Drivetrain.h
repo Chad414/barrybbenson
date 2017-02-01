@@ -49,6 +49,8 @@ public:
 	void resetMP();
 	void controlMP();
 	float getYaw();
+	void resetGyro();
+	void setTurn(double turn);
 	virtual ~Drivetrain();
 
 private:

@@ -122,5 +122,13 @@ float Drivetrain::getYaw(){ // Get Gyro Yaw
 	return m_gyro.GetYaw();
 }
 
+void Drivetrain::resetGyro() {
+	m_gyro.Reset();
+}
+
+void Drivetrain::setTurn(double turn) {
+
+}
+
 Drivetrain::~Drivetrain() {
 }

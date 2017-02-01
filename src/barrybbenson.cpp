@@ -52,6 +52,7 @@ public:
 		speed = 0;
 		previousAButton = false;
 		previousXButton = false;
+		m_drivetrain.resetGyro();
 	}
 
 	void TeleopPeriodic() {
@@ -66,10 +67,17 @@ public:
 
 	void TeleopDrive() {
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
-					m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), m_driver->AxisRX());
+			m_drivetrain.ArcadeDrive(m_driver->AxisLY(), -m_driver->AxisRX());
+		}
+
+		if (m_driver->ButtonX()) {
+			if (m_drivetrain.getYaw() > 8) {
+				m_drivetrain.ArcadeDrive(0, 0.5);
 			}
-
-
+			if (m_drivetrain.getYaw() < -8) {
+				m_drivetrain.ArcadeDrive(0, -0.5);
+			}
+		}
 
 	}
 
