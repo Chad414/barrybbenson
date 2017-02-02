@@ -11,6 +11,10 @@ private:
 	TalonSRX * m_shooter2;
 	TalonSRX * m_paddle;
 
+	PIDController * m_shooterPID;
+
+	Encoder * m_shooterEncoder;
+
 	PowerDistributionPanel* m_pdp;
 
 	double speed;
@@ -26,6 +30,10 @@ public:
 		m_shooter1 = new TalonSRX( 7 );
 		m_shooter2 = new TalonSRX( 12 );
 		m_paddle = new TalonSRX( 1 );
+
+		m_shooterEncoder = new Encoder( 0,1 );
+
+		m_shooterPID = new PIDController( 1 , 0 , 0 , m_shooter1 , m_shooterEncoder );
 
 		m_pdp = new PowerDistributionPanel(0);
 	}
