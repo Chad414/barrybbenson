@@ -20,8 +20,11 @@ private:
 
 	TalonSRX * m_talon1 = new TalonSRX( 7 );
 	TalonSRX * m_talon2 = new TalonSRX( 12 );
+	TalonSRX * m_talonPaddle = new TalonSRX( 5 ); // placeholder
 
 	XboxController * m_controller = new XboxController( 0 );
+
+	double speed;
 
 public:
 	void RobotInit() {
@@ -64,27 +67,26 @@ public:
 	}
 
 	void TeleopInit() {
-
-
+		speed = 0;
 	}
 
 	void TeleopPeriodic() {
 		if ( m_controller->GetXButton() )
 		{
-			m_talon1->Set( .75 );
-			m_talon2->Set( .75 );
+			speed = .5;
 		}
-		else if ( m_controller->GetBButton() )
+		else if ( m_controller->GetAButton() )
 		{
-			m_talon1->Set( -.75 );
-			m_talon2->Set(-.75 );
+			speed = -.5;
 		}
 		else
 		{
-			m_talon1->Set( 0 );
-			m_talon2->Set( 0 );
+			speed = 0;
 		}
 
+		m_talon1->Set( speed );
+		m_talon2->Set( speed );
+		m_talonPaddle->Set( speed );
 
 	}
 
@@ -95,4 +97,3 @@ public:
 
 };
 
-START_ROBOT_CLASS(Robot)
