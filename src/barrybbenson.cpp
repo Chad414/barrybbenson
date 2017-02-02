@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#include "CANTalon.h"
 #include "RobotUtils/RobotUtils.h"
 
 /*
@@ -87,68 +88,24 @@ public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
-
-		m_shooter1 = new Victor(0);
-		m_shooter2 = new Victor(1);
-
-		m_pdp = new PowerDistributionPanel(0);
 	}
-	void RobotInit() {
-		}
 
+	void RobotInit() {
+	}
 
 	void AutonomousInit() {
-
 	}
 
 	void AutonomousPeriodic() {
-
 	}
 
 	void TeleopInit() {
-		speed = 0;
-		previousAButton = false;
-		previousXButton = false;
 	}
 
 	void TeleopPeriodic() {
-	 TeleopShoot();
-
-	 previousAButton= m_driver->ButtonA();
-	 previousXButton= m_driver->ButtonX();
-	}
-
-	void TeleopShoot() {
-
-		if (m_driver->ButtonX() && (previousXButton == false) && speed > 0.0) {
-			speed -= 0.05;
-			}
-		else if (m_driver->ButtonA() && (previousAButton == false) && speed < 1.0) {
-			speed+= 0.05;
-			}
-
-		else if (m_driver->ButtonB() && speed > 0.0) {
-			speed = 0.0;
-		}
-		else {
-			m_shooter1->Set(speed);
-		}
-
-
-
 		/*
-		if ((fabs(m_driver->AxisLY())) > 0.2) {
-			m_shooter1->Set(m_driver->AxisLY());
-		}
-		else {
-			m_shooter1->Set(0);
-		}
-		//m_shooter1->Set(0.2);
-		 *
+		 * drive
 		 */
-		SmartDashboard::PutNumber("speed", speed);
-		SmartDashboard::PutBoolean("A Button", previousAButton);
-		SmartDashboard::PutBoolean("X Button", previousXButton);
 	}
 
 	void TestPeriodic() {
