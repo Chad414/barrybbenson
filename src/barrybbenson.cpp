@@ -1,6 +1,5 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
-#include <TalonSRX.h>
 
 class barrybbenson: public HotBot {
 private:
@@ -10,6 +9,7 @@ private:
 
 	TalonSRX * m_shooter1;
 	TalonSRX * m_shooter2;
+	TalonSRX * m_paddle;
 
 	PowerDistributionPanel* m_pdp;
 
@@ -25,6 +25,7 @@ public:
 
 		m_shooter1 = new TalonSRX( 7 );
 		m_shooter2 = new TalonSRX( 12 );
+		m_paddle = new TalonSRX( 1 );
 
 		m_pdp = new PowerDistributionPanel(0);
 	}
@@ -51,15 +52,17 @@ public:
 
 	 previousAButton= m_driver->ButtonA();
 	 previousXButton= m_driver->ButtonX();
+
+
 	}
 
 	void TeleopShoot() {
 
 		if (m_driver->ButtonX() ) {
-			speed = -.5;
+			speed = .5;
 			}
 		else if (m_driver->ButtonA() ) {
-			speed = .5;
+			speed = -.5;
 			}
 
 		else
@@ -69,6 +72,7 @@ public:
 
 			m_shooter1->Set( speed );
 			m_shooter2->Set( speed );
+			m_paddle->Set( speed );
 		}
 
 
@@ -82,15 +86,15 @@ public:
 		}
 		//m_shooter1->Set(0.2);
 		 *
-		 */
+
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
 	}
+	*/
 
 	void TestPeriodic() {
 	}
 
+};
 
-
-START_ROBOT_CLASS(barrybbenson)
