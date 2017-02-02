@@ -16,12 +16,12 @@
 
 #define USE_TEST_BENCH
 
-#define TALON_DRIVE_LF 11
-#define TALON_DRIVE_LR 17
-#define TALON_DRIVE_RF 21
-#define TALON_DRIVE_RR 20
-#define TALON_DRIVE_LM 0
-#define TALON_DRIVE_RM 0
+#define TALON_DRIVE_LF 6
+#define TALON_DRIVE_LR 5
+#define TALON_DRIVE_RF 1
+#define TALON_DRIVE_RR 2
+#define TALON_DRIVE_LM 4
+#define TALON_DRIVE_RM 3
 
 /*
 #ifndef USE_TEST_BENCH
@@ -50,7 +50,8 @@ public:
 	void controlMP();
 	float getYaw();
 	void resetGyro();
-	void setTurn(double turn);
+	double getLeftEncoder();
+	double getRightEncoder();
 	virtual ~Drivetrain();
 
 private:

@@ -16,7 +16,7 @@ Drivetrain::Drivetrain()
 	m_rDriveR(TALON_DRIVE_RR),
 	m_driveWrapperL(&m_lDriveF, &m_lDriveM),
 	m_driveWrapperR(&m_rDriveF, &m_rDriveM),
-	m_drive(m_lDriveF, m_lDriveR, m_rDriveF, m_rDriveR),
+	m_drive(m_driveWrapperL, m_driveWrapperR, m_lDriveR, m_rDriveR),
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
@@ -26,18 +26,11 @@ Drivetrain::Drivetrain()
 	m_turn = 0;
 	m_speed = 0;
 
-	m_lDriveF.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_lDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_lDriveF.SetSensorDirection(true);
-	m_lDriveM.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
-	m_lDriveM.SetSensorDirection(true);
-	m_lDriveR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
-	m_lDriveR.SetSensorDirection(true);
-	m_rDriveF.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_rDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_rDriveF.SetSensorDirection(true);
-	m_rDriveM.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
-	m_rDriveM.SetSensorDirection(true);
-	m_rDriveR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
-	m_rDriveR.SetSensorDirection(true);
+
 
 	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
@@ -126,8 +119,12 @@ void Drivetrain::resetGyro() {
 	m_gyro.Reset();
 }
 
-void Drivetrain::setTurn(double turn) {
+double Drivetrain::getLeftEncoder() {
+	return m_lDriveF.GetPosition();
+}
 
+double Drivetrain::getRightEncoder() {
+	return m_rDriveF.GetPosition();
 }
 
 Drivetrain::~Drivetrain() {
