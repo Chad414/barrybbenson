@@ -7,8 +7,8 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	Victor* m_shooter1;
-	Victor* m_shooter2;
+	TalonSRX * m_shooter1;
+	TalonSRX * m_shooter2;
 
 	PowerDistributionPanel* m_pdp;
 
@@ -22,8 +22,8 @@ public:
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
 
-		m_shooter1 = new Victor(0);
-		m_shooter2 = new Victor(1);
+		m_shooter1 = new TalonSRX( 7 );
+		m_shooter2 = new TalonSRX( 12 );
 
 		m_pdp = new PowerDistributionPanel(0);
 	}
@@ -54,18 +54,20 @@ public:
 
 	void TeleopShoot() {
 
-		if (m_driver->ButtonX() && (previousXButton == false) && speed > 0.0) {
-			speed -= 0.05;
+		if (m_driver->ButtonX() ) {
+			speed -.5;
 			}
-		else if (m_driver->ButtonA() && (previousAButton == false) && speed < 1.0) {
-			speed+= 0.05;
+		else if (m_driver->ButtonA() ) {
+			speed = .5;
 			}
 
-		else if (m_driver->ButtonB() && speed > 0.0) {
+		else
+		{
 			speed = 0.0;
 		}
-		else {
-			m_shooter1->Set(speed);
+
+			m_shooter1->Set( speed );
+			m_shooter2->Set( speed );
 		}
 
 
