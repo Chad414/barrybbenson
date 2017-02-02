@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
+#include <TalonSRX.h>
 
 class barrybbenson: public HotBot {
 private:
@@ -55,7 +56,7 @@ public:
 	void TeleopShoot() {
 
 		if (m_driver->ButtonX() ) {
-			speed -.5;
+			speed = -.5;
 			}
 		else if (m_driver->ButtonA() ) {
 			speed = .5;
@@ -90,6 +91,6 @@ public:
 	void TestPeriodic() {
 	}
 
-};
+
 
 START_ROBOT_CLASS(barrybbenson)
