@@ -68,26 +68,27 @@
 	 *
 	 */
 
+
 class barrybbenson: public HotBot {
 private:
 
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
-
 	PowerDistributionPanel* m_pdp;
 
 	double speed;
-	//int timesPressed;
 	bool previousAButton;
 	bool previousXButton;
 
 	EncoderTest m_shooter;
 
+
+	PIDController * m_pid;
+
 public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
-
 		m_pdp = new PowerDistributionPanel(0);
 	}
 	void RobotInit() {
@@ -109,7 +110,14 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		m_shooter.Set(1.0);
+		//m_shooter.Set(1.0)
+
+		// Check for a buton
+		bool button;
+		if (button)
+		{
+			m_shooter.EnablePID();
+		}
 
 		SmartDashboard::PutNumber("Encoder Value", m_shooter.Get());
 		SmartDashboard::PutNumber("Encoder Rate", m_shooter.GetRate());

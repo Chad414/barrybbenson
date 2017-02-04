@@ -11,6 +11,11 @@
 #ifndef SRC_ENCODERTEST_H_
 #define SRC_ENCODERTEST_H_
 
+
+#define P 0
+#define I 0
+#define D 0
+
 class EncoderTest {
 public:
 	EncoderTest();
@@ -19,9 +24,15 @@ public:
 	double Get();
 	double GetRate();
 	void Set(double value);
+
+	void EnablePID();
+	void DisablePID();
+	bool OnTarget();
 private:
 	CANTalon m_shooter;
 	double shooterValue;
+
+	PIDController m_pid;
 };
 
 #endif /* SRC_ENCODERTEST_H_ */
