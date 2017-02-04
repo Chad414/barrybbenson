@@ -2,6 +2,9 @@
 #include "CANTalon.h"
 #include "RobotUtils/RobotUtils.h"
 
+#include "Drivetrain.h"
+#include "Shooter.h"
+
 /*
 	 ***** Driver Joystick Mapping
 	 *
@@ -74,17 +77,13 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	Victor* m_shooter1;
-	Victor* m_shooter2;
-
-	PowerDistributionPanel* m_pdp;
-
-	double speed;
-	//int timesPressed;
-	bool previousAButton;
-	bool previousXButton;
+	Shooter::Shooter m_shoot;
+	Drivetrain m_drivetrain;
 
 public:
+
+	double shooterSpeed = 0.4;
+
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
@@ -103,9 +102,42 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		/*
-		 * drive
-		 */
+		TeleopDrive();
+		TeleopShoot();
+	}
+
+	void TeleopShoot() {
+		if (m_driver->ButtonRT()) {
+			m_shoot.Shooter::RunShoot(shooterSpeed);
+		}
+		if (m_driver->ButtonPressedY()) {
+			shooterSpeed += 0.025;
+			m_shoot.Shooter::RunShoot(shooterSpeed);
+		}
+		if (m_driver->ButtonPressedB()) {
+			shooterSpeed -= 0.025;
+			m_shoot.Shooter::RunShoot(shooterSpeed);
+		}
+		if (m_driver->ButtonPressedX()) {
+			shooterSpeed = 0;
+			m_shoot.Shooter::RunShoot(shooterSpeed);
+		}
+
+		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
+		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.Shooter::getRightShoot());
+		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
+	}
+
+	void TeleopDrive() {
+		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
+			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
+		}
+
+		SmartDashboard::PutNumber("Forward and Backward", m_drivetrain.getSpeed());
+		SmartDashboard::PutNumber("Turning", m_drivetrain.getAngle());
+		SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
+		SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
+
 	}
 
 	void TestPeriodic() {

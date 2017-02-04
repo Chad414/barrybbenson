@@ -15,6 +15,8 @@ Shooter::Shooter()
 	  m_paddle(SHOOTER_PADDLE_TALON)
 {
 	// TODO Auto-generated constructor stub
+	m_shooterL.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+	m_shooterR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 }
 
 Shooter::~Shooter() {
@@ -22,7 +24,7 @@ Shooter::~Shooter() {
 }
 
 void Shooter::RunShoot(double shoot_speed) {
-	m_shooterL.Set(shoot_speed);
+	m_shooterL.Set(-shoot_speed);
 	m_shooterR.Set(shoot_speed);
 
 	shooterSpeed = shoot_speed;
@@ -41,5 +43,14 @@ void Shooter::RunPaddle(double paddle_speed) {
 double Shooter::GetPaddle() {
 	return paddleSpeed;
 }
+
+double Shooter::getLeftShoot() {
+	return m_shooterL.GetPosition();
+}
+
+double Shooter::getRightShoot() {
+	return m_shooterR.GetPosition();
+}
+
 
 } /* namespace Shooter */

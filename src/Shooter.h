@@ -37,6 +37,9 @@ public:
 	void RunPaddle(double paddle_speed);
 	double GetPaddle();
 
+	double getLeftShoot();
+	double getRightShoot();
+
 };
 
 } /* namespace Shooter */
