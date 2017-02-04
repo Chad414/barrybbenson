@@ -7,7 +7,6 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include <CANTalon.h>
-#include "Solenoid.h"
 
 #ifndef SRC_INTAKE_H_
 #define SRC_INTAKE_H_
@@ -16,8 +15,8 @@
 
 class Intake {
 private:
-	CANTalon* m_intakeRoller;
-	Solenoid* m_intakeArm;
+	CANTalon m_intakeRoller;
+	Solenoid m_intakeArm;
 public:
 	Intake();
 	void SetArm(bool on);
