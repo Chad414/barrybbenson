@@ -17,9 +17,11 @@ public:
 	virtual ~EncoderTest();
 
 	double Get();
+	double GetRate();
 	void Set(double value);
 private:
 	CANTalon m_shooter;
+	double shooterValue;
 };
 
 #endif /* SRC_ENCODERTEST_H_ */

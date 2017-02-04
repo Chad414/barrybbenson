@@ -10,13 +10,22 @@
 
 
 EncoderTest::EncoderTest()
-: m_shooter(1)
+: m_shooter(13)
 {
 	m_shooter.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 }
 
 double EncoderTest::Get() {
 	return m_shooter.GetPosition();
+}
+
+double EncoderTest::GetRate() {
+	return m_shooter.GetSpeed();
+}
+
+void EncoderTest::Set(double value) {
+	m_shooter.Set(value);
+	shooterValue = value;
 }
 
 EncoderTest::~EncoderTest() {

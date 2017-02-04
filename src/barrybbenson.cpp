@@ -81,7 +81,7 @@ private:
 	bool previousAButton;
 	bool previousXButton;
 
-	EncoderTest m_encoder;
+	EncoderTest m_shooter;
 
 public:
 	barrybbenson() {
@@ -109,9 +109,10 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		//m_shooter1 -> Set(0.05);
-		SmartDashboard::PutNumber("Encoder Value", m_encoder.Get());
+		m_shooter.Set(1.0);
 
+		SmartDashboard::PutNumber("Encoder Value", m_shooter.Get());
+		SmartDashboard::PutNumber("Encoder Rate", m_shooter.GetRate());
 	}
 };
 
