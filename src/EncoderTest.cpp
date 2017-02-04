@@ -8,25 +8,17 @@
 #include <EncoderTest.h>
 #include "Encoder.h"
 
-namespace EncoderTest {
 
 EncoderTest::EncoderTest()
-: encoder(0,1)
+: m_shooter(1)
 {
-
+	m_shooter.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 }
 
-double EncoderTest::Get(){
-	return encoder.Get();
-}
-
-void EncoderTest::Set(double value){
-	encoder.SetMinRate(1);
-	encoder.SetDistancePerPulse(5);
+double EncoderTest::Get() {
+	return m_shooter.GetPosition();
 }
 
 EncoderTest::~EncoderTest() {
 	// TODO Auto-generated destructor stub
 }
-
-} /* namespace EncoderTest */

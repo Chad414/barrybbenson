@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
+#include "EncoderTest.h"
 
 /*
 	 ***** Driver Joystick Mapping
@@ -73,9 +74,6 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	Victor* m_shooter1;
-	Victor* m_shooter2;
-
 	PowerDistributionPanel* m_pdp;
 
 	double speed;
@@ -83,13 +81,12 @@ private:
 	bool previousAButton;
 	bool previousXButton;
 
+	EncoderTest m_encoder;
+
 public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
-
-		m_shooter1 = new Victor(0);
-		m_shooter2 = new Victor(1);
 
 		m_pdp = new PowerDistributionPanel(0);
 	}
@@ -112,12 +109,9 @@ public:
 	}
 
 	void TeleopPeriodic() {
-	 //TeleopShoot();
+		//m_shooter1 -> Set(0.05);
+		SmartDashboard::PutNumber("Encoder Value", m_encoder.Get());
 
-		m_shooter1->Set(0.1);
-
-	 previousAButton= m_driver->ButtonA();
-	 previousXButton= m_driver->ButtonX();
 	}
 };
 
@@ -158,5 +152,5 @@ public:
 	}
 
 };
-
-START_ROBOT_CLASS(barrybbenson)*/
+*/
+START_ROBOT_CLASS(barrybbenson)
