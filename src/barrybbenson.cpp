@@ -1,6 +1,7 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
-#include <CANTalon.h>
+#include "CANTalon.h"
+#include "PIDShooter.h"
 
 bool continuous;
 bool shot;
@@ -14,49 +15,24 @@ double d;
 
 class barrybbenson: public HotBot {
 private:
+	PIDShooter * m_pidShooter;
 
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	CANTalon * m_shooter1;
-	CANTalon * m_shooter2;
-	CANTalon * m_paddle;
-
-	Talon * shooter;
-
-	PIDController * m_shooterPID;
-
-	Encoder * m_shooterEncoder;
-
-	PowerDistributionPanel* m_pdp;
-	
-	Timer * m_shooterTime;
-
 	SmartDashboard * m_dashboard;
-
-	double speed;
-	//int timesPressed;
-	bool previousAButton;
-	bool previousXButton;
 
 public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
-		m_shooter1 = new CANTalon(13);
 
-		m_shooter1->SetFeedbackDevice( CANTalon::CtreMagEncoder_Relative );
+		m_pidShooter = new PIDShooter( 1, 0, 0 );
 
-		m_shooterPID = new PIDController( p, i, d, m_shooter1, m_shooter1 );
-		
-		m_shooterTime = new Timer();
-
-		m_pdp = new PowerDistributionPanel( 0 );
-
-		m_dashboard = new SmartDashboard;
 	}
 	void RobotInit() {
-		}
+
+	}
 
 
 	void AutonomousInit() {
@@ -68,70 +44,43 @@ public:
 	}
 
 	void TeleopInit() {
-		speed = 0;
-		previousAButton = false;
-		previousXButton = false;
-		m_shooterPID->SetSetpoint( 0 );
-		m_shooterPID->SetContinuous( continuous );
 
-		m_shooterPID->SetPID( 1, 0 , 0 );
-
-	    m_shooterTime->Reset();
-
-		shot = false;
 	}
 
 	void TeleopPeriodic() {
 	 TeleopShoot();
-
-	 previousAButton= m_driver->ButtonA();
-	 previousXButton= m_driver->ButtonX();
 	}
 
 	void TeleopShoot() {
-			if (m_driver->ButtonX() ) {
-						shot = true;
+		/*if (m_driver->ButtonX() ) {
+
 						shooting = true;
 						setpoint = 300; // placeholder value
 			}
-			else if (m_driver->ButtonA() ) {
-						shot = true;
+		else if (m_driver->ButtonA() ) {
+
 						shooting = true;
 						setpoint = -300; //placeholder value
 			}
 		if ( shot == true )
-		{
-			m_shooter1->Enable();
-			m_shooter1->SetSetpoint( setpoint );
+		{ */
+			m_pidShooter->Enable();
+			m_pidShooter->SetSetpoint( 300 );
 
 			while ( shooting == true )
 				{
-
-					if ( m_shooter1->GetSpeed() > setpoint+5000 ) //placeholder values
-						{
-							m_shooter1->SetPID( 5, 1, 2 );
-						}
-					else if ( m_shooter1->GetSpeed() > setpoint+2500 && m_shooter1->GetSpeed() < setpoint+5000 )
-						{
-							m_shooter1->SetPID( 3, 0, 1 );
-						}
-					else
-						{
-							m_shooter1->SetPID( 1, 0, 0 );
-						}
-
 					if ( m_driver->ButtonX() )
-						{
-							shooting = false;
-						}
+					{
+						shooting = false;
+						m_pidShooter->DisableShooter();
+					}
 				}
-					m_shooter1->SetSetpoint( 0 );
-
-					m_dashboard->PutNumber( "CANTalon Speed", m_shooter1->GetSpeed() );
+					m_dashboard->PutNumber( "Setpoint", m_pidShooter->GetSetpoint() );
+					m_dashboard->PutNumber( "CANTalon Speed", m_pidShooter->GetRate() );
 
 
 		}
-	}
+	//}
 		
 
 
