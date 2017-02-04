@@ -1,6 +1,7 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include <CANTalon.h>
+#include "PIDshooter.h"
 
 bool continuous;
 bool shot;
@@ -8,9 +9,9 @@ bool shooting;
 
 double setpoint;
 
-int p;
-int i;
-int d;
+double p;
+double i;
+double d;
 
 class barrybbenson: public HotBot {
 private:
@@ -21,6 +22,8 @@ private:
 	CANTalon * m_shooter1;
 	CANTalon * m_shooter2;
 	CANTalon * m_paddle;
+
+	Talon * shooter;
 
 	PIDController * m_shooterPID;
 
@@ -42,7 +45,7 @@ public:
 
 		m_shooter1->SetFeedbackDevice( CANTalon::CtreMagEncoder_Relative );
 
-		m_shooterPID = new PIDController( p, i, d, m_shooter1, m_shooterEncoder );
+		m_shooterPID = new PIDController( p, i, d, m_shooter1, m_shooter1 );
 		
 		m_shooterTime = new Timer();
 
@@ -85,12 +88,12 @@ public:
 			if (m_driver->ButtonX() ) {
 						shot = true;
 						shooting = true;
-						setpoint = 2000; // placeholder values
+						setpoint = 2000; // placeholder value
 			}
 			else if (m_driver->ButtonA() ) {
 						shot = true;
 						shooting = true;
-						setpoint = -2000; //placeholder values
+						setpoint = -2000; //placeholder value
 			}
 		if ( shot == true )
 		{
@@ -146,3 +149,4 @@ public:
 
 };
 
+START_ROBOT_CLASS(barrybbenson)
