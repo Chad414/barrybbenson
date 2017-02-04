@@ -38,6 +38,18 @@
 #define DRIVE_ENCODER_RF 2
 #define DRIVE_ENCODER_RR 1
 
+#define DISTANCE_SHIFTL_P 0
+#define DISTANCE_SHIFTL_I 0
+#define DISTANCE_SHIFTL_D 0
+
+#define DISTANCE_SHIFTH_P 0
+#define DISTANCE_SHIFTH_I 0
+#define DISTANCE_SHIFTH_D 0
+
+#define ANGLE_P 0
+#define ANGLE_I 0
+#define ANGLE_D 0
+
 #define ENCODER_CODES_PER_REVOLUTION 256
 
 class Drivetrain {
@@ -52,11 +64,14 @@ public:
 	void resetGyro();
 	double getLeftEncoder();
 	double getRightEncoder();
+	void setSpeed(double speed);
+	void setTurn(double angle);
+	double getAngle();
 	virtual ~Drivetrain();
 
 private:
 	class DriveWrapper : public SpeedController {
-	   public:
+	public:
 		DriveWrapper(SpeedController* talon1, SpeedController* talon2);
 		virtual void Set(double speed);
 		virtual double Get() const;
@@ -68,6 +83,27 @@ private:
 	   private:
 		SpeedController* m_drive1;
 		SpeedController* m_drive2;
+	};
+
+	class DistancePIDWrapper : public PIDSource, public PIDOutput {
+	public:
+		DistancePIDWrapper(Drivetrain* drivetrain);
+		virtual ~DistancePIDWrapper();
+		double PIDGet();
+		void PIDWrite(float output);
+	private:
+		Drivetrain* m_drivetrain;
+	};
+
+	class AnglePIDWrapper : public PIDOutput, public PIDSource {
+	public:
+		AnglePIDWrapper(Drivetrain *drivetrain);
+		virtual ~AnglePIDWrapper();
+		void PIDWrite(float output);
+		double PIDGet();
+	private:
+	private:
+		Drivetrain* m_drivetrain;
 	};
 
 	CANTalon m_lDriveF;
@@ -91,6 +127,12 @@ private:
 
 
 	MotionProfile m_MotionProfile;
+
+	DistancePIDWrapper m_distancePIDWrapper;
+	AnglePIDWrapper m_anglePIDWrapper;
+
+	PIDController m_distancePID;
+	PIDController m_anglePID;
 
 	Timer m_timer;
 

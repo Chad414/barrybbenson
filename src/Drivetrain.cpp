@@ -20,7 +20,11 @@ Drivetrain::Drivetrain()
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
-	m_MotionProfile(m_rDriveR)
+	m_MotionProfile(m_rDriveR),
+	m_distancePIDWrapper(this),
+	m_anglePIDWrapper(this),
+	m_distancePID(DISTANCE_SHIFTL_P, DISTANCE_SHIFTL_I, DISTANCE_SHIFTL_D, m_distancePIDWrapper, m_distancePIDWrapper),
+	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, m_anglePIDWrapper, m_anglePIDWrapper)
 {
 
 	m_turn = 0;
@@ -76,6 +80,42 @@ void Drivetrain::DriveWrapper::StopMotor() {
 	m_drive2->StopMotor();
 }
 
+// DistancePIDWrapper Functions
+
+Drivetrain::DistancePIDWrapper::DistancePIDWrapper(Drivetrain* drivetrain) {
+	m_drivetrain = drivetrain;
+}
+
+Drivetrain::DistancePIDWrapper::~DistancePIDWrapper() {
+}
+
+double Drivetrain::DistancePIDWrapper::PIDGet () {
+	return(m_drivetrain->getLeftEncoder());
+}
+
+void Drivetrain::DistancePIDWrapper::PIDWrite(float output) {
+	SmartDashboard::PutNumber("* Drive PID Write", output);
+	m_drivetrain->setSpeed(output);
+}
+
+// AnglePIDWrapper Functions
+
+Drivetrain::AnglePIDWrapper::AnglePIDWrapper(Drivetrain* drivetrain) {
+	m_drivetrain = drivetrain;
+}
+
+Drivetrain::AnglePIDWrapper::~AnglePIDWrapper() {
+}
+
+void Drivetrain::AnglePIDWrapper::PIDWrite(float output) {
+	SmartDashboard::PutNumber("Turn PID Output", output);
+	m_drivetrain->setTurn(output);
+}
+
+double Drivetrain::AnglePIDWrapper::PIDGet() {
+	return m_drivetrain->getAngle();
+}
+
 // Drivetrain Functions
 
 void Drivetrain::InitTeleop()
@@ -83,7 +123,6 @@ void Drivetrain::InitTeleop()
 	m_rDriveR.SetControlMode(CANTalon::ControlMode::kPercentVbus);
 	m_rDriveR.Set(0);
 }
-
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
 	m_drive.SetSafetyEnabled(true);
@@ -98,7 +137,6 @@ void Drivetrain::startMP() {
 	m_rDriveR.SetControlMode(CANTalon::ControlMode::kFollower);
 	m_rDriveR.Set(TALON_DRIVE_LR);
 	*/
-
 	m_MotionProfile.Start();
 
 }
@@ -125,6 +163,18 @@ double Drivetrain::getLeftEncoder() {
 
 double Drivetrain::getRightEncoder() {
 	return m_rDriveF.GetPosition();
+}
+
+void Drivetrain::setSpeed(double speed) {
+	ArcadeDrive(speed, m_turn);
+}
+
+void Drivetrain::setTurn(double turn) {
+	ArcadeDrive(m_speed, turn);
+}
+
+double Drivetrain::getAngle() {
+	return m_gyro.GetAngle();
 }
 
 Drivetrain::~Drivetrain() {
