@@ -14,7 +14,7 @@ private:
 	CANTalon* m_CANmotor1;
 	CANTalon* m_CANmotor2;
 
-	AHRS *ahrs;
+	AHRS *m_gyro;
 
 	PowerDistributionPanel* m_pdp;
 
@@ -35,11 +35,13 @@ public:
 
 		m_CANmotor1 = new CANTalon(1);
 		m_CANmotor2 = new CANTalon(2);
-		//m_motor1->SetControlMode(CANSpeedController::kSpeed);
+
+		m_CANmotor1->SetFeedbackDevice(CANTalon::QuadEncoder);
+		m_CANmotor1->ConfigEncoderCodesPerRev(1024);
 
 		m_pdp = new PowerDistributionPanel(0);
 
-		ahrs = new AHRS(I2C::Port::kMXP);
+		m_gyro = new AHRS(I2C::Port::kMXP);
 
 		AnalogInput *ai = new AnalogInput(0);
 		m_pot = new AnalogPotentiometer(ai, 360, 0);
@@ -79,13 +81,15 @@ public:
 		double slider2 = SmartDashboard::GetNumber("DB/Slider 2", 0.0);
 		double slider3 = SmartDashboard::GetNumber("DB/Slider 3", 0.0);
 
-		m_CANmotor1->Set(slider0);
+		//m_CANmotor1->Set(slider0);
+		m_CANmotor1->Set(speed);
 		m_CANmotor2->Set(slider1);
 		m_PWMmotor0->Set(slider2);
 		m_PWMmotor1->Set(slider3);
 
 
-		SmartDashboard::PutNumber("Gyro", ahrs->GetYaw());
+		SmartDashboard::PutNumber("CAN1_Encoder", m_CANmotor1->GetPosition());
+		SmartDashboard::PutNumber("Gyro", m_gyro->GetYaw());
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
