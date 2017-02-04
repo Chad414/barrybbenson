@@ -1,7 +1,6 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include <CANTalon.h>
-#include "PIDshooter.h"
 
 bool continuous;
 bool shot;
@@ -33,6 +32,8 @@ private:
 	
 	Timer * m_shooterTime;
 
+	SmartDashboard * m_dashboard;
+
 	double speed;
 	//int timesPressed;
 	bool previousAButton;
@@ -42,6 +43,7 @@ public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
+		m_shooter1 = new CANTalon(13);
 
 		m_shooter1->SetFeedbackDevice( CANTalon::CtreMagEncoder_Relative );
 
@@ -50,6 +52,8 @@ public:
 		m_shooterTime = new Timer();
 
 		m_pdp = new PowerDistributionPanel( 0 );
+
+		m_dashboard = new SmartDashboard;
 	}
 	void RobotInit() {
 		}
@@ -88,32 +92,32 @@ public:
 			if (m_driver->ButtonX() ) {
 						shot = true;
 						shooting = true;
-						setpoint = 2000; // placeholder value
+						setpoint = 300; // placeholder value
 			}
 			else if (m_driver->ButtonA() ) {
 						shot = true;
 						shooting = true;
-						setpoint = -2000; //placeholder value
+						setpoint = -300; //placeholder value
 			}
 		if ( shot == true )
 		{
-			m_shooterPID->Enable();
-			m_shooterPID->SetSetpoint( setpoint );
+			m_shooter1->Enable();
+			m_shooter1->SetSetpoint( setpoint );
 
 			while ( shooting == true )
 				{
 
-					if ( m_shooterPID->GetError() > 1000 )
+					if ( m_shooter1->GetSpeed() > setpoint+5000 ) //placeholder values
 						{
-							m_shooterPID->SetPID( 5, 1, 2 );
+							m_shooter1->SetPID( 5, 1, 2 );
 						}
-					else if ( m_shooterPID->GetError() > 500 && m_shooterPID->GetError() < 1000 )
+					else if ( m_shooter1->GetSpeed() > setpoint+2500 && m_shooter1->GetSpeed() < setpoint+5000 )
 						{
-							m_shooterPID->SetPID( 3, 0, 1 );
+							m_shooter1->SetPID( 3, 0, 1 );
 						}
 					else
 						{
-							m_shooterPID->SetPID( 1, 0, 0 );
+							m_shooter1->SetPID( 1, 0, 0 );
 						}
 
 					if ( m_driver->ButtonX() )
@@ -121,7 +125,11 @@ public:
 							shooting = false;
 						}
 				}
-					m_shooterPID->SetSetpoint( 0 );
+					m_shooter1->SetSetpoint( 0 );
+
+					m_dashboard->PutNumber( "CANTalon Speed", m_shooter1->GetSpeed() );
+
+
 		}
 	}
 		
