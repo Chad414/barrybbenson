@@ -6,7 +6,7 @@
  */
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
-#include "CANTalon.h"
+#include <CANTalon.h>
 #include "Solenoid.h"
 
 #ifndef SRC_INTAKE_H_
