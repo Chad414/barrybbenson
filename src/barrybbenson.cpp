@@ -112,13 +112,16 @@ public:
 	}
 
 	void TeleopPeriodic() {
-	 TeleopShoot();
+	 //TeleopShoot();
+
+		m_shooter1->Set(0.1);
 
 	 previousAButton= m_driver->ButtonA();
 	 previousXButton= m_driver->ButtonX();
 	}
+};
 
-	void TeleopShoot() {
+/*	void TeleopShoot() {
 
 		if (m_driver->ButtonX() && (previousXButton == false) && speed > 0.0) {
 			speed -= 0.05;
@@ -136,7 +139,7 @@ public:
 
 
 
-		/*
+
 		if ((fabs(m_driver->AxisLY())) > 0.2) {
 			m_shooter1->Set(m_driver->AxisLY());
 		}
@@ -145,7 +148,7 @@ public:
 		}
 		//m_shooter1->Set(0.2);
 		 *
-		 */
+
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
@@ -156,4 +159,4 @@ public:
 
 };
 
-START_ROBOT_CLASS(barrybbenson)
+START_ROBOT_CLASS(barrybbenson)*/
