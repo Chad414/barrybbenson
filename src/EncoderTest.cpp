@@ -16,6 +16,7 @@ EncoderTest::EncoderTest()
 	m_shooter.SetSensorDirection(false);
 
 	m_shooter.SetPID(SHOOTER_P, SHOOTER_I, SHOOTER_D);
+	m_shooter.SetControlMode(CANTalon::kSpeed);
 	m_shooter.SetIzone(4096/5);
 }
 
@@ -50,6 +51,15 @@ void EncoderTest::SetPIDPoint(double setpoint) {
 
 double EncoderTest::GetShooterSetpoint() {
 	return shooterSetpoint;
+}
+
+bool EncoderTest::ShooterAtSetpoint() {
+	if ((fabs(GetShooterSetpoint()) - fabs(GetRate())) < 15) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 /*

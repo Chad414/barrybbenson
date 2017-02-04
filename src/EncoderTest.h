@@ -28,6 +28,7 @@ public:
 	double EncoderPIDGet();
 	double EncoderGetPIDOutput();
 
+	bool ShooterAtSetpoint();
 	void SetPIDPoint(double setpoint);
 	double GetShooterSetpoint();
 
