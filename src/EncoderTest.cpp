@@ -10,7 +10,7 @@
 
 
 EncoderTest::EncoderTest()
-: m_shooter(13)
+	: m_shooter(13)
 {
 	m_shooter.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 	m_shooter.SetSensorDirection(false);
@@ -32,6 +32,16 @@ void EncoderTest::Set(double value) {
 	shooterValue = value;
 }
 
+void EncoderTest::EncoderPIDWrite(double output) {
+	m_shooter.PIDWrite(output);
+
+	shooterPIDOutput = output;
+}
+
+double EncoderTest::EncoderGetPIDOutput() {
+	return shooterPIDOutput;
+}
+
 void EncoderTest::SetPIDPoint(double setpoint) {
 	m_shooter.SetSetpoint(setpoint);
 
@@ -42,12 +52,19 @@ double EncoderTest::GetShooterSetpoint() {
 	return shooterSetpoint;
 }
 
+/*
+ * Enable/Disable
+ */
 void EncoderTest::EnableShoot() {
 	m_shooter.Enable();
 }
 
 void EncoderTest::DisableShoot() {
 	m_shooter.Disable();
+}
+
+bool EncoderTest::ShooterIsEnabled() {
+	return m_shooter.IsEnabled();
 }
 
 EncoderTest::~EncoderTest() {
