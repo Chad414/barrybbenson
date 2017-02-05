@@ -9,10 +9,15 @@
 
 Drivetrain::Drivetrain()
 	: m_lDriveF(TALON_DRIVE_LF),
+	m_lDriveM(TALON_DRIVE_LM),
 	m_lDriveR(TALON_DRIVE_LR),
 	m_rDriveF(TALON_DRIVE_RF),
+	m_rDriveM(TALON_DRIVE_RM),
 	m_rDriveR(TALON_DRIVE_RR),
-	m_drive(&m_lDriveF, &m_lDriveR, &m_rDriveF, &m_rDriveR),
+	m_driveWrapperL(&m_lDriveF, &m_lDriveM),
+	m_driveWrapperR(&m_rDriveF, &m_rDriveM),
+	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
+	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_motionProfileController(
@@ -24,23 +29,112 @@ Drivetrain::Drivetrain()
 			0.0,
 			&m_rDriveR,
 			0,
-			18)
+			18),
+	m_distancePIDWrapper(this),
+	m_anglePIDWrapper(this),
+	m_distancePID(DISTANCE_SHIFTL_P, DISTANCE_SHIFTL_I, DISTANCE_SHIFTL_D, m_distancePIDWrapper, m_distancePIDWrapper),
+	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, m_anglePIDWrapper, m_anglePIDWrapper)
 {
+
 	m_turn = 0;
 	m_speed = 0;
 
 	m_rDriveR.SetFeedbackDevice(CANTalon::QuadEncoder);
-	m_rDriveR.SetSensorDirection(false);
+	m_rDriveR.SetSensorDirection(true);
+
+	m_lDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
+	m_lDriveF.SetSensorDirection(true);
+	m_rDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
+	m_rDriveF.SetSensorDirection(true);
 
 	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
 	m_drive.SetSafetyEnabled(false);
 }
 
+
+// DriveWrapper Functions
+
+Drivetrain::DriveWrapper::DriveWrapper(SpeedController* talon1, SpeedController* talon2) {
+	m_drive1 = talon1;
+	m_drive2 = talon2;
+}
+
 void Drivetrain::LogValues()
 {
 	m_motionProfileController.LogValues();
 }
+
+
+void Drivetrain::DriveWrapper::Set(double speed) {
+	m_drive1->Set(speed);
+	m_drive2->Set(speed);
+}
+
+double Drivetrain::DriveWrapper::Get() const {
+	return m_drive1->Get();
+}
+
+void Drivetrain::DriveWrapper::PIDWrite(double output) {
+	Set(output);
+}
+
+void Drivetrain::DriveWrapper::SetInverted(bool isInverted) {
+	m_drive1->SetInverted(isInverted);
+	m_drive2->SetInverted(isInverted);
+}
+
+bool Drivetrain::DriveWrapper::GetInverted() const {
+	return m_drive1->GetInverted();
+}
+
+void Drivetrain::DriveWrapper::Disable() {
+	m_drive1->Disable();
+	m_drive2->Disable();
+}
+
+void Drivetrain::DriveWrapper::StopMotor() {
+	m_drive1->StopMotor();
+	m_drive2->StopMotor();
+}
+
+// DistancePIDWrapper Functions
+
+Drivetrain::DistancePIDWrapper::DistancePIDWrapper(Drivetrain* drivetrain) {
+	m_drivetrain = drivetrain;
+}
+
+Drivetrain::DistancePIDWrapper::~DistancePIDWrapper() {
+}
+
+double Drivetrain::DistancePIDWrapper::PIDGet () {
+	return(m_drivetrain->getLeftEncoder());
+}
+
+void Drivetrain::DistancePIDWrapper::PIDWrite(float output) {
+	SmartDashboard::PutNumber("* Drive PID Write", output);
+	m_drivetrain->setSpeed(output);
+}
+
+// AnglePIDWrapper Functions
+
+Drivetrain::AnglePIDWrapper::AnglePIDWrapper(Drivetrain* drivetrain) {
+	m_drivetrain = drivetrain;
+}
+
+Drivetrain::AnglePIDWrapper::~AnglePIDWrapper() {
+}
+
+void Drivetrain::AnglePIDWrapper::PIDWrite(float output) {
+	SmartDashboard::PutNumber("Turn PID Output", output);
+	m_drivetrain->setTurn(output);
+}
+
+double Drivetrain::AnglePIDWrapper::PIDGet() {
+	return m_drivetrain->getAngle();
+}
+
+// Drivetrain Functions
 
 void Drivetrain::InitTeleop()
 {
@@ -65,7 +159,36 @@ void Drivetrain::resetMP() {
 	m_motionProfileController.Disable();
 }
 
-void Drivetrain::controlMP() {
+void Drivetrain::controlMP() { // Calls Control() from MotionProfile
+	m_MotionProfile.Control();
+}
+
+float Drivetrain::getYaw(){ // Get Gyro Yaw
+	return m_gyro.GetYaw();
+}
+
+void Drivetrain::resetGyro() {
+	m_gyro.Reset();
+}
+
+double Drivetrain::getLeftEncoder() {
+	return m_lDriveF.GetPosition();
+}
+
+double Drivetrain::getRightEncoder() {
+	return m_rDriveF.GetPosition();
+}
+
+void Drivetrain::setSpeed(double speed) {
+	ArcadeDrive(speed, m_turn);
+}
+
+void Drivetrain::setTurn(double turn) {
+	ArcadeDrive(m_speed, turn);
+}
+
+double Drivetrain::getAngle() {
+	return m_gyro.GetAngle();
 }
 
 Drivetrain::~Drivetrain() {

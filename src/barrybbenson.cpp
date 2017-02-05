@@ -37,13 +37,13 @@ public:
 		m_pdp = new PowerDistributionPanel(0);
 	}
 	void RobotInit() {
-		}
+	}
 
 
 	void AutonomousInit() {
 		cout << "Autonomous Init" << endl;
 		m_drivetrain.resetMP();
-		m_drivetrain.startMP();
+		m_drivetrain.startMP(); // We have to call Start before Control
 	}
 
 	void AutonomousPeriodic() {
@@ -55,6 +55,7 @@ public:
 		previousAButton = false;
 		previousXButton = false;
 		m_drivetrain.resetMP();
+		m_drivetrain.resetGyro();
 	}
 
 	void DisabledInit() {
@@ -64,7 +65,9 @@ public:
 
 	void TeleopPeriodic() {
 		TeleopDrive();
-		TeleopShoot();
+		//TeleopShoot();
+
+		SmartDashboard::PutNumber("Gyro Yaw", m_drivetrain.getYaw());
 
 		previousAButton = m_driver->ButtonA();
 		previousXButton = m_driver->ButtonX();
@@ -72,8 +75,40 @@ public:
 
 	void TeleopDrive() {
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
-					m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), m_driver->AxisRX());
+			m_drivetrain.ArcadeDrive(m_driver->AxisLY(), -m_driver->AxisRX());
+		}
+
+		SmartDashboard::PutBoolean("Left Drive Encoder", m_drivetrain.getLeftEncoder());
+		SmartDashboard::PutBoolean("Left Right Encoder", m_drivetrain.getRightEncoder());
+
+		/*
+		 * Go To Angle Code
+		if (m_driver->ButtonY()) {
+			if (m_drivetrain.getYaw() > 8) {
+				m_drivetrain.ArcadeDrive(0, 0.5);
+			}
+			if (m_drivetrain.getYaw() < -8) {
+				m_drivetrain.ArcadeDrive(0, -0.5);
+			}
+			if (m_driver->ButtonX()) {
+				if (m_drivetrain.getYaw() < 88) {
+					m_drivetrain.ArcadeDrive(0, 0.5);
 				}
+				if (m_drivetrain.getYaw() > 92) {
+					m_drivetrain.ArcadeDrive(0, -0.5);
+				}
+			}
+			if (m_driver->ButtonB()) {
+				if (m_drivetrain.getYaw() < -88) {
+					m_drivetrain.ArcadeDrive(0, 0.5);
+				}
+				if (m_drivetrain.getYaw() > -92) {
+					m_drivetrain.ArcadeDrive(0, -0.5);
+				}
+			}
+		}
+		*/
+
 	}
 
 	void TeleopShoot() {
