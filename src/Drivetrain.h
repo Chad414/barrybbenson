@@ -16,12 +16,12 @@
 
 #define USE_TEST_BENCH
 
-#define TALON_DRIVE_LF 6
-#define TALON_DRIVE_LR 5
-#define TALON_DRIVE_RF 1
-#define TALON_DRIVE_RR 2
-#define TALON_DRIVE_LM 4
-#define TALON_DRIVE_RM 3
+#define TALON_DRIVE_LF 7
+#define TALON_DRIVE_LM 5
+#define TALON_DRIVE_LR 6
+#define TALON_DRIVE_RF 2
+#define TALON_DRIVE_RM 4
+#define TALON_DRIVE_RR 3
 
 /*
 #ifndef USE_TEST_BENCH

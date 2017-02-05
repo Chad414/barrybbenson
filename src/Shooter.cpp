@@ -12,6 +12,7 @@ namespace Shooter {
 Shooter::Shooter()
 	: m_shooterL(SHOOTER_LEFT_TALON),
 	  m_shooterR(SHOOTER_RIGHT_TALON),
+	  m_feeder(FEEDER_TALON),
 	  m_paddle(SHOOTER_PADDLE_TALON)
 {
 	// TODO Auto-generated constructor stub
@@ -52,5 +53,16 @@ double Shooter::getRightShoot() {
 	return m_shooterR.GetPosition();
 }
 
+void Shooter::runFeeder() {
+	m_feeder.Set(-1.0);
+}
+
+void Shooter::stopFeeder() {
+	m_feeder.Set(0);
+}
+
+double Shooter::getFeeder() {
+	return m_feeder.Get();
+}
 
 } /* namespace Shooter */

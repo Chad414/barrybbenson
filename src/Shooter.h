@@ -11,8 +11,10 @@
 #include "WPILib.h"
 #include "CANTalon.h"
 
-#define SHOOTER_LEFT_TALON 7
-#define SHOOTER_RIGHT_TALON 12
+#define SHOOTER_LEFT_TALON 11
+#define SHOOTER_RIGHT_TALON 10
+
+#define FEEDER_TALON 9
 
 #define SHOOTER_PADDLE_TALON 5
 
@@ -22,6 +24,8 @@ class Shooter {
 private:
 	CANTalon m_shooterL;
 	CANTalon m_shooterR;
+
+	CANTalon m_feeder;
 
 	CANTalon m_paddle;
 
@@ -39,6 +43,10 @@ public:
 
 	double getLeftShoot();
 	double getRightShoot();
+
+	void runFeeder();
+	void stopFeeder();
+	double getFeeder();
 
 };
 

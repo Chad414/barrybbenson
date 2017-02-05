@@ -83,6 +83,7 @@ private:
 public:
 
 	double shooterSpeed = 0.4;
+	bool isFeederOn = false;
 
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
@@ -107,20 +108,30 @@ public:
 	}
 
 	void TeleopShoot() {
-		if (m_driver->ButtonRT()) {
+		if (m_operator->ButtonRT()) {
 			m_shoot.Shooter::RunShoot(shooterSpeed);
 		}
-		if (m_driver->ButtonPressedY()) {
+		if (m_operator->ButtonPressedY()) {
 			shooterSpeed += 0.025;
 			m_shoot.Shooter::RunShoot(shooterSpeed);
 		}
-		if (m_driver->ButtonPressedB()) {
+		if (m_operator->ButtonPressedB()) {
 			shooterSpeed -= 0.025;
 			m_shoot.Shooter::RunShoot(shooterSpeed);
 		}
-		if (m_driver->ButtonPressedX()) {
+		if (m_operator->ButtonPressedX()) {
 			shooterSpeed = 0;
 			m_shoot.Shooter::RunShoot(shooterSpeed);
+		}
+
+		if (m_operator->ButtonPressedA()) {
+			if (isFeederOn) {
+				m_shoot.stopFeeder();
+				isFeederOn = false;
+			} else {
+				m_shoot.runFeeder();
+				isFeederOn = true;
+			}
 		}
 
 		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
