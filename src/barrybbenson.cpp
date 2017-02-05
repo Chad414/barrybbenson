@@ -1,7 +1,8 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include "Drivetrain.h"
-#include "MotionProfile.h"
+
+using namespace std;
 
 class barrybbenson: public HotBot {
 private:
@@ -40,18 +41,25 @@ public:
 
 
 	void AutonomousInit() {
+		cout << "Autonomous Init" << endl;
 		m_drivetrain.resetMP();
-		m_drivetrain.startMP(); // We have to call Start before Control
+		m_drivetrain.startMP();
 	}
 
 	void AutonomousPeriodic() {
-		m_drivetrain.controlMP();
+		m_drivetrain.LogValues();
 	}
 
 	void TeleopInit() {
 		speed = 0;
 		previousAButton = false;
 		previousXButton = false;
+		m_drivetrain.resetMP();
+	}
+
+	void DisabledInit() {
+		cout << "Disabled Init" << endl;
+		m_drivetrain.resetMP();
 	}
 
 	void TeleopPeriodic() {

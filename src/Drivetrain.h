@@ -11,7 +11,8 @@
 #include "WPILib.h"
 #include <cmath>
 #include "CANTalon.h"
-#include "MotionProfile.h"
+#include "MPController.h"
+#include "TrajectoryPoints.h"
 
 #define USE_TEST_BENCH
 
@@ -42,6 +43,8 @@ public:
 	void controlMP();
 	virtual ~Drivetrain();
 
+	void LogValues();
+
 private:
 	CANTalon m_lDriveF;
 	CANTalon m_lDriveR;
@@ -55,7 +58,7 @@ private:
 
 
 
-	MotionProfile m_MotionProfile;
+	MPController m_motionProfileController;
 
 	Timer m_timer;
 
