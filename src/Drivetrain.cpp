@@ -29,11 +29,13 @@ Drivetrain::Drivetrain()
 			0.0,
 			&m_rDriveR,
 			0,
-			18),
+			9)
+/*
 	m_distancePIDWrapper(this),
 	m_anglePIDWrapper(this),
 	m_distancePID(DISTANCE_SHIFTL_P, DISTANCE_SHIFTL_I, DISTANCE_SHIFTL_D, m_distancePIDWrapper, m_distancePIDWrapper),
 	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, m_anglePIDWrapper, m_anglePIDWrapper)
+	*/
 {
 
 	m_turn = 0;
@@ -157,10 +159,6 @@ void Drivetrain::startMP() {
 
 void Drivetrain::resetMP() {
 	m_motionProfileController.Disable();
-}
-
-void Drivetrain::controlMP() { // Calls Control() from MotionProfile
-	m_MotionProfile.Control();
 }
 
 float Drivetrain::getYaw(){ // Get Gyro Yaw

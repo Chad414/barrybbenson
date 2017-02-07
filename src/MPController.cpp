@@ -115,11 +115,11 @@ void MPController::Periodic()
 		percentage = (mp_trajectories[(int)mp_currentPoint][1]) / mp_maximumVelocity;
 		m_talon->Set(percentage);
 
-		/*
+
 		std::cout << "Motor Set: " << percentage << endl;
 		std::cout << "Trajectory Point Velocity: " << mp_trajectories[(int)mp_currentPoint][1] << endl;
 		std::cout << "Motor Mode: MotionProfiling" << endl;
-		*/
+
 
 		mp_currentPoint++;
 		break;
@@ -158,7 +158,10 @@ void MPController::Periodic()
 void MPController::LogValues()
 {
 	std::lock_guard<priority_recursive_mutex> sync(m_mutex);
-	SmartDashboard::PutNumber("Encoder Position", m_talon->GetPosition());
-	SmartDashboard::PutNumber("Encoder Speed", m_talon->GetSpeed());
-	SmartDashboard::PutNumber("Encposition", m_talon->GetEncPosition());
+
+	double delta = m_talon->GetEncPosition() - mp_previousPosition;
+	mp_previousPosition = m_talon->GetEncPosition();
+
+	SmartDashboard::PutNumber("Encoder Position", m_talon->GetEncPosition());
+	SmartDashboard::PutNumber("Encoder Speed", delta);
 }

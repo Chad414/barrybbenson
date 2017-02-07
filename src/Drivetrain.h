@@ -24,15 +24,13 @@
 #define TALON_DRIVE_LM 4
 #define TALON_DRIVE_RM 3
 
-/*
-#ifndef USE_TEST_BENCH
-#define TALON_DRIVE_RR 20
-#else
+
+#ifdef USE_TEST_BENCH
 #define TALON_DRIVE_RR 1
 #endif
 
 #define HOT_BENCH_VICTOR 0
-*/
+
 
 #define DRIVE_ENCODER_LF 4
 #define DRIVE_ENCODER_LR 3
@@ -60,7 +58,6 @@ public:
 	void ArcadeDrive(double speed, double angle);
 	void startMP();
 	void resetMP();
-	void controlMP();
 	float getYaw();
 	void resetGyro();
 	double getLeftEncoder();
@@ -129,13 +126,13 @@ private:
 
 
 
-	MotionProfile m_motionProfileController
+	MPController m_motionProfileController;
 
-	DistancePIDWrapper m_distancePIDWrapper;
-	AnglePIDWrapper m_anglePIDWrapper;
+	//DistancePIDWrapper m_distancePIDWrapper;
+	//AnglePIDWrapper m_anglePIDWrapper;
 
-	PIDController m_distancePID;
-	PIDController m_anglePID;
+	//PIDController m_distancePID;
+	//PIDController m_anglePID;
 
 	Timer m_timer;
 

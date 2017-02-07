@@ -45,7 +45,7 @@ private:
 
 	double mp_currentPoint;
 
-	double mp_previousPosition;
+	double mp_previousPosition = 0;
 
 	mutable priority_recursive_mutex m_mutex;
 	mutable priority_recursive_mutex m_secondaryMutex;
