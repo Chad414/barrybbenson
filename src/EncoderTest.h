@@ -25,14 +25,9 @@ public:
 	double GetRate();
 	void Set(double value);
 
-	void EnablePID();
-	void DisablePID();
-	bool OnTarget();
 private:
 	CANTalon m_shooter;
 	double shooterValue;
-
-	PIDController m_pid;
 };
 
 #endif /* SRC_ENCODERTEST_H_ */
