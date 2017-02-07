@@ -1,6 +1,12 @@
 eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/CWD/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/CWD/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/CWD/value=C\:\\Users\\Generic Male 32\\git\\barrybbenson\\Debug
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PATH/delimiter=;
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PATH/operation=replace
-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PATH/value=${MINGW_HOME}\\bin;${MSYS_HOME}\\bin;C\:/Program Files/Java/jre1.8.0_121/bin/server;C\:/Program Files/Java/jre1.8.0_121/bin;C\:/Program Files/Java/jre1.8.0_121/lib/amd64;C\:\\ProgramData\\Oracle\\Java\\javapath;C\:\\Windows\\system32;C\:\\Windows;C\:\\Windows\\System32\\Wbem;C\:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C\:\\MinGW\\bin;C\:\\MinGW\\include;C\:\\MinGW\\lib;C\:\\frc\\bin;C\:\\Users\\ROBO-PGM06\\AppData\\Local\\Microsoft\\WindowsApps;;C\:\\Users\\ROBO-PGM06\\Desktop\\eclipse;C\:\\Users\\ROBO-PGM06\\wpilib\\cpp\\current\\include
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PATH/value=C\:/Program Files/Java/jre1.8.0_121/bin/server;C\:/Program Files/Java/jre1.8.0_121/bin;C\:/Program Files/Java/jre1.8.0_121/lib/amd64;C\:\\ProgramData\\Oracle\\Java\\javapath;C\:\\WINDOWS\\system32;C\:\\WINDOWS;C\:\\WINDOWS\\System32\\Wbem;C\:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C\:\\Program Files\\TortoiseGit\\bin;C\:\\Program Files\\Git\\cmd;C\:\\MinGW\\bin;C\:\\MinGW\\lib;C\:\\MinGW\\include;C\:\\frc\\bin;C\:\\Users\\Generic Male 32\\AppData\\Local\\Microsoft\\WindowsApps;C\:\\Users\\Generic Male 32\\Downloads\\eclipse-cpp-mars-2-win32-x86_64\\eclipse
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PWD/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PWD/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/PWD/value=C\:\\Users\\Generic Male 32\\git\\barrybbenson\\Debug
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/append=true
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1104744751/appendContributed=true
