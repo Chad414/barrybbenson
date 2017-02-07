@@ -15,19 +15,31 @@
 #define TALON_GEAR_ARM 8
 #define TALON_GEAR_ROLL 12
 
-
+#define TALON_GEAR_P 0.0
+#define TALON_GEAR_I 0.0
+#define TALON_GEAR_D 0.0
+#define TALON_GEAR_F 0.0
 
 class Gear {
 private:
 	CANTalon m_gearArm;
 	CANTalon m_gearRoll;
 
+	double gearCommandedSpeed;
+	double gearRollerCommandedSpeed;
 public:
 	Gear();
 
 	double GetGearArmPosition();
 	void ZeroGearArmPosition();
-	void SetGearArmPosition(double speed);
+
+	bool SetGearMode(bool position); //true is pid mode; false is joystick control
+
+	void SetGearArmPosition(double gear_speed); //pid mode, accepts desired position; joystick mode, is % to talon
+	double GetGearCommandedSpeed(); //pid mode, returns desired position; joystick mode, returns percent value
+
+	void SetGearRollerSpeed(double roller_speed);
+	double GetGearRollerCommandedSpeed();
 
 	virtual ~Gear();
 };
