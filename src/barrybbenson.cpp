@@ -12,9 +12,11 @@ private:
 
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
+
 	PowerDistributionPanel* m_pdp;
 
 	double speed;
+	//int timesPressed;
 	bool previousAButton;
 	bool previousXButton;
 
@@ -78,8 +80,28 @@ public:
 		TeleopPID();
 		previousXButton = m_driver->ButtonX();
 
-		// Check for a button
+/*
+		if (m_shooter.ShooterAtSetpoint() == false) {
+			m_shooter.SetPIDPoint(200);
+			m_shooter.EnableShoot();
+		}
+		else {
+			m_shooter.DisableShoot();
+		}
+*/
+		SmartDashboard::PutNumber("CAN Shooter Setpoint", m_shooter.GetShooterSetpoint());
+		SmartDashboard::PutBoolean("CAN At Setpoint", m_shooter.ShooterAtSetpoint());
+		SmartDashboard::PutBoolean("CAN Shooter Enabled", m_shooter.ShooterIsEnabled());
 
+		SmartDashboard::PutNumber("CAN Encoder Value", m_shooter.Get());
+		SmartDashboard::PutNumber("CAN Encoder Rate", m_shooter.GetRate());
+
+		SmartDashboard::PutNumber("CAN PID Setpoint", m_shooter.GetShooterSetpoint());
+
+	}
+};
+
+/*	void TeleopShoot() {
 
 		if (m_driver->ButtonX())
 		{
@@ -119,7 +141,14 @@ public:
 	            SmartDashboard::PutNumber("error_rpm", error_rpm);
 	      }
 
+		SmartDashboard::PutNumber("speed", speed);
+		SmartDashboard::PutBoolean("A Button", previousAButton);
+		SmartDashboard::PutBoolean("X Button", previousXButton);
+	}
+
+	void TestPeriodic() {
+	}
+
 };
-
-
+*/
 START_ROBOT_CLASS(barrybbenson)
