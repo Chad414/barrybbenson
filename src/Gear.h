@@ -12,10 +12,10 @@
 #include "WPILib.h"
 #include "CANTalon.h"
 
-#define TALON_GEAR_ARM 8
+#define TALON_GEAR_ARM 1 //8
 #define TALON_GEAR_ROLL 12
 
-#define TALON_GEAR_P 0.0
+#define TALON_GEAR_P 0.3
 #define TALON_GEAR_I 0.0
 #define TALON_GEAR_D 0.0
 #define TALON_GEAR_F 0.0
@@ -27,6 +27,8 @@ private:
 
 	double gearCommandedSpeed;
 	double gearRollerCommandedSpeed;
+
+	bool gearMode;
 public:
 	Gear();
 
@@ -34,10 +36,12 @@ public:
 	void ZeroGearArmPosition();
 
 	bool SetGearMode(bool position); //true is pid mode; false is joystick control
+	bool GetGearMode();
 
 	void SetGearArmPosition(double gear_speed); //pid mode, accepts desired position; joystick mode, is % to talon
 	double GetGearCommandedSpeed(); //pid mode, returns desired position; joystick mode, returns percent value
 
+	double GetGearSetpoint();
 	void SetGearRollerSpeed(double roller_speed);
 	double GetGearRollerCommandedSpeed();
 

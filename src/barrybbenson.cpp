@@ -24,11 +24,6 @@ public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
-
-		m_shooter1 = new Victor(0);
-		m_shooter2 = new Victor(1);
-
-		m_pdp = new PowerDistributionPanel(0);
 	}
 	void RobotInit() {
 	}
@@ -40,44 +35,37 @@ public:
 	}
 
 	void AutonomousPeriodic() {
-		/*
-		 *
-		 */
 	}
 
 	void TeleopInit() {
 	}
 
 	void TeleopPeriodic() {
+		TeleopGear();
 	}
 
-	void TeleopShoot() {
+	void TeleopGear() {
+		if (fabs(m_driver->AxisLY()) > 0.2) {
+			m_gear.SetGearMode(false);
+			m_gear.SetGearArmPosition(m_driver->AxisLY());
+		}
+		else if (m_driver->ButtonA()) {
+			m_gear.SetGearMode(true);
+			m_gear.SetGearArmPosition(10);
+		}
+		else if (m_driver->ButtonB()) {
+			m_gear.ZeroGearArmPosition();
+		}
+		else {
+			m_gear.SetGearArmPosition(0.0);
+		}
 
+		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
+		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
+		SmartDashboard::PutNumber("Gear Setpoint", m_gear.GetGearSetpoint());
 	}
 
 	void TestPeriodic() {
-	}
-
-	void PrintData() {
-		SmartDashboard::PutNumber("Gear Arm Position", m_gear.GetGearArmPosition());
-
-		/*
-		 * What to Print
-		 *
-		 * Shooter speed actual
-		 * Shooter speed commanded
-		 *
-		 * Drivetrain left encoder
-		 * Drivetrain right encoder
-		 * Drivetrain average encoder
-		 *
-		 * Gear arm encoder
-		 * Gear wrist encoder
-		 *
-		 * Motion profiling trajectory points
-		 *
-		 *
-		 */
 	}
 };
 

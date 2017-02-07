@@ -23,7 +23,7 @@ Gear::Gear()
 {
 	// TODO Auto-generated constructor stub
 	m_gearArm.SetClosedLoopOutputDirection(true);
-	m_gearArm.ConfigNominalOutputVoltage(0.0, 0.0);
+	m_gearArm.SetVoltageRampRate(0);
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
 }
 
@@ -44,15 +44,34 @@ bool Gear::SetGearMode(bool position) {
 		m_gearArm.SetControlMode(CANTalon::kPercentVbus);
 		return false;
 	}
+	gearMode = position;
+}
+
+bool Gear::GetGearMode() {
+	if (gearMode) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void Gear::SetGearArmPosition(double gear_speed) {
-	m_gearArm.Set(gear_speed);
+	if (GetGearMode() == true){
+		m_gearArm.Set((gear_speed)*4096);
+	}
+	else {
+		m_gearArm.Set(gear_speed);
+	}
 	gearCommandedSpeed = gear_speed;
 }
 
 double Gear::GetGearCommandedSpeed() {
 	return gearCommandedSpeed;
+}
+
+double Gear::GetGearSetpoint() {
+	return m_gearArm.GetSetpoint();
 }
 
 void Gear::SetGearRollerSpeed(double roller_speed) {
