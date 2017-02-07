@@ -24,7 +24,7 @@ public:
 	double GetRate(); //number of rotations
 	void Set(double value); //set value from 0 to 1.0 to talon directly
 
-	void EncoderPIDWrite(double output);
+	/*void EncoderPIDWrite(double output);
 	double EncoderPIDGet();
 	double EncoderGetPIDOutput();
 
@@ -34,13 +34,13 @@ public:
 
 	bool ShooterIsEnabled();
 	void EnableShoot();
-	void DisableShoot();
+	void DisableShoot();*/
 private:
 	CANTalon m_shooter;
 
-	double shooterValue;
+	/*double shooterValue;
 	double shooterSetpoint;
-	double shooterPIDOutput;
+	double shooterPIDOutput;*/
 };
 
 #endif /* SRC_ENCODERTEST_H_ */

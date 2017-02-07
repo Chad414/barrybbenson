@@ -33,6 +33,7 @@ void EncoderTest::Set(double value) {
 	shooterValue = value;
 }
 
+/*
 void EncoderTest::EncoderPIDWrite(double output) {
 	m_shooter.PIDWrite(output);
 
@@ -60,7 +61,8 @@ bool EncoderTest::ShooterAtSetpoint() {
 	else {
 		return false;
 	}
-}
+
+}*/
 
 /*
  * Enable/Disable
