@@ -60,7 +60,6 @@ public:
 
 	void PrintData() {
 		SmartDashboard::PutNumber("Gear Arm Position", m_gear.GetGearArmPosition());
-		SmartDashboard::PutNumber("Gear Wrist Position", m_gear.GetGearWristPosition());
 
 		/*
 		 * What to Print

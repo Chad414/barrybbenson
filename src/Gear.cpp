@@ -9,23 +9,26 @@
 
 Gear::Gear()
 	: m_gearArm(TALON_GEAR_ARM),
-	  m_gearWrist(TALON_GEAR_WRIST),
-	  m_gearRoll(TALON_GEAR_ROLL),
-	  m_gearWristEncoder(GEAR_WRIST_ENCODER_L, GEAR_WRIST_ENCODER_R, true),
-	  m_gearArmEncoder(GEAR_ARM_ENCODER_L, GEAR_ARM_ENCODER_R, false)
+	  m_gearRoll(TALON_GEAR_ROLL)
 {
 	// TODO Auto-generated constructor stub
+	m_gearArm.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 }
 
 /*
  * Sensors
  */
-double Gear::GetGearWristPosition() {
-	return (m_gearWristEncoder.GetDistance());
-}
 
 double Gear::GetGearArmPosition() {
-	return (m_gearArmEncoder.GetDistance());
+	return (m_gearArm.GetPosition());
+}
+
+void Gear::ZeroGearArmPosition() {
+	m_gearArm.SetPosition(0.0);
+}
+
+void Gear::SetGearArmPosition(double speed) {
+	m_gearArm.Set(speed);
 }
 
 Gear::~Gear() {
