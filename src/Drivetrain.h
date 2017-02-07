@@ -15,7 +15,7 @@
 #include "TrajectoryPoints.h"
 #include "AHRS.h"
 
-#define USE_TEST_BENCH
+//#define USE_TEST_BENCH
 
 #define TALON_DRIVE_LF 6
 #define TALON_DRIVE_LR 5
@@ -65,6 +65,12 @@ public:
 	void setSpeed(double speed);
 	void setTurn(double angle);
 	double getAngle();
+
+	void setLeftDrive(double speed);
+	void setRightDrive(double speed);
+	double getLeftDrive();
+	double getRightDrive();
+
 	virtual ~Drivetrain();
 
 	void LogValues();

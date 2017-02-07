@@ -73,6 +73,19 @@ public:
 		previousXButton = m_driver->ButtonX();
 	}
 
+	void GyroDrive() {
+		while (m_driver->ButtonA()) {
+			if (m_drivetrain.getAngle() < 0.5 && m_drivetrain.getAngle() > -0.5) {
+				m_drivetrain.setLeftDrive(0.5);
+				m_drivetrain.setLeftDrive(0.5);
+			} else if (m_drivetrain.getAngle() > 0.5) {
+				m_drivetrain.setLeftDrive(m_drivetrain.getLeftDrive() * 0.1);
+			} else {
+				m_drivetrain.setRightDrive(m_drivetrain.getRightDrive() * 0.1);
+			}
+		}
+	}
+
 	void TeleopDrive() {
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(m_driver->AxisLY(), -m_driver->AxisRX());

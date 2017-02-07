@@ -189,5 +189,26 @@ double Drivetrain::getAngle() {
 	return m_gyro.GetAngle();
 }
 
+void Drivetrain::setLeftDrive(double speed) {
+	m_lDriveF.Set(speed);
+	m_lDriveM.Set(speed);
+	m_lDriveR.Set(speed);
+}
+
+void Drivetrain::setRightDrive(double speed) {
+	m_rDriveF.Set(speed);
+	m_rDriveM.Set(speed);
+	m_rDriveR.Set(speed);
+}
+
+double Drivetrain::getLeftDrive() {
+	return m_lDriveF.Get();
+}
+
+double Drivetrain::getRightDrive() {
+	return m_rDriveF.Get();
+}
+
+
 Drivetrain::~Drivetrain() {
 }
