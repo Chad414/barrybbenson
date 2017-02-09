@@ -54,7 +54,7 @@ double Shooter::getRightShoot() {
 }
 
 void Shooter::runFeeder() {
-	m_feeder.Set(-1.0);
+	m_feeder.Set(0.8); // -1.0
 }
 
 void Shooter::stopFeeder() {
