@@ -1,6 +1,7 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include "EncoderTest.h"
+#include "CANTalon.h"
 
 #define MOTOR_P 0.02
 #define MOTOR_I 0.0001
@@ -80,7 +81,7 @@ public:
 
 	void TeleopPeriodic() {
 		previousXButton = m_driver->ButtonX();
-
+		TeleopShoot();
 
 
 	}
