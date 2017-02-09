@@ -25,6 +25,9 @@ Gear::Gear()
 	m_gearArm.SetClosedLoopOutputDirection(true);
 	m_gearArm.SetVoltageRampRate(0);
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
+	m_gearArm.SetAllowableClosedLoopErr(0);
+	m_gearArm.ConfigEncoderCodesPerRev(256);
+	m_gearArm.SetFeedbackDevice(CANTalon::QuadEncoder);
 }
 
 double Gear::GetGearArmPosition() {
@@ -58,7 +61,8 @@ bool Gear::GetGearMode() {
 
 void Gear::SetGearArmPosition(double gear_speed) {
 	if (GetGearMode() == true){
-		m_gearArm.Set((gear_speed)*4096);
+		gear_speed = gear_speed*4096;
+		m_gearArm.Set(gear_speed);
 	}
 	else {
 		m_gearArm.Set(gear_speed);

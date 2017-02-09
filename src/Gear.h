@@ -15,7 +15,7 @@
 #define TALON_GEAR_ARM 1 //8
 #define TALON_GEAR_ROLL 12
 
-#define TALON_GEAR_P 0.3
+#define TALON_GEAR_P 0.555
 #define TALON_GEAR_I 0.0
 #define TALON_GEAR_D 0.0
 #define TALON_GEAR_F 0.0
@@ -40,6 +40,7 @@ public:
 
 	void SetGearArmPosition(double gear_speed); //pid mode, accepts desired position; joystick mode, is % to talon
 	double GetGearCommandedSpeed(); //pid mode, returns desired position; joystick mode, returns percent value
+
 
 	double GetGearSetpoint();
 	void SetGearRollerSpeed(double roller_speed);
