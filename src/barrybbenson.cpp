@@ -4,10 +4,13 @@
 #include "PIDShooter.h"
 
 bool continuous;
-bool shot;
 bool shooting;
-
-#define SETPOINT 300
+enum shot
+{
+	NO_POWER = 0,
+	LOW_POWER = 1,
+	HIGH_POWER = 2
+};
 
 class barrybbenson: public HotBot {
 private:
@@ -15,8 +18,6 @@ private:
 
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
-
-	XboxController * controller;
 
 	SmartDashboard * m_dashboard;
 
@@ -26,13 +27,12 @@ private:
 	PID_Position, PID_Speed,
 	PID_Error, PID_Setpoint, PID_SpeedGet;
 
+	int shotPower;
+
 public:
 	barrybbenson() {
-		m_driver = new HotJoystick(0);
-		m_operator = new HotJoystick(1);
-
-		controller = new XboxController(0);
-
+		m_driver = new HotJoystick(1);
+		m_operator = new HotJoystick(0);
 		m_pidShooter = new PIDShooter( SHOOTER_P, SHOOTER_I, SHOOTER_D );
 
 	}
@@ -51,6 +51,7 @@ public:
 
 	void TeleopInit() {
 		speedrpm = 0;
+		shotPower = NO_POWER;
 	}
 
 	void TeleopPeriodic() {
@@ -59,15 +60,38 @@ public:
 
 	void TeleopShoot()
 	{
-		if ( m_operator->ButtonPressedLT() == true )
+		if ( m_operator->ButtonPressedLT() == true && shotPower != LOW_POWER )
 		{
-			m_pidShooter->Enable();
-			m_pidShooter->SetSetpoint( SETPOINT );
+			shotPower = LOW_POWER;
+			shooting = true;
+		}
+		if ( m_operator->ButtonPressedRT() == true )
+		{
+			shooting = true;
+			shotPower = HIGH_POWER;
+		}
+		if ( shooting == true )
+		{
 
-			PID_P = m_pidShooter->GetP();
-			PID_I = m_pidShooter->GetI();
-			PID_D = m_pidShooter->GetD();
-			PID_F = m_pidShooter->GetF();
+			m_pidShooter->Enable();
+			switch (shotPower)
+			{
+			case LOW_POWER:
+			{
+				m_pidShooter->SetSetpoint( LOW_SETPOINT );
+				break;
+			}
+			case HIGH_POWER:
+			{
+				m_pidShooter->SetSetpoint( HI_SETPOINT );
+				break;
+			}
+
+			}
+			PID_P = m_pidShooter->GetShooterP();
+			PID_I = m_pidShooter->GetShooterI();
+			PID_D = m_pidShooter->GetShooterD();
+			PID_F = m_pidShooter->GetShooterF();
 			PID_Current = m_pidShooter->GetOutputCurrent();
 			PID_Position = m_pidShooter->GetPosition();
 			PID_Speed = m_pidShooter->GetSpeed();
@@ -75,15 +99,7 @@ public:
 
 			errorrpm = (PID_Error/4096.0)*600.0;
 
-			m_dashboard->PutNumber("PID_P", PID_P);
-			m_dashboard->PutNumber("PID_I", PID_I);
-			m_dashboard->PutNumber("PID_D", PID_D);
-			m_dashboard->PutNumber("PID_FF", PID_F);
-			m_dashboard->PutNumber("PID_Current", PID_Current);
-			m_dashboard->PutNumber("PID_Position", PID_Position);
-			m_dashboard->PutNumber("PID_Speed", PID_Speed);
-			m_dashboard->PutNumber("PID_Error", PID_Error);
-			m_dashboard->PutNumber("PID_Setpoint", PID_Setpoint);
+			m_pidShooter->OutputValues(m_dashboard);
 			m_dashboard->PutNumber("speed_rpm", speedrpm);
 			m_dashboard->PutNumber("error_rpm", errorrpm);
 			PID_Setpoint = m_pidShooter->GetSetpoint();
@@ -91,7 +107,15 @@ public:
 			m_dashboard->PutNumber( "Setpoint", m_pidShooter->GetSetpoint() );
 			m_dashboard->PutNumber( "CANTalon Speed", m_pidShooter->GetRate() );
 
-
+			if ( (m_operator->ButtonPressedLT() == true || m_operator->ButtonPressedRT() == true) && shooting == true )
+			{
+				shotPower = NO_POWER;
+				shooting = false;
+			}
+			if ( shooting == false )
+			{
+				m_pidShooter->DisableShooter();
+			}
 		}
 	}
 		

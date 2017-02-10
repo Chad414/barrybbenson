@@ -11,21 +11,22 @@
 #ifndef SRC_PIDSHOOTER_H_
 #define SRC_PIDSHOOTER_H_
 
-#define SHOOTER_P .02
-#define SHOOTER_I .001
+#define SHOOTER_P .025
+#define SHOOTER_I .0001
 #define SHOOTER_D 0.0
 #define SHOOTER_F .03325
+
+#define LOW_SETPOINT 3000
+#define HI_SETPOINT 3200
 
 class PIDShooter {
 private:
 
-	CANTalon * m_shooter1;
-	CANTalon * m_shooter2;
+	CANTalon * m_shooterL;
+	CANTalon * m_shooterR;
 	CANTalon * m_paddle;
 
-	PIDController * m_shooterPID;
-
-	Encoder * m_shooterEncoder;
+	CANTalon * m_feeder;
 
 	PowerDistributionPanel* m_pdp;
 
@@ -34,6 +35,8 @@ private:
 	SmartDashboard * m_dashboard;
 
 	double shooterSetpoint;
+
+	double p, i, d;
 public:
 	PIDShooter( double p, double i, double d );
 	virtual ~PIDShooter();
@@ -46,15 +49,19 @@ public:
 	double GetSetpoint();
 	double GetRate();
 	double GetDistanceToSetpoint();
-	double GetP();
-	double GetI();
-	double GetD();
-	double GetF();
+	double GetShooterP();
+	double GetShooterI();
+	double GetShooterD();
+	double GetShooterF();
 	double GetOutputCurrent();
 	double GetPosition();
 	double GetSpeed();
 	double GetError();
 	double GetSpeedGet();
+
+
+
+	void OutputValues( SmartDashboard * dashboard );
 };
 
 #endif /* SRC_PIDSHOOTER_H_ */
