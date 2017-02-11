@@ -27,6 +27,7 @@ public:
 
 	void DisabledPeriodic() {
 		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
+		SmartDashboard::PutNumber("Gear Roller Commanded Speed", m_gear.GetGearRollerCommandedSpeed());
 		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
 		SmartDashboard::PutNumber("Gear Setpoint", m_gear.GetGearSetpoint());
 		SmartDashboard::PutNumber("Gear Get", m_gear.GearGet());
@@ -56,21 +57,24 @@ public:
 			m_gear.SetGearMode(true);
 			m_gear.SetGearArmPosition(200);
 		} */
-		else if (m_driver->ButtonB()) {
-			m_gear.ZeroGearArmPosition();
-			m_gear.SetGearArmPosition(0.0);
-		}
-		else if (fabs(m_driver->AxisRY()) > 0.2) {
-			m_gear.SetGearArmPosition(0.0);
-		}
 		else {
 			//m_gear.SetGearMode(false);
 			m_gear.SetGearArmPosition(0.0);
 		}
 
+		if (fabs(m_driver->AxisRY()) > 0.2){
+			m_gear.SetGearRollerSpeed(m_driver->AxisRY());
+		}
+		else {
+			m_gear.SetGearRollerSpeed(0.0);
+		}
+
 		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
 		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
 		SmartDashboard::PutNumber("Gear Setpoint", m_gear.GetGearSetpoint());
+
+		SmartDashboard::PutNumber("Gear Roller Commanded Speed", m_gear.GetGearRollerCommandedSpeed());
+
 	}
 
 	void TestPeriodic() {
