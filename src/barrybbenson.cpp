@@ -52,6 +52,8 @@ public:
 	void TeleopInit() {
 		speedrpm = 0;
 		shotPower = NO_POWER;
+		m_pidShooter->DisableShooter();
+
 	}
 
 	void TeleopPeriodic() {

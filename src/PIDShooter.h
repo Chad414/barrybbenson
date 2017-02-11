@@ -11,13 +11,13 @@
 #ifndef SRC_PIDSHOOTER_H_
 #define SRC_PIDSHOOTER_H_
 
-#define SHOOTER_P .025
+#define SHOOTER_P .020
 #define SHOOTER_I .0001
 #define SHOOTER_D 0.0
 #define SHOOTER_F .03325
 
-#define LOW_SETPOINT 3000
-#define HI_SETPOINT 3200
+#define LOW_SETPOINT 2500
+#define HI_SETPOINT 2750
 
 class PIDShooter {
 private:
