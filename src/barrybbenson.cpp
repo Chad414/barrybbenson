@@ -1,6 +1,10 @@
 #include "WPILib.h"
 #include "CANTalon.h"
+#include <iostream>
 #include "RobotUtils/RobotUtils.h"
+#include "CameraServer.h"
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
 
 #include "Drivetrain.h"
 #include "Shooter.h"
@@ -90,7 +94,26 @@ public:
 		m_operator = new HotJoystick(1);
 	}
 
+    static void VisionThread() {
+        cs::UsbCamera m_camera = CameraServer::GetInstance()->StartAutomaticCapture();
+        std::cout << "Camera Capture Started" << std::endl;
+        m_camera.SetResolution(640, 480);
+        m_camera.SetExposureManual(50);
+        m_camera.SetExposureHoldCurrent();
+        cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
+        cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("Gray", 640, 480);
+        cv::Mat source;
+        cv::Mat output;
+        while(true) {
+            cvSink.GrabFrame(source);
+            cvtColor(source, output, cv::COLOR_BGR2GRAY);
+            outputStreamStd.PutFrame(output);
+        }
+    }
+
 	void RobotInit() {
+        std::thread visionThread(VisionThread);
+        visionThread.detach();
 	}
 
 	void AutonomousInit() {
@@ -142,6 +165,12 @@ public:
 	void TeleopDrive() {
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
+		}
+
+		if (m_driver->ButtonLB()) {
+			m_drivetrain.setShift(true);
+		} else {
+			m_drivetrain.setShift(false);
 		}
 
 		SmartDashboard::PutNumber("Forward and Backward", m_drivetrain.getSpeed());

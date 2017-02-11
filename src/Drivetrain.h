@@ -23,6 +23,8 @@
 #define TALON_DRIVE_RM 4
 #define TALON_DRIVE_RR 3
 
+#define SOLENOID_SHIFT 0
+
 /*
 #ifndef USE_TEST_BENCH
 #define TALON_DRIVE_RR 20
@@ -54,6 +56,7 @@ public:
 	void resetGyro();
 	double getLeftEncoder();
 	double getRightEncoder();
+	void setShift(bool on);
 	virtual ~Drivetrain();
 
 private:
@@ -86,6 +89,8 @@ private:
 	RobotDrive m_drive;
 
 	AHRS m_gyro;
+
+	Solenoid m_shift;
 
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
