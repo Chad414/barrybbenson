@@ -1,6 +1,5 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
-#include "EncoderTest.h"
 #include "CANTalon.h"
 
 #define MOTOR_P 0.02
@@ -21,7 +20,6 @@ private:
 	bool previousAButton;
 	bool previousXButton;
 
-	EncoderTest m_shooter;
 	CANTalon* m_motor1;
 
 	AnalogPotentiometer* m_pot;
@@ -47,7 +45,7 @@ public:
 		            m_motor1->SetPID(MOTOR_P, MOTOR_I, MOTOR_D);
 		            m_motor1->SetF(MOTOR_FF);
 		            m_motor1->Enable();
-		            m_motor1->SetAllowableClosedLoopErr(0);
+		            m_motor1->SetAllowableClosedLoopErr(0.1);
 		            m_motor1->SetSensorDirection(false);
 		            m_motor1->SetClosedLoopOutputDirection(true);
 		            m_motor1->ConfigNominalOutputVoltage(+0.0F, -0.0F);
