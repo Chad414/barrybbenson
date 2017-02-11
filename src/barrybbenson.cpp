@@ -100,7 +100,6 @@ public:
 		m_operator = new HotJoystick(1);
 
 		totalDriveCurrent = m_pdp.GetCurrent(7)
-				+ m_pdp.GetCurrent(7)
 				+ m_pdp.GetCurrent(5)
 				+ m_pdp.GetCurrent(6)
 				+ m_pdp.GetCurrent(2)
@@ -183,7 +182,11 @@ public:
 		}
 
 		if (m_driver->ButtonLB()) {
-			m_drivetrain.setShift(true);
+			if (m_timer.Get() >= 2.0) {
+				m_drivetrain.setShift(false);
+			} else {
+				m_drivetrain.setShift(true);
+			}
 		} else {
 			m_drivetrain.setShift(false);
 		}
@@ -198,9 +201,6 @@ public:
 	void TeleopAutoShift() {
 		if (totalDriveCurrent >= 2.5) {
 			m_timer.Start();
-			if (m_timer.Get() >= 2.0) {
-				m_drivetrain.setShift(false);
-			}
 		} else {
 			m_timer.Stop();
 			m_timer.Reset();
