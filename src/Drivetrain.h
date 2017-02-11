@@ -131,7 +131,6 @@ private:
 	Encoder m_rEncoder;
 
 
-
 	MPController m_motionProfileController;
 
 	//DistancePIDWrapper m_distancePIDWrapper;
