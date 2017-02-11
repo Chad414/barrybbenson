@@ -81,17 +81,31 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
+	PowerDistributionPanel m_pdp;
+
+	Timer m_timer;
+
 	Shooter::Shooter m_shoot;
 	Drivetrain m_drivetrain;
+
+	double totalDriveCurrent;
 
 public:
 
 	double shooterSpeed = 0.4;
 	bool isFeederOn = false;
 
-	barrybbenson() {
+	barrybbenson() : m_pdp(0) {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
+
+		totalDriveCurrent = m_pdp.GetCurrent(7)
+				+ m_pdp.GetCurrent(7)
+				+ m_pdp.GetCurrent(5)
+				+ m_pdp.GetCurrent(6)
+				+ m_pdp.GetCurrent(2)
+				+ m_pdp.GetCurrent(4)
+				+ m_pdp.GetCurrent(3);
 	}
 
     static void VisionThread() {
@@ -128,6 +142,7 @@ public:
 	void TeleopPeriodic() {
 		TeleopDrive();
 		TeleopShoot();
+		TeleopAutoShift();
 	}
 
 	void TeleopShoot() {
@@ -178,6 +193,25 @@ public:
 		SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
 		SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
 
+	}
+
+	void TeleopAutoShift() {
+		if (totalDriveCurrent >= 2.5) {
+			m_timer.Start();
+			if (m_timer.Get() >= 2.0) {
+				m_drivetrain.setShift(false);
+			}
+		} else {
+			m_timer.Stop();
+			m_timer.Reset();
+		}
+
+		SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
+		SmartDashboard::PutNumber("Left Drive Current - Mini", m_pdp.GetCurrent(5));
+		SmartDashboard::PutNumber("Left Drive Current - Rear", m_pdp.GetCurrent(6));
+		SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
+		SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
+		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
 	}
 
 	void TestPeriodic() {
