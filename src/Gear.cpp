@@ -68,8 +68,9 @@ void Gear::SetGearArmPosition(double gear_speed) {
 	else {
 		m_gearArm.Set(gear_speed);
 	}
-	gearCommandedSpeed = gear_speed;
 	*/
+	gearCommandedSpeed = gear_speed;
+
 	m_gearArm.Set(gear_speed);
 }
 

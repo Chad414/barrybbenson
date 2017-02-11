@@ -8,9 +8,6 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	Victor* m_shooter1;
-	Victor* m_shooter2;
-
 	PowerDistributionPanel* m_pdp;
 
 	Gear m_gear;
@@ -37,13 +34,13 @@ public:
 
 	void AutonomousInit() {
 		m_gear.SetGearMode(false);
+		m_gear.ZeroGearArmPosition();
 	}
 
 	void AutonomousPeriodic() {
 	}
 
 	void TeleopInit() {
-		m_gear.ZeroGearArmPosition();
 	}
 
 	void TeleopPeriodic() {
@@ -61,6 +58,10 @@ public:
 		} */
 		else if (m_driver->ButtonB()) {
 			m_gear.ZeroGearArmPosition();
+			m_gear.SetGearArmPosition(0.0);
+		}
+		else if (fabs(m_driver->AxisRY()) > 0.2) {
+			m_gear.SetGearArmPosition(0.0);
 		}
 		else {
 			//m_gear.SetGearMode(false);
