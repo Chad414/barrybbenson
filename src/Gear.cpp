@@ -27,7 +27,7 @@ Gear::Gear()
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
 	m_gearArm.SetAllowableClosedLoopErr(0);
 	m_gearArm.ConfigEncoderCodesPerRev(256);
-	m_gearArm.SetFeedbackDevice(CANTalon::QuadEncoder);
+	m_gearArm.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 }
 
 double Gear::GetGearArmPosition() {
@@ -39,7 +39,7 @@ void Gear::ZeroGearArmPosition() {
 }
 
 bool Gear::SetGearMode(bool position) {
-	if (position) {
+	/*if (position) {
 		m_gearArm.SetControlMode(CANTalon::kPosition);
 		return true;
 	}
@@ -48,6 +48,7 @@ bool Gear::SetGearMode(bool position) {
 		return false;
 	}
 	gearMode = position;
+	*/
 }
 
 bool Gear::GetGearMode() {
@@ -60,7 +61,7 @@ bool Gear::GetGearMode() {
 }
 
 void Gear::SetGearArmPosition(double gear_speed) {
-	if (GetGearMode() == true){
+	/*if (GetGearMode() == true){
 		gear_speed = gear_speed*4096;
 		m_gearArm.Set(gear_speed);
 	}
@@ -68,6 +69,8 @@ void Gear::SetGearArmPosition(double gear_speed) {
 		m_gearArm.Set(gear_speed);
 	}
 	gearCommandedSpeed = gear_speed;
+	*/
+	m_gearArm.Set(gear_speed);
 }
 
 double Gear::GetGearCommandedSpeed() {
@@ -76,6 +79,10 @@ double Gear::GetGearCommandedSpeed() {
 
 double Gear::GetGearSetpoint() {
 	return m_gearArm.GetSetpoint();
+}
+
+double Gear::GearGet() {
+	return m_gearArm.Get();
 }
 
 void Gear::SetGearRollerSpeed(double roller_speed) {

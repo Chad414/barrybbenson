@@ -29,9 +29,14 @@ public:
 	}
 
 	void DisabledPeriodic() {
+		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
+		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
+		SmartDashboard::PutNumber("Gear Setpoint", m_gear.GetGearSetpoint());
+		SmartDashboard::PutNumber("Gear Get", m_gear.GearGet());
 	}
 
 	void AutonomousInit() {
+		m_gear.SetGearMode(false);
 	}
 
 	void AutonomousPeriodic() {
@@ -47,18 +52,18 @@ public:
 
 	void TeleopGear() {
 		if (fabs(m_driver->AxisLY()) > 0.2) {
-			m_gear.SetGearMode(false);
+			//m_gear.SetGearMode(false);
 			m_gear.SetGearArmPosition(m_driver->AxisLY());
 		}
-		else if (m_driver->ButtonA()) {
+		/*else if (m_driver->ButtonA()) {
 			m_gear.SetGearMode(true);
 			m_gear.SetGearArmPosition(200);
-		}
+		} */
 		else if (m_driver->ButtonB()) {
 			m_gear.ZeroGearArmPosition();
 		}
 		else {
-			m_gear.SetGearMode(false);
+			//m_gear.SetGearMode(false);
 			m_gear.SetGearArmPosition(0.0);
 		}
 
