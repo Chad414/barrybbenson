@@ -109,17 +109,19 @@ public:
 
     static void VisionThread() {
         cs::UsbCamera m_camera = CameraServer::GetInstance()->StartAutomaticCapture();
+        cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
         std::cout << "Camera Capture Started" << std::endl;
-        m_camera.SetResolution(640, 480);
-        m_camera.SetExposureManual(50);
+        m_camera.SetResolution(320, 240);
+        m_camera.SetExposureManual(10);
         m_camera.SetExposureHoldCurrent();
+        m_camera.SetBrightness(2);
         cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-        cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("Gray", 640, 480);
+        cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("USBCamera", 320, 240);
         cv::Mat source;
         cv::Mat output;
         while(true) {
             cvSink.GrabFrame(source);
-            cvtColor(source, output, cv::COLOR_BGR2GRAY);
+            cvtColor(source, output, cv::COLOR_BGR2BGR565);
             outputStreamStd.PutFrame(output);
         }
     }
@@ -141,7 +143,6 @@ public:
 	void TeleopPeriodic() {
 		TeleopDrive();
 		TeleopShoot();
-		TeleopAutoShift();
 	}
 
 	void TeleopShoot() {
@@ -196,9 +197,6 @@ public:
 		SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
 		SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
 
-	}
-
-	void TeleopAutoShift() {
 		if (totalDriveCurrent >= 2.5) {
 			m_timer.Start();
 		} else {
