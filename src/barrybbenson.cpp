@@ -57,6 +57,9 @@ public:
 			m_gear.SetGearMode(true);
 			m_gear.SetGearArmPosition(200);
 		} */
+		else if (m_driver->ButtonB()) {
+			m_gear.ZeroGearArmPosition();
+		}
 		else {
 			//m_gear.SetGearMode(false);
 			m_gear.SetGearArmPosition(0.0);

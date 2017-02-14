@@ -12,13 +12,30 @@
 #include "WPILib.h"
 #include "CANTalon.h"
 
+//talon definition
 #define TALON_GEAR_ARM 8
 #define TALON_GEAR_ROLL 12
 
+//gear arm pid values
 #define TALON_GEAR_P 0.0
 #define TALON_GEAR_I 0.0
 #define TALON_GEAR_D 0.0
 #define TALON_GEAR_F 0.0
+
+//gear arm constant to make degree
+#define GEAR_DEGREE_CONST 165.75
+
+#define GEAR_GROUND 0.0
+#define GEAR_PACKAGE 90.0
+#define GEAR_PLACE_FIRST 45.0
+#define GEAR_PLACE_SECOND 43.0
+
+enum GearArmSetpoint {
+	kGround = 0,
+	kPlaceFirst = 1,
+	kPlaceSecond = 2,
+	kPackage = 3
+};
 
 class Gear {
 private:
@@ -31,19 +48,31 @@ private:
 	bool gearMode;
 public:
 	Gear();
-
+//gear arm
 	double GetGearArmPosition();
+		//return encoder position
 	void ZeroGearArmPosition();
+		//sets encoder position to 0.0
 
-	bool SetGearMode(bool position); //true is pid mode; false is joystick control
+	bool SetGearMode(bool position);
+		//true is pid mode; false is joystick control
 	bool GetGearMode();
+		//true is pid mode; false is joystck control
 
-	void SetGearArmPosition(double gear_speed); //pid mode, accepts desired position; joystick mode, is % to talon
-	double GetGearCommandedSpeed(); //pid mode, returns desired position; joystick mode, returns percent value
+	void SetGearArmPosition(double gear_speed);
+		//pid mode, accepts desired position; joystick mode, is % to talon
+	void SetGearArmSetpoint(GearArmSetpoint setpoint);
+
+	double GetGearCommandedSpeed();
+		//pid mode, returns desired position; joystick mode, returns percent value
 	double GearGet();
-
+		//percentage sent to talon
 	double GetGearSetpoint();
+		//return pid setpoint
+
+//roller
 	void SetGearRollerSpeed(double roller_speed);
+		//
 	double GetGearRollerCommandedSpeed();
 
 	virtual ~Gear();

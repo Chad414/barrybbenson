@@ -22,7 +22,8 @@ Gear::Gear()
 	  m_gearRoll(TALON_GEAR_ROLL)
 {
 	// TODO Auto-generated constructor stub
-	m_gearArm.SetClosedLoopOutputDirection(true);
+	//m_gearArm.SetClosedLoopOutputDirection(true);
+	m_gearArm.SetSensorDirection(false);
 	m_gearArm.SetVoltageRampRate(0);
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
 	m_gearArm.SetAllowableClosedLoopErr(0);
@@ -39,7 +40,7 @@ void Gear::ZeroGearArmPosition() {
 }
 
 bool Gear::SetGearMode(bool position) {
-	/*if (position) {
+	if (position) {
 		m_gearArm.SetControlMode(CANTalon::kPosition);
 		return true;
 	}
@@ -48,7 +49,6 @@ bool Gear::SetGearMode(bool position) {
 		return false;
 	}
 	gearMode = position;
-	*/
 }
 
 bool Gear::GetGearMode() {
@@ -61,17 +61,34 @@ bool Gear::GetGearMode() {
 }
 
 void Gear::SetGearArmPosition(double gear_speed) {
-	/*if (GetGearMode() == true){
-		gear_speed = gear_speed*4096;
+	if (GetGearMode() == true){
+		gear_speed = gear_speed / GEAR_DEGREE_CONST;
 		m_gearArm.Set(gear_speed);
 	}
 	else {
 		m_gearArm.Set(gear_speed);
 	}
-	*/
+
 	gearCommandedSpeed = gear_speed;
 
-	m_gearArm.Set(gear_speed);
+	//m_gearArm.Set(gear_speed);
+}
+
+void Gear::SetGearArmSetpoint(GearArmSetpoint setpoint) {
+	switch (setpoint) {
+	case 0:
+		SetGearArmPosition(GEAR_GROUND);
+		break;
+	case 1:
+		SetGearArmPosition(GEAR_PLACE_FIRST);
+		break;
+	case 2:
+		SetGearArmPosition(GEAR_PLACE_SECOND);
+		break;
+	case 3:
+		SetGearArmPosition(GEAR_PACKAGE);
+		break;
+	}
 }
 
 double Gear::GetGearCommandedSpeed() {
