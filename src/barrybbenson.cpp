@@ -44,7 +44,7 @@ public:
 		leftDrive = 0.5;
 		rightDrive = -0.5;
 
-		gyroConst = 1.0;
+		gyroConst = 0.1;
 	}
 	void RobotInit() {
 	}
@@ -88,21 +88,29 @@ public:
 
 	void GyroDrive() {
 		while (m_driver->ButtonA()) {
-			if (m_drivetrain.getAngle() < 0.5 && m_drivetrain.getAngle() > -0.5) {
+			if (m_drivetrain.getAngle() < 1.5 && m_drivetrain.getAngle() > -1.5) {
 				m_drivetrain.setLeftDrive(leftDrive);
-				m_drivetrain.setRightDrive(leftDrive);
-			} else if (m_drivetrain.getAngle() > -0.5) {
-				m_drivetrain.setRightDrive(leftDrive * gyroConst);
-			} else if (m_drivetrain.getAngle() < 0.5) {
+				m_drivetrain.setRightDrive(rightDrive);
+				gyroConst = 0.1;
+			} else if (m_drivetrain.getAngle() > -1.5) {
 				m_drivetrain.setLeftDrive(leftDrive * gyroConst);
+			} else if (m_drivetrain.getAngle() < 1.5) {
+				m_drivetrain.setRightDrive(rightDrive * gyroConst);
 			}
+			gyroConst = gyroConst + (m_drivetrain.getAngle() * 0.02);
 		}
 
-		gyroConst = gyroConst + (m_drivetrain.getAngle() * 0.02);
+		SmartDashboard::PutNumber("LeftDrive", leftDrive);
+		SmartDashboard::PutNumber("RightDrive", rightDrive);
+		SmartDashboard::PutNumber("LeftDrive Adjusted", leftDrive * gyroConst);
+		SmartDashboard::PutNumber("RightDrive Adjusted", rightDrive * gyroConst);
 
 		if (m_driver->ButtonPressedB()) {
 			m_drivetrain.setLeftDrive(0);
 			m_drivetrain.setRightDrive(0);
+		}
+		if (m_driver->ButtonPressedX()) {
+			m_drivetrain.resetGyro();
 		}
 
 	}
