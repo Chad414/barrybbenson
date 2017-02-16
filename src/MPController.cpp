@@ -9,7 +9,7 @@
 
 MPController::MPController(
 		PIDF pidf,
-		ArrayDimension2 *trajectoryPoints,
+		ArrayDimension2 trajectoryPoints,
 		CANTalon *talon,
 		double deadband) :
 		m_pidf(pidf),
@@ -18,7 +18,7 @@ MPController::MPController(
 		isEnabled(false),
 		m_deadband(deadband),
 		m_notifier(&MPController::Periodic, this){
-	double notifierTime = m_trajectoryPoints->at(0)[2] / 2;
+	double notifierTime = m_trajectoryPoints[0][2] / 2;
 	m_notifier.StartPeriodic(notifierTime);
 }
 
@@ -42,8 +42,7 @@ void MPController::Control()
 	m_talon->SetF(m_pidf.f);
 	m_talon->SetAllowableClosedLoopErr(m_deadband);
 
-	double targetDistance = m_trajectoryPoints->
-			at(m_trajectoryPoints->size()-1)[0];
+	double targetDistance = m_trajectoryPoints[m_trajectoryPoints.size()-1][0];
 	if (m_talon->GetPosition() >= targetDistance)
 	{
 		Disable();
@@ -84,9 +83,9 @@ void MPController::Fill()
 
 	m_talon->ClearMotionProfileTrajectories();
 
-	for (int i = 0; i < m_trajectoryPoints->size(); ++i)
+	for (int i = 0; i < m_trajectoryPoints.size(); ++i)
 	{
-		std::vector<double> p = m_trajectoryPoints->at(i);
+		std::vector<double> p = m_trajectoryPoints[i];
 
 		point.position = p[0];
 		point.velocity = p[1];
@@ -98,7 +97,7 @@ void MPController::Fill()
 
 		if (i == 0)
 			point.zeroPos = true;
-		if ((i + 1) == m_trajectoryPoints->size())
+		if ((i + 1) == m_trajectoryPoints.size())
 			point.isLastPoint = true;
 
 		m_talon->PushMotionProfileTrajectory(point);
@@ -115,8 +114,7 @@ void MPController::Periodic()
 bool MPController::OnTarget()
 {
 	double p = m_talon->GetPosition();
-	double t = m_trajectoryPoints->at(
-			m_trajectoryPoints->size()-1)[0];
+	double t = m_trajectoryPoints[m_trajectoryPoints.size()-1][0];
 
 	return (t - m_deadband < p < t + m_deadband);
 }

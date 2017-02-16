@@ -25,7 +25,7 @@ private:
 	PIDF m_pidf;
 
 	CANTalon *m_talon;
-	ArrayDimension2 *m_trajectoryPoints;
+	ArrayDimension2 m_trajectoryPoints;
 
 	bool isEnabled;
 	double m_deadband;
@@ -34,7 +34,7 @@ private:
 public:
 	MPController(
 			PIDF pidf,
-			ArrayDimension2 *trajectoryPoints,
+			ArrayDimension2 trajectoryPoints,
 			CANTalon *talon,
 			double deadband = 25
 			);

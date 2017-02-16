@@ -16,7 +16,7 @@
 #include "AHRS.h"
 
 //#define USE_TEST_BENCH
-//#define USE_TEST_CHASSIS
+#define USE_TEST_CHASSIS
 
 #define TALON_DRIVE_LF 6
 #define TALON_DRIVE_LR 5
@@ -25,7 +25,7 @@
 #define TALON_DRIVE_LM 4
 #define TALON_DRIVE_RM 3
 
-
+/*
 #define DRIVE_P_R 0.0
 #define DRIVE_I_R 0.0
 #define DRIVE_D_R 0.0
@@ -35,7 +35,7 @@
 #define DRIVE_I_L 0.0
 #define DRIVE_D_L 0.0
 #define DRIVE_F_L 0.0
-
+*/
 #ifdef USE_TEST_BENCH
 #define TALON_DRIVE_RR 1
 #endif
@@ -46,6 +46,7 @@
 #define TALON_DRIVE_LR 12
 #endif
 
+/*
 PIDF PIDF_LEFT = {
 		DRIVE_P_L,
 		DRIVE_I_L,
@@ -57,6 +58,7 @@ PIDF PIDF_RIGHT = {
 		DRIVE_I_R,
 		DRIVE_D_R,
 		DRIVE_F_R};
+		*/
 
 
 #define HOT_BENCH_VICTOR 0
@@ -128,7 +130,7 @@ private:
 		DistancePIDWrapper(Drivetrain* drivetrain);
 		virtual ~DistancePIDWrapper();
 		double PIDGet() override;
-		void PIDWrite(float output);
+		void PIDWrite(double output) override;
 	private:
 		Drivetrain* m_drivetrain;
 	};

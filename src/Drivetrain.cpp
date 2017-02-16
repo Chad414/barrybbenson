@@ -20,11 +20,11 @@ Drivetrain::Drivetrain()
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
-	m_leftMotionProfile(PIDF_LEFT, testMotionProfile, m_lDriveF),
-	m_rightMotionProfile(PIDF_RIGHT, testMotionProfile, m_rDriveF),
+	m_leftMotionProfile(PIDF_LEFT(), testMotionProfile(), &m_lDriveF),
+	m_rightMotionProfile(PIDF_RIGHT(), testMotionProfile(), &m_rDriveF),
 	m_distancePIDWrapper(this),
-	m_distancePIDL(PIDF_LEFT.p, PIDF_LEFT.i, PIDF_LEFT.d, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05)
-	//m_distancePIDR(PIDF_RIGHT.p, PIDF_RIGHT.i, PIDF_RIGHT.d, PIDF_RIGHT.f, m_distancePIDWrapper, m_distancePIDWrapper)
+	m_distancePIDL(PIDF_LEFT().p, PIDF_LEFT().i, PIDF_LEFT().d, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05),
+	m_distancePIDR(PIDF_RIGHT().p, PIDF_RIGHT().i, PIDF_RIGHT().d, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05)
 {
 
 	m_turn = 0;
@@ -57,13 +57,15 @@ void Drivetrain::LogValues()
 	SmartDashboard::PutNumber("Left Encoder Position", m_rDriveF.GetPosition());
 	SmartDashboard::PutNumber("Right Encoder Position", m_rDriveR.GetPosition());
 
-	PIDF_LEFT.p = SmartDashboard::GetNumber("Left P", 0);
-	PIDF_LEFT.i = SmartDashboard::GetNumber("Left I", 0);
-	PIDF_LEFT.d = SmartDashboard::GetNumber("Left D", 0);
+	/*
+	PIDF_LEFT().p = SmartDashboard::GetNumber("Left P", 0);
+	PIDF_LEFT().i = SmartDashboard::GetNumber("Left I", 0);
+	PIDF_LEFT().d = SmartDashboard::GetNumber("Left D", 0);
 
-	PIDF_RIGHT.p = SmartDashboard::GetNumber("Right P", 0);
-	PIDF_RIGHT.i = SmartDashboard::GetNumber("Right I", 0);
-	PIDF_RIGHT.d = SmartDashboard::GetNumber("Right D", 0);
+	PIDF_RIGHT().p = SmartDashboard::GetNumber("Right P", 0);
+	PIDF_RIGHT().i = SmartDashboard::GetNumber("Right I", 0);
+	PIDF_RIGHT().d = SmartDashboard::GetNumber("Right D", 0);
+	*/
 }
 
 
@@ -112,7 +114,7 @@ double Drivetrain::DistancePIDWrapper::PIDGet () {
 	return(m_drivetrain->getLeftEncoder());
 }
 
-void Drivetrain::DistancePIDWrapper::PIDWrite(float output) {
+void Drivetrain::DistancePIDWrapper::PIDWrite(double output) {
 	SmartDashboard::PutNumber("* Drive PID Write", output);
 	m_drivetrain->setSpeed(output);
 }
