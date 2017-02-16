@@ -16,6 +16,7 @@
 #include "AHRS.h"
 
 //#define USE_TEST_BENCH
+//#define USE_TEST_CHASSIS
 
 #define TALON_DRIVE_LF 6
 #define TALON_DRIVE_LR 5
@@ -25,18 +26,24 @@
 #define TALON_DRIVE_RM 3
 
 
-#define DRIVE_P_R 0.00005
-#define DRIVE_I_R 0.001
+#define DRIVE_P_R 0.0
+#define DRIVE_I_R 0.0
 #define DRIVE_D_R 0.0
 #define DRIVE_F_R 0.0
 
-#define DRIVE_P_L 0.00005
-#define DRIVE_I_L 0.001
+#define DRIVE_P_L 0.0
+#define DRIVE_I_L 0.0
 #define DRIVE_D_L 0.0
 #define DRIVE_F_L 0.0
 
 #ifdef USE_TEST_BENCH
 #define TALON_DRIVE_RR 1
+#endif
+#ifdef USE_TEST_CHASSIS
+#define TALON_DRIVE_RF 21
+#define TALON_DRIVE_RR 20
+#define TALON_DRIVE_LF 11
+#define TALON_DRIVE_LR 12
 #endif
 
 PIDF PIDF_LEFT = {
@@ -53,8 +60,6 @@ PIDF PIDF_RIGHT = {
 
 
 #define HOT_BENCH_VICTOR 0
-
-
 
 #define DRIVE_ENCODER_LF 4
 #define DRIVE_ENCODER_LR 3
@@ -95,6 +100,8 @@ public:
 	void setRightDrive(double speed);
 	double getLeftDrive();
 	double getRightDrive();
+
+	static void setFollower(CANTalon *talon, int id);
 
 	virtual ~Drivetrain();
 

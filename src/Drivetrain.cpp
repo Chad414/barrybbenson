@@ -155,7 +155,15 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 	//m_rDriveR.Set(.1);
 }
 
+void Drivetrain::setFollower(CANTalon* talon, int id)
+{
+	talon->SetControlMode(CANTalon::kFollower);
+	talon->Set(id);
+}
+
 void Drivetrain::startMP() {
+	setFollower(&m_rDriveR, TALON_DRIVE_RF);
+	setFollower(&m_lDriveR, TALON_DRIVE_LF);
 	m_leftMotionProfile.Enable();
 	m_rightMotionProfile.Enable();
 }
@@ -169,6 +177,10 @@ void Drivetrain::resetGyro() {
 }
 
 void Drivetrain::resetMP() {
+	m_rDriveR.SetControlMode(CANTalon::ControlMode::kPercentVbus);
+	m_rDriveR.Set(0);
+	m_lDriveR.SetControlMode(CANTalon::ControlMode::kPercentVbus);
+	m_lDriveR.Set(0);
 	m_leftMotionProfile.Disable();
 	m_rightMotionProfile.Disable();
 }
