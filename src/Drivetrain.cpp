@@ -14,8 +14,9 @@ Drivetrain::Drivetrain()
 	m_rDriveR(TALON_DRIVE_RR),
 	m_drive(&m_lDriveF, &m_lDriveR, &m_rDriveF, &m_rDriveR),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
-	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false)
-	//, m_motionProfile(&m_rDriveF)
+	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
+	m_leftMotionProfile(PIDF_LEFT, &testMotionProfile, m_lDriveF),
+	m_rightMotionProfile(PIDF_RIGHT, &testMotionProfile, m_rDriveF)
 {
 
 	m_turn = 0;
@@ -37,19 +38,19 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 }
 
 void Drivetrain::startMP() {
-	m_rDriveR.SetControlMode(CANTalon::ControlMode::kFollower);
-	m_rDriveR.Set(TALON_DRIVE_LR);
-
-	// Starte the mp
+	m_leftMotionProfile.Enable();
+	m_rightMotionProfile.Enable();
 
 }
 
 void Drivetrain::resetMP() {
-	// end the mp
+	m_leftMotionProfile.Disable();
+	m_rightMotionProfile.Disable();
 }
 
 void Drivetrain::controlMP() {
-	// mp periodic
+	m_leftMotionProfile.Control();
+	m_rightMotionProfile.Control();
 }
 
 Drivetrain::~Drivetrain() {
