@@ -82,6 +82,8 @@ public:
 		SmartDashboard::PutNumber("Gyro Yaw", m_drivetrain.getYaw());
 		SmartDashboard::PutNumber("Gyro Angle", m_drivetrain.getAngle());
 
+		m_drivetrain.LogValues();
+
 		previousAButton = m_driver->ButtonA();
 		previousXButton = m_driver->ButtonX();
 	}

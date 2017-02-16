@@ -39,13 +39,13 @@
 #define TALON_DRIVE_RR 1
 #endif
 
-const PIDF PIDF_LEFT = {
+PIDF PIDF_LEFT = {
 		DRIVE_P_L,
 		DRIVE_I_L,
 		DRIVE_D_L,
 		DRIVE_F_L};
 
-const PIDF PIDF_RIGHT = {
+PIDF PIDF_RIGHT = {
 		DRIVE_P_R,
 		DRIVE_I_R,
 		DRIVE_D_R,

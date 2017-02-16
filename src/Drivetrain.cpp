@@ -54,7 +54,19 @@ Drivetrain::DriveWrapper::DriveWrapper(SpeedController* talon1, SpeedController*
 
 void Drivetrain::LogValues()
 {
-	//m_motionProfileController.LogValues();
+	SmartDashboard::PutNumber("Left Encoder Speed", m_rDriveF.GetSpeed());
+	SmartDashboard::PutNumber("Right Encoder Speed", m_rDriveR.GetSpeed());
+
+	SmartDashboard::PutNumber("Left Encoder Position", m_rDriveF.GetPosition());
+	SmartDashboard::PutNumber("Right Encoder Position", m_rDriveR.GetPosition());
+
+	PIDF_LEFT.p = SmartDashboard::GetNumber("Left P", 0);
+	PIDF_LEFT.i = SmartDashboard::GetNumber("Left I", 0);
+	PIDF_LEFT.d = SmartDashboard::GetNumber("Left D", 0);
+
+	PIDF_RIGHT.p = SmartDashboard::GetNumber("Right P", 0);
+	PIDF_RIGHT.i = SmartDashboard::GetNumber("Right I", 0);
+	PIDF_RIGHT.d = SmartDashboard::GetNumber("Right D", 0);
 }
 
 
