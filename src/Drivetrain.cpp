@@ -23,7 +23,7 @@ Drivetrain::Drivetrain()
 	m_leftMotionProfile(PIDF_LEFT, testMotionProfile, m_lDriveF),
 	m_rightMotionProfile(PIDF_RIGHT, testMotionProfile, m_rDriveF),
 	m_distancePIDWrapper(this),
-	m_distancePIDL(PIDF_LEFT.p, PIDF_LEFT.i, PIDF_LEFT.d, PIDF_LEFT.f, m_distancePIDWrapper, m_distancePIDWrapper)
+	m_distancePIDL(PIDF_LEFT.p, PIDF_LEFT.i, PIDF_LEFT.d, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05)
 	//m_distancePIDR(PIDF_RIGHT.p, PIDF_RIGHT.i, PIDF_RIGHT.d, PIDF_RIGHT.f, m_distancePIDWrapper, m_distancePIDWrapper)
 {
 

@@ -128,7 +128,7 @@ private:
 		DistancePIDWrapper(Drivetrain* drivetrain);
 		virtual ~DistancePIDWrapper();
 		double PIDGet() override;
-		void PIDWrite(float output) override;
+		void PIDWrite(float output);
 	private:
 		Drivetrain* m_drivetrain;
 	};
