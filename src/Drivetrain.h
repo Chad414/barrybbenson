@@ -127,8 +127,8 @@ private:
 	public:
 		DistancePIDWrapper(Drivetrain* drivetrain);
 		virtual ~DistancePIDWrapper();
-		double PIDGet();
-		void PIDWrite(float output);
+		double PIDGet() override;
+		void PIDWrite(float output) override;
 	private:
 		Drivetrain* m_drivetrain;
 	};
@@ -168,10 +168,11 @@ private:
 	MPController m_rightMotionProfile;
 
 	DistancePIDWrapper m_distancePIDWrapper;
-	AnglePIDWrapper m_anglePIDWrapper;
+	//AnglePIDWrapper m_anglePIDWrapper;
 
-	PIDController m_distancePID;
-	PIDController m_anglePID;
+	PIDController m_distancePIDL;
+	PIDController m_distancePIDR;
+	//PIDController m_anglePID;
 
 	double m_turn, m_speed;
 };
