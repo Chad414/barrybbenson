@@ -21,13 +21,10 @@ Drivetrain::Drivetrain()
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_leftMotionProfile(PIDF_LEFT, testMotionProfile, m_lDriveF),
-	m_rightMotionProfile(PIDF_RIGHT, testMotionProfile, m_rDriveF)
-/*
+	m_rightMotionProfile(PIDF_RIGHT, testMotionProfile, m_rDriveF),
 	m_distancePIDWrapper(this),
-	m_anglePIDWrapper(this),
-	m_distancePID(DISTANCE_SHIFTL_P, DISTANCE_SHIFTL_I, DISTANCE_SHIFTL_D, m_distancePIDWrapper, m_distancePIDWrapper),
-	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, m_anglePIDWrapper, m_anglePIDWrapper)
-	*/
+	m_distancePIDL(PIDF_LEFT.p, PIDF_LEFT.i, PIDF_LEFT.d, PIDF_LEFT.f, m_distancePIDWrapper, m_distancePIDWrapper)
+	//m_distancePIDR(PIDF_RIGHT.p, PIDF_RIGHT.i, PIDF_RIGHT.d, PIDF_RIGHT.f, m_distancePIDWrapper, m_distancePIDWrapper)
 {
 
 	m_turn = 0;
