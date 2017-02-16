@@ -166,8 +166,6 @@ private:
 	PIDController m_distancePID;
 	PIDController m_anglePID;
 
-	Timer m_timer;
-
 	double m_turn, m_speed;
 };
 

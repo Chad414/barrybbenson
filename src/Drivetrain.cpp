@@ -20,8 +20,8 @@ Drivetrain::Drivetrain()
 	m_gyro(I2C::Port::kMXP),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
-	m_leftMotionProfile(PIDF_LEFT, &testMotionProfile, m_lDriveF),
-	m_rightMotionProfile(PIDF_RIGHT, &testMotionProfile, m_rDriveF)
+	m_leftMotionProfile(PIDF_LEFT, testMotionProfile, m_lDriveF),
+	m_rightMotionProfile(PIDF_RIGHT, testMotionProfile, m_rDriveF)
 /*
 	m_distancePIDWrapper(this),
 	m_anglePIDWrapper(this),
@@ -56,7 +56,7 @@ Drivetrain::DriveWrapper::DriveWrapper(SpeedController* talon1, SpeedController*
 
 void Drivetrain::LogValues()
 {
-	m_motionProfileController.LogValues();
+	//m_motionProfileController.LogValues();
 }
 
 
@@ -148,7 +148,7 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 void Drivetrain::startMP() {
 	m_leftMotionProfile.Enable();
 	m_rightMotionProfile.Enable();
-
+}
 
 float Drivetrain::getYaw(){ // Get Gyro Yaw
 	return m_gyro.GetYaw();

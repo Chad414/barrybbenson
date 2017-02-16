@@ -1,7 +1,9 @@
 #ifndef _MP_H_
 #define _MP_H_
 
-std::vector<std::vector<double>> testMotionProfile =
+typedef std::vector<std::vector<double>> ArrayDimension2;
+
+ArrayDimension2 testMotionProfile =
 {
 		{0,	0	,15},
 		{0.000127314814814815,	1.018518519	,15},

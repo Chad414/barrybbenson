@@ -13,10 +13,9 @@
 #include <vector>
 
 #include "PID.h"
+#include "MP.h"
 
 #define MINIMUM_POINTS_IN_TALON 5
-
-typedef std::vector<std::vector<double>> ArrayDimension2;
 
 
 
