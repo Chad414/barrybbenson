@@ -133,11 +133,11 @@ private:
 
 	MPController m_motionProfileController;
 
-	//DistancePIDWrapper m_distancePIDWrapper;
-	//AnglePIDWrapper m_anglePIDWrapper;
+	DistancePIDWrapper m_distancePIDWrapper;
+	AnglePIDWrapper m_anglePIDWrapper;
 
-	//PIDController m_distancePID;
-	//PIDController m_anglePID;
+	PIDController m_distancePID;
+	PIDController m_anglePID;
 
 	Timer m_timer;
 
