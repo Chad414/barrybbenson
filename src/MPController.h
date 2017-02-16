@@ -1,7 +1,7 @@
 /*
  * MPController.h
  *
- *  Created on: Jan 31, 2017
+ *  Created on: Feb 14, 2017
  *      Author: Jakob
  */
 
@@ -10,72 +10,47 @@
 
 #include <WPILib.h>
 #include <CANTalon.h>
-
 #include <vector>
-#include <atomic>
-#include <memory>
-#include <queue>
-#include <string>
 
-#include "MotorConstants.h"
+#include "PID.h"
 
-using namespace std;
+#define MINIMUM_POINTS_IN_TALON 5
 
-enum MPState {
-	MPDisabled,
-	MPMotionProfile,
-	MPDistancePID,
-	MPOnTarget
-};
+typedef std::vector<std::vector<double>> ArrayDimension2;
+
+
+
 
 class MPController {
 private:
-
-	PIDController m_distancePID;
+	PIDF m_pidf;
 
 	CANTalon *m_talon;
+	ArrayDimension2 *m_trajectoryPoints;
 
-	std::vector<std::vector<double>> mp_trajectories;
-	double mp_count;
-	double mp_interval;
-	double mp_target;
+	bool isEnabled;
+	double m_deadband;
 
-	double mp_maximumVelocity;
-	double mp_maximumAcceleration;
-
-	double mp_currentPoint;
-
-	double mp_previousPosition = 0;
-
-	mutable priority_recursive_mutex m_mutex;
-	mutable priority_recursive_mutex m_secondaryMutex;
-
-	std::unique_ptr<Notifier> mp_controlLoop;
-
-	MPState mp_state;
-
+	Notifier m_notifier;
 public:
 	MPController(
-			std::vector<std::vector<double>> trajectories,
-			int count,
-			double interval,
-			double p,
-			double i,
-			double d,
+			PIDF pidf,
+			ArrayDimension2 *trajectoryPoints,
 			CANTalon *talon,
-			double target,
-			double maximumVelocity);
+			double deadband = 25
+			);
 
-	void PeriodicTask();
+	void SetPIDF(PIDF pidf);
+
+	void Control();
 
 	void Enable();
+	bool IsEnabled();
 	void Disable();
-	MPState GetState() { return mp_state; }
-	bool OnTarget() { return GetState() == MPOnTarget; }
-	bool IsEnabled() { return (mp_state == MPMotionProfile || mp_state == MPDistancePID); }
 
-	void LogValues();
-
+	bool OnTarget();
+private:
+	void Fill();
 	void Periodic();
 };
 

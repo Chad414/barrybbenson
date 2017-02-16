@@ -12,7 +12,7 @@
 #include <cmath>
 #include "CANTalon.h"
 #include "MPController.h"
-#include "TrajectoryPoints.h"
+#include "MP.h"
 #include "AHRS.h"
 
 //#define USE_TEST_BENCH
@@ -25,11 +25,35 @@
 #define TALON_DRIVE_RM 3
 
 
+#define DRIVE_P_R 0.00005
+#define DRIVE_I_R 0.001
+#define DRIVE_D_R 0.0
+#define DRIVE_F_R 0.0
+
+#define DRIVE_P_L 0.00005
+#define DRIVE_I_L 0.001
+#define DRIVE_D_L 0.0
+#define DRIVE_F_L 0.0
+
 #ifdef USE_TEST_BENCH
 #define TALON_DRIVE_RR 1
 #endif
 
+const PIDF PIDF_LEFT = {
+		DRIVE_P_L,
+		DRIVE_I_L,
+		DRIVE_D_L,
+		DRIVE_F_L};
+
+const PIDF PIDF_RIGHT = {
+		DRIVE_P_R,
+		DRIVE_I_R,
+		DRIVE_D_R,
+		DRIVE_F_R};
+
+
 #define HOT_BENCH_VICTOR 0
+
 
 
 #define DRIVE_ENCODER_LF 4
@@ -58,6 +82,7 @@ public:
 	void ArcadeDrive(double speed, double angle);
 	void startMP();
 	void resetMP();
+	void controlMP();
 	float getYaw();
 	void resetGyro();
 	double getLeftEncoder();
@@ -130,8 +155,10 @@ private:
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
 
+	Timer m_timer;
 
-	MPController m_motionProfileController;
+	MPController m_leftMotionProfile;
+	MPController m_rightMotionProfile;
 
 	DistancePIDWrapper m_distancePIDWrapper;
 	AnglePIDWrapper m_anglePIDWrapper;

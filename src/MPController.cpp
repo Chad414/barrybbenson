@@ -1,167 +1,122 @@
 /*
  * MPController.cpp
  *
- *  Created on: Jan 31, 2017
+ *  Created on: Feb 14, 2017
  *      Author: Jakob
  */
 
 #include <MPController.h>
 
-#include "MotorConstants.h"
-
-#define USE_MOTION_PROFILE_ONLY
-
-using namespace std;
-
 MPController::MPController(
-		std::vector<std::vector<double>> trajectories,
-		int count,
-		double interval,
-		double p,
-		double i,
-		double d,
+		PIDF pidf,
+		ArrayDimension2 *trajectoryPoints,
 		CANTalon *talon,
-		double target,
-		double maximumVelocity)
-:
-	mp_trajectories(trajectories),
-	mp_count(trajectories.size()),
-	mp_interval(interval),
-	m_distancePID(p, i, d, talon, talon),
-	m_talon(talon),
-	mp_maximumAcceleration(14),
-	mp_state(MPDisabled),
-	mp_currentPoint(0),
-	mp_target(target),
-	mp_maximumVelocity(maximumVelocity),
-	mp_previousPosition(0)
-	{
-	mp_controlLoop = std::make_unique<Notifier>(&MPController::PeriodicTask, this);
+		double deadband) :
+		m_pidf(pidf),
+		m_trajectoryPoints(trajectoryPoints),
+		m_talon(talon),
+		isEnabled(false),
+		m_deadband(deadband),
+		m_notifier(&MPController::Periodic, this){
+	double notifierTime = m_trajectoryPoints->at(0)[2] / 2;
+	m_notifier.StartPeriodic(notifierTime);
 }
 
+
+void MPController::SetPIDF(PIDF pidf)
+{
+	m_pidf = pidf;
+}
+
+void MPController::Control()
+{
+	if (!isEnabled)
+		return;
+
+	CANTalon::MotionProfileStatus status;
+	m_talon->GetMotionProfileStatus(status);
+
+	m_talon->SetControlMode(CANTalon::kMotionProfile);
+	m_talon->SelectProfileSlot(1);
+	m_talon->SetPID(m_pidf.p, m_pidf.i, m_pidf.d);
+	m_talon->SetF(m_pidf.f);
+	m_talon->SetAllowableClosedLoopErr(m_deadband);
+
+	double targetDistance = m_trajectoryPoints->
+			at(m_trajectoryPoints->size()-1)[0];
+	if (m_talon->GetPosition() >= targetDistance)
+	{
+		Disable();
+	}
+	else if (status.btmBufferCnt >= MINIMUM_POINTS_IN_TALON)
+	{
+		m_talon->Set(CANTalon::SetValueMotionProfileEnable);
+	}
+}
 
 
 void MPController::Enable()
 {
-	cout << "Locking Mutex: Enabling" << endl;
-	std::lock_guard<priority_recursive_mutex> sync(m_mutex);
-	if (IsEnabled())
-	{
-		cout << "Already Enabled" << endl;
-		return;
-	}
+	isEnabled = true;
+	Fill();
+	Control();
+}
 
-	m_talon->SetEncPosition(0);
-	mp_state = MPMotionProfile;
 
-	m_talon->SetControlMode(CANTalon::ControlMode::kPercentVbus);
-
-	cout << "Starting Periodic" << endl;
-
-	mp_controlLoop->StartPeriodic(mp_interval);
-
-	cout << "Started Periodic" << endl;
+bool MPController::IsEnabled()
+{
+	return isEnabled;
 }
 
 
 void MPController::Disable()
 {
-	cout << "Locking Mutex: Disabling" << endl;
-	std::lock_guard<priority_recursive_mutex> sync(m_mutex);
-	if (mp_state == MPDisabled)
-	{
-		cout << "Already Disabled" << endl;
-		return;
-	}
-
-	cout << "Disabling" << endl;
-
-	mp_state = MPDisabled;
-
-	cout << "Stopping Periodic" << endl;
-
-	// mp_controlLoop->Stop();
-
-	cout << "Stopped Periodic" << endl;
-
-	mp_currentPoint = 0;
+	m_talon->SetControlMode(CANTalon::kPercentVbus);
+	m_talon->Set(0);
+	m_talon->SetPosition(0);
+	isEnabled = false;
 }
 
-void MPController::PeriodicTask()
+
+void MPController::Fill()
 {
-	std::lock_guard<priority_recursive_mutex> sync(m_secondaryMutex);
-	Periodic();
+	CANTalon::TrajectoryPoint point;
+
+	m_talon->ClearMotionProfileTrajectories();
+
+	for (int i = 0; i < m_trajectoryPoints->size(); ++i)
+	{
+		std::vector<double> p = m_trajectoryPoints->at(i);
+
+		point.position = p[0];
+		point.velocity = p[1];
+		point.timeDurMs = (int)p[2];
+
+		point.velocityOnly = false;
+
+		point.zeroPos = false;
+
+		if (i == 0)
+			point.zeroPos = true;
+		if ((i + 1) == m_trajectoryPoints->size())
+			point.isLastPoint = true;
+
+		m_talon->PushMotionProfileTrajectory(point);
+	}
 }
+
 
 void MPController::Periodic()
 {
-	double percentage;
-	switch (mp_state)
-	{
-	case MPDisabled:
-		cout << "Disabled Periodic At Interval " << mp_interval << endl;
-		return;
-
-	case MPMotionProfile:
-	{
-		std::lock_guard<priority_recursive_mutex> sync(m_mutex);
-		if (mp_currentPoint + 1 == mp_count)
-		{
-			mp_state = MPDistancePID;
-			cout << "Finished Motion Profiling" << endl;
-			break;
-		}
-
-		percentage = (mp_trajectories[(int)mp_currentPoint][1]) / mp_maximumVelocity;
-		m_talon->Set(percentage);
-
-
-		std::cout << "Motor Set: " << percentage << endl;
-		std::cout << "Trajectory Point Velocity: " << mp_trajectories[(int)mp_currentPoint][1] << endl;
-		std::cout << "Motor Mode: MotionProfiling" << endl;
-
-
-		mp_currentPoint++;
-		break;
-	}
-
-	case MPDistancePID:
-	{
-		std::lock_guard<priority_recursive_mutex> sync(m_mutex);
-		Disable();
-		std::cout << "Motor Mode: PIDController" << endl;
-		break;
-
-
-		if (!m_distancePID.IsEnabled())
-		{
-			m_distancePID.SetSetpoint(mp_target);
-			m_distancePID.Enable();
-		}
-		else if (m_distancePID.OnTarget())
-		{
-			mp_state = MPOnTarget;
-			m_distancePID.Disable();
-		}
-		break;
-	}
-	case MPOnTarget:
-	{
-		std::lock_guard<priority_recursive_mutex> sync(m_mutex);
-		mp_state = MPDisabled;
-		break;
-	}
-	}
-
+	m_talon->ProcessMotionProfileBuffer();
 }
 
-void MPController::LogValues()
+
+bool MPController::OnTarget()
 {
-	std::lock_guard<priority_recursive_mutex> sync(m_mutex);
+	double p = m_talon->GetPosition();
+	double t = m_trajectoryPoints->at(
+			m_trajectoryPoints->size()-1)[0];
 
-	double delta = m_talon->GetEncPosition() - mp_previousPosition;
-	mp_previousPosition = m_talon->GetEncPosition();
-
-	SmartDashboard::PutNumber("Encoder Position", m_talon->GetEncPosition());
-	SmartDashboard::PutNumber("Encoder Speed", delta);
+	return (t - m_deadband < p < t + m_deadband);
 }
