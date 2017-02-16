@@ -33,15 +33,13 @@ Drivetrain::Drivetrain()
 	m_turn = 0;
 	m_speed = 0;
 
-	m_rDriveR.SetFeedbackDevice(CANTalon::QuadEncoder);
-	m_rDriveR.SetSensorDirection(true);
-
 	m_lDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_lDriveF.SetSensorDirection(true);
 	m_rDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_rDriveF.SetSensorDirection(true);
 
-	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
+	m_rDriveF.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
+	m_lDriveF.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
 	m_drive.SetSafetyEnabled(false);
 }
