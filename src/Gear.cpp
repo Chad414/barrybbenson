@@ -23,7 +23,7 @@ Gear::Gear()
 {
 	// TODO Auto-generated constructor stub
 	//m_gearArm.SetClosedLoopOutputDirection(true);
-	m_gearArm.SetSensorDirection(false);
+	m_gearArm.SetSensorDirection(true);
 	m_gearArm.SetVoltageRampRate(0);
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
 	m_gearArm.SetAllowableClosedLoopErr(0);
@@ -32,11 +32,15 @@ Gear::Gear()
 }
 
 double Gear::GetGearArmPosition() {
-	return (m_gearArm.GetPosition());
+	return (m_gearArm.GetPosition()* GEAR_DEGREE_CONST);
 }
 
 void Gear::ZeroGearArmPosition() {
 	m_gearArm.SetPosition(0.0);
+}
+
+double Gear::GetGearTalonCurrent() {
+	return m_gearArm.GetOutputCurrent();
 }
 
 bool Gear::SetGearMode(bool position) {
@@ -100,7 +104,7 @@ double Gear::GetGearSetpoint() {
 }
 
 double Gear::GearGet() {
-	return m_gearArm.Get();
+	return (m_gearArm.Get());
 }
 
 void Gear::SetGearRollerSpeed(double roller_speed) {
