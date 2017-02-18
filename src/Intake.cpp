@@ -6,6 +6,10 @@ Intake::Intake()
 {
 
 }
+Intake::~Intake()
+{
+
+}
 void Intake::SetArm(bool b){
 	m_intakeArm.Set(b);
 }
