@@ -28,10 +28,17 @@ Shooter::~Shooter() {
 }
 
 void Shooter::RunShoot(double shoot_speed) {
-	m_shooterL.Set(shoot_speed);
-	m_shooterR.Set(-shoot_speed);
+	m_shooterL.Set(-shoot_speed);
+	m_shooterR.Set(+shoot_speed);
 
 	shooterSpeed = shoot_speed;
+
+	if ((GetShootError() != GetAverageShootSpeed()) && (GetShootError() < 200) && (shooterSpeed != 0.0) ) {
+		RunPaddle(-1.0);
+	}
+	else {
+		RunPaddle(0.0);
+	}
 }
 
 double Shooter::GetShoot() {
@@ -54,6 +61,14 @@ double Shooter::GetRShootSpeed() {
 	return m_shooterR.GetSpeed();
 }
 
+double Shooter::GetAverageShootSpeed(){
+	return ((GetLShootSpeed()+ GetRShootSpeed()) / 2 );
+}
+
+double Shooter::GetShootError() {
+	return (GetAverageShootSpeed() - shooterSpeed);
+}
+
 bool Shooter::SetShootMode(bool mode) {
 	if (mode) {
 		m_shooterL.SetControlMode(CANTalon::kSpeed);
@@ -72,7 +87,7 @@ bool Shooter::GetShootMode() {
 	return shooterMode;
 }
 
-void Shooter::RunPaddle(double paddle_speed) {
+void Shooter::RunPaddle(double paddle_speed) { //negative is correct
 	m_paddle.Set(paddle_speed);
 
 	paddleSpeed = paddle_speed;

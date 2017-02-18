@@ -14,9 +14,9 @@
 #define SHOOTER_LEFT_TALON 11
 #define SHOOTER_RIGHT_TALON 10
 
-#define FEEDER_TALON 5
+#define FEEDER_TALON 9
 
-#define SHOOTER_PADDLE_TALON 5
+#define SHOOTER_PADDLE_TALON 9
 
 #define SHOOTER_P 0.01
 #define SHOOTER_I 0.0
@@ -49,6 +49,9 @@ public:
 
 	double GetLShootSpeed();
 	double GetRShootSpeed();
+	double GetAverageShootSpeed();
+
+	double GetShootError();
 
 	bool SetShootMode(bool mode); //true is pid, false is vbus
 	bool GetShootMode();

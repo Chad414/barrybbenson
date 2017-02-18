@@ -166,11 +166,11 @@ public:
 	void TeleopShoot() {
 		if (m_driver->ButtonA()) {
 			m_shoot.Shooter::SetShootMode(false);
-			m_shoot.Shooter::RunShoot(-1.0);
+			m_shoot.Shooter::RunShoot(1.0);
 		}
 		else if (m_driver->ButtonB()) {
 			m_shoot.Shooter::SetShootMode(true);
-			m_shoot.Shooter::RunShoot(-3000);
+			m_shoot.Shooter::RunShoot(3400);
 		}
 		else {
 			m_shoot.Shooter::SetShootMode(false);
@@ -181,10 +181,15 @@ public:
 		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.Shooter::GetLRawShooter());
 
 		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.Shooter::GetShootMode());
-		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
+		SmartDashboard::PutNumber("ShooterSpeed", shooterSpeed);
+		SmartDashboard::PutNumber("Get Shoot", m_shoot.Shooter::GetShoot());
+
+		SmartDashboard::PutNumber("Get Paddle", m_shoot.Shooter::GetPaddle());
 
 		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.Shooter::GetLShootSpeed());
 		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.Shooter::GetRShootSpeed());
+		SmartDashboard::PutNumber("Average Shooter Speed", m_shoot.Shooter::GetAverageShootSpeed());
+		SmartDashboard::PutNumber("Shoot Error", m_shoot.Shooter::GetShootError());
 
 		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
 		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.Shooter::getRightShoot());
