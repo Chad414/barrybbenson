@@ -92,7 +92,7 @@ private:
 
 public:
 
-	double shooterSpeed = 0.4;
+	double shooterSpeed;
 	bool isFeederOn = false;
 
 	barrybbenson() : m_pdp(0) {
@@ -150,30 +150,11 @@ public:
 	}
 
 	void TeleopShoot() {
-		if (m_operator->ButtonRT()) {
-			m_shoot.Shooter::RunShoot(shooterSpeed);
+		if (m_driver->ButtonA()) {
+			m_shoot.Shooter::RunShoot(-0.5);
 		}
-		if (m_operator->ButtonPressedY()) {
-			shooterSpeed += 0.025;
-			m_shoot.Shooter::RunShoot(shooterSpeed);
-		}
-		if (m_operator->ButtonPressedB()) {
-			shooterSpeed -= 0.025;
-			m_shoot.Shooter::RunShoot(shooterSpeed);
-		}
-		if (m_operator->ButtonPressedX()) {
-			shooterSpeed = 0;
-			m_shoot.Shooter::RunShoot(shooterSpeed);
-		}
-
-		if (m_operator->ButtonPressedA()) {
-			if (isFeederOn) {
-				m_shoot.stopFeeder();
-				isFeederOn = false;
-			} else {
-				m_shoot.runFeeder();
-				isFeederOn = true;
-			}
+		else {
+			m_shoot.Shooter::RunShoot(0.0);
 		}
 
 		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
@@ -182,8 +163,11 @@ public:
 	}
 
 	void TeleopDrive() {
-		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
+		if (fabs(m_driver->AxisLY()) > 0.2) { // || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
+				//negative is the right way for can 11
+				//negative is the right way for can 10
+
 		}
 
 		if (m_driver->ButtonLB()) {
@@ -196,10 +180,10 @@ public:
 			m_drivetrain.setShift(false);
 		}
 
-		SmartDashboard::PutNumber("Forward and Backward", m_drivetrain.getSpeed());
-		SmartDashboard::PutNumber("Turning", m_drivetrain.getAngle());
-		SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
-		SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
+		//SmartDashboard::PutNumber("Forward and Backward", m_drivetrain.getSpeed());
+		//SmartDashboard::PutNumber("Turning", m_drivetrain.getAngle());
+		//SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
+		//SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
 
 		if (totalDriveCurrent >= 2.5) {
 			m_timer.Start();
@@ -208,12 +192,12 @@ public:
 			m_timer.Reset();
 		}
 
-		SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
-		SmartDashboard::PutNumber("Left Drive Current - Mini", m_pdp.GetCurrent(5));
-		SmartDashboard::PutNumber("Left Drive Current - Rear", m_pdp.GetCurrent(6));
-		SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
-		SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
-		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
+		//SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
+		//SmartDashboard::PutNumber("Left Drive Current - Mini", m_pdp.GetCurrent(5));
+		//SmartDashboard::PutNumber("Left Drive Current - Rear", m_pdp.GetCurrent(6));
+		//SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
+		//SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
+		//SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
 	}
 
 	void TestPeriodic() {

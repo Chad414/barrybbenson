@@ -121,11 +121,11 @@ void Drivetrain::controlMP() { // Calls Control() from MotionProfile
 }
 
 float Drivetrain::getYaw(){ // Get Gyro Yaw
-	return m_gyro.GetYaw();
+	return 0; // m_gyro.GetYaw();
 }
 
 void Drivetrain::resetGyro() {
-	m_gyro.Reset();
+	//m_gyro.Reset();
 }
 
 double Drivetrain::getLeftEncoder() {
