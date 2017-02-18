@@ -6,22 +6,11 @@ Intake::Intake()
 {
 
 }
-void Intake::SetArm(bool on){
-	m_intakeArm.Set(on);
+void Intake::SetArm(bool b){
+	m_intakeArm.Set(b);
 }
 
-void Intake::ApplyArm() {
-	m_intakeArm.Set(true);
+void Intake::SetRoller(double value) {
+	m_intakeRoller->Set(value);
 }
 
-void Intake::ReleaseArm() {
-	m_intakeArm.Set(false);
-}
-
-void Intake::ApplyRoller() {
-	m_intakeRoller.Set(0.5);
-}
-
-void Intake::StopRoller() {
-	m_intakeRoller.Set(0.0);
-}
