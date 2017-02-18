@@ -25,14 +25,9 @@ private:
 	CANTalon * m_shooterL;
 	CANTalon * m_shooterR;
 	CANTalon * m_paddle;
-
 	CANTalon * m_feeder;
 
-	PowerDistributionPanel* m_pdp;
-
 	Timer * m_shooterTime;
-
-	SmartDashboard * m_dashboard;
 
 	double shooterSetpoint;
 
@@ -45,6 +40,7 @@ public:
 	void Enable();
 	void DisableShooter();
 	void SetSetpoint( double setpoint );
+	void FeederEnable();
 
 	double GetSetpoint();
 	double GetRate();
@@ -61,7 +57,8 @@ public:
 
 
 
-	void OutputValues( SmartDashboard * dashboard );
+
+	void OutputValues();
 };
 
 #endif /* SRC_PIDSHOOTER_H_ */

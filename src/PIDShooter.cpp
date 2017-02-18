@@ -40,9 +40,6 @@ PIDShooter::PIDShooter( double p, double i, double d ) : p(p), i(i), d(d){
 
 	m_shooterTime = new Timer();
 
-	m_pdp = new PowerDistributionPanel( 0 );
-
-	m_dashboard = new SmartDashboard;
 }
 
 PIDShooter::~PIDShooter() {
@@ -58,8 +55,11 @@ void PIDShooter::Enable()
 {
 	m_shooterL->Enable();
 	//m_shooterR->Enable();
+}
 
-	m_feeder->Set(-1);
+void PIDShooter::FeederEnable()
+{
+		m_feeder->Set( -1 );
 }
 
 void PIDShooter::DisableShooter()
@@ -130,21 +130,21 @@ double PIDShooter::GetError()
 	return m_shooterL->GetClosedLoopError();
 }
 
-void PIDShooter::OutputValues( SmartDashboard * dashboard )
+void PIDShooter::OutputValues( )
 {
-	dashboard->PutNumber( "L Shooter position", m_shooterL->GetPosition() );
-	dashboard->PutNumber( "R Shooter position", m_shooterR->GetPosition() );
-	dashboard->PutNumber( "L Shooter speed", m_shooterL->GetSpeed() );
-	dashboard->PutNumber( "R Shooter speed", m_shooterR->GetSpeed() );
-	dashboard->PutNumber( "L Shooter error", m_shooterL->GetClosedLoopError() );
-	dashboard->PutNumber( "R Shooter error", m_shooterR->GetClosedLoopError() );
-	dashboard->PutNumber( "L Shooter P", p );
-	//dashboard->PutNumber( "R Shooter P", m_shooterR->GetP() );
-	dashboard->PutNumber( "L Shooter I", i );
-	//dashboard->PutNumber( "R Shooter I", m_shooterR->GetI() );
-	dashboard->PutNumber( "L Shooter D", d );
-	//dashboard->PutNumber( "R Shooter D", m_shooterR->GetD() );
-	dashboard->PutNumber( "L Shooter F", m_shooterL->GetF() );
-	dashboard->PutNumber( "L Shooter current", m_shooterL->GetOutputCurrent() );
-	dashboard->PutNumber( "R Shooter current", m_shooterR->GetOutputCurrent() );
+	SmartDashboard::PutNumber( "L Shooter position", m_shooterL->GetPosition() );
+	SmartDashboard::PutNumber( "R Shooter position", m_shooterR->GetPosition() );
+	SmartDashboard::PutNumber( "L Shooter speed", m_shooterL->GetSpeed() );
+	SmartDashboard::PutNumber( "R Shooter speed", m_shooterR->GetSpeed() );
+	SmartDashboard::PutNumber( "L Shooter error", m_shooterL->GetClosedLoopError() );
+	SmartDashboard::PutNumber( "R Shooter error", m_shooterR->GetClosedLoopError() );
+	SmartDashboard::PutNumber( "L Shooter P", p );
+	//SmartDashboard::PutNumber( "R Shooter P", m_shooterR->GetP() );
+	SmartDashboard::PutNumber( "L Shooter I", i );
+	//SmartDashboard::PutNumber( "R Shooter I", m_shooterR->GetI() );
+	SmartDashboard::PutNumber( "L Shooter D", d );
+	//SmartDashboard::PutNumber( "R Shooter D", m_shooterR->GetD() );
+	SmartDashboard::PutNumber( "L Shooter F", m_shooterL->GetF() );
+	SmartDashboard::PutNumber( "L Shooter current", m_shooterL->GetOutputCurrent() );
+	SmartDashboard::PutNumber( "R Shooter current", m_shooterR->GetOutputCurrent() );
 }

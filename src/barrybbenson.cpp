@@ -19,8 +19,6 @@ private:
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
 
-	SmartDashboard * m_dashboard;
-
 	double speedrpm, errorrpm, pressure;
 
 	double PID_P, PID_I, PID_D, PID_F, PID_Current,
@@ -35,11 +33,15 @@ public:
 		m_operator = new HotJoystick(0);
 		m_pidShooter = new PIDShooter( SHOOTER_P, SHOOTER_I, SHOOTER_D );
 
+		shotPower = LOW_POWER;
+
 	}
 	void RobotInit() {
-
 	}
 
+	void DisabledPeriodic() {
+		m_pidShooter->OutputValues();
+	}
 
 	void AutonomousInit() {
 
@@ -62,16 +64,21 @@ public:
 
 	void TeleopShoot()
 	{
-		if ( m_operator->ButtonPressedLT() == true && shotPower != LOW_POWER )
+		if ( m_operator->ButtonPressedLT() == true )
 		{
 			shotPower = LOW_POWER;
 			shooting = true;
 		}
-		if ( m_operator->ButtonPressedRT() == true )
+		else if ( m_operator->ButtonPressedRT() == true )
 		{
 			shooting = true;
 			shotPower = HIGH_POWER;
 		}
+		else if ( (m_operator->ButtonPressedLT() == true || m_operator->ButtonPressedRT() == true) && shooting == true )
+		{
+			shooting = false;
+		}
+
 		if ( shooting == true )
 		{
 
@@ -101,22 +108,26 @@ public:
 
 			errorrpm = (PID_Error/4096.0)*600.0;
 
-			m_pidShooter->OutputValues(m_dashboard);
-			m_dashboard->PutNumber("speed_rpm", speedrpm);
-			m_dashboard->PutNumber("error_rpm", errorrpm);
+			m_pidShooter->OutputValues();
+			SmartDashboard::PutNumber("speed_rpm", speedrpm);
+			SmartDashboard::PutNumber("error_rpm", errorrpm);
 			PID_Setpoint = m_pidShooter->GetSetpoint();
 
-			m_dashboard->PutNumber( "Setpoint", m_pidShooter->GetSetpoint() );
-			m_dashboard->PutNumber( "CANTalon Speed", m_pidShooter->GetRate() );
+			SmartDashboard::PutNumber( "Setpoint", m_pidShooter->GetSetpoint() );
+			SmartDashboard::PutNumber( "CANTalon Speed", m_pidShooter->GetRate() );
 
-			if ( (m_operator->ButtonPressedLT() == true || m_operator->ButtonPressedRT() == true) && shooting == true )
+			/*if ( (m_operator->ButtonPressedLT() == true || m_operator->ButtonPressedRT() == true) && shooting == true )
 			{
 				shotPower = NO_POWER;
 				shooting = false;
-			}
+			} */
 			if ( shooting == false )
 			{
 				m_pidShooter->DisableShooter();
+			}
+			if ( errorrpm < 100 )
+			{
+				m_pidShooter->FeederEnable();
 			}
 		}
 	}
@@ -134,9 +145,9 @@ public:
 		//m_pidShooter->Set(0.2);
 		 *
 
-		m_dashboard->PutNumberPutNumber("speed", speed);
-		m_dashboard->PutNumberPutBoolean("A Button", previousAButton);
-		m_dashboard->PutNumberPutBoolean("X Button", previousXButton);
+		SmartDashboard::PutNumberPutNumber("speed", speed);
+		SmartDashboard::PutNumberPutBoolean("A Button", previousAButton);
+		SmartDashboard::PutNumberPutBoolean("X Button", previousXButton);
 	}
 	*/
 
