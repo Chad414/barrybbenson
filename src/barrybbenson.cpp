@@ -1,7 +1,7 @@
 #include <WPILib.h>
 #include <RobotUtils/RobotUtils.h>
 #include <AutonPeriodics.h>
-#include <AutonStructs.h>
+
 
 
 
