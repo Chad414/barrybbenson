@@ -18,8 +18,9 @@ Shooter::Shooter()
 	// TODO Auto-generated constructor stub
 	m_shooterL.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 	m_shooterR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+
 	m_shooterL.SetSensorDirection(false);
-	m_shooterR.SetSensorDirection(false);
+	m_shooterR.SetSensorDirection(true);
 }
 
 Shooter::~Shooter() {
@@ -35,6 +36,40 @@ void Shooter::RunShoot(double shoot_speed) {
 
 double Shooter::GetShoot() {
 	return shooterSpeed;
+}
+
+double Shooter::GetLRawShooter() {
+	return m_shooterL.Get();
+}
+
+double Shooter::GetRRawShooter() {
+	return m_shooterR.Get();
+}
+
+double Shooter::GetLShootSpeed() {
+	return m_shooterL.GetSpeed();
+}
+
+double Shooter::GetRShootSpeed() {
+	return m_shooterR.GetSpeed();
+}
+
+bool Shooter::SetShootMode(bool mode) {
+	if (mode) {
+		m_shooterL.SetControlMode(CANTalon::kSpeed);
+		m_shooterR.SetControlMode(CANTalon::kSpeed);
+		return true;
+	}
+	else if (!mode) {
+		m_shooterL.SetControlMode(CANTalon::kPercentVbus);
+		m_shooterR.SetControlMode(CANTalon::kPercentVbus);
+		return false;
+	}
+	shooterMode = mode;
+}
+
+bool Shooter::GetShootMode() {
+	return shooterMode;
 }
 
 void Shooter::RunPaddle(double paddle_speed) {

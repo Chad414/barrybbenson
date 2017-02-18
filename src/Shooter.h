@@ -18,6 +18,11 @@
 
 #define SHOOTER_PADDLE_TALON 5
 
+#define SHOOTER_P 0.01
+#define SHOOTER_I 0.0
+#define SHOOTER_D 0.0
+#define SHOOTER_F 0.0
+
 namespace Shooter {
 
 class Shooter {
@@ -31,12 +36,22 @@ private:
 
 	double shooterSpeed;
 	double paddleSpeed;
+	bool shooterMode;
 public:
 	Shooter();
 	virtual ~Shooter();
 
 	void RunShoot(double shoot_speed);
 	double GetShoot();
+
+	double GetLRawShooter();
+	double GetRRawShooter();
+
+	double GetLShootSpeed();
+	double GetRShootSpeed();
+
+	bool SetShootMode(bool mode); //true is pid, false is vbus
+	bool GetShootMode();
 
 	void RunPaddle(double paddle_speed);
 	double GetPaddle();

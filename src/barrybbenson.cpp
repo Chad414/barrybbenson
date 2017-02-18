@@ -135,6 +135,20 @@ public:
         visionThread.detach();
 	}
 
+	void DisabledPeriodic() {
+		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.Shooter::GetRRawShooter());
+		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.Shooter::GetLRawShooter());
+
+		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.Shooter::GetShootMode());
+		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
+
+		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.Shooter::GetLShootSpeed());
+		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.Shooter::GetRShootSpeed());
+
+		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
+		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.Shooter::getRightShoot());
+	}
+
 	void AutonomousInit() {
 	}
 
@@ -151,15 +165,30 @@ public:
 
 	void TeleopShoot() {
 		if (m_driver->ButtonA()) {
-			m_shoot.Shooter::RunShoot(-0.5);
+			m_shoot.Shooter::SetShootMode(false);
+			m_shoot.Shooter::RunShoot(-1.0);
+		}
+		else if (m_driver->ButtonB()) {
+			m_shoot.Shooter::SetShootMode(true);
+			m_shoot.Shooter::RunShoot(-3000);
 		}
 		else {
+			m_shoot.Shooter::SetShootMode(false);
 			m_shoot.Shooter::RunShoot(0.0);
 		}
 
+		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.Shooter::GetRRawShooter());
+		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.Shooter::GetLRawShooter());
+
+		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.Shooter::GetShootMode());
+		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
+
+		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.Shooter::GetLShootSpeed());
+		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.Shooter::GetRShootSpeed());
+
 		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
 		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.Shooter::getRightShoot());
-		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
+
 	}
 
 	void TeleopDrive() {
