@@ -1,0 +1,38 @@
+
+ALL PROFILES START GEAR SIDE FOREWARD
+
+
+
+
+RED ALLIANCE
+
+RIGHT---------------------------------
+0, 0, 90 -Origin
+
+-1.49, 2.63, 150 -Gear point
+
+
+Second Profile, this will be in reverse
+must have second profile with gear point as origin.
+(0, 0, 330) -second origin
+2.27, -2.02, 315 -Shooting point
+--------------------------------------
+
+
+
+
+
+
+BLUE ALLIANCE
+
+LEFT---------------------------------
+First Profile
+0, 0, 90 -Origin
+
+1.49, 2.63, 30 -Gear point
+
+Second Profile, this will be in reverse
+must have second profile with gear point as origin.
+(0, 0, 310) -second origin
+-2.27, -2.02, 225 -Shooting point
+--------------------------------------
