@@ -27,12 +27,16 @@ Gear::Gear()
 	m_gearArm.SetVoltageRampRate(0);
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
 	m_gearArm.SetAllowableClosedLoopErr(0);
-	m_gearArm.ConfigEncoderCodesPerRev(256);
+	//m_gearArm.ConfigEncoderCodesPerRev(256);
 	m_gearArm.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 }
 
 double Gear::GetGearArmPosition() {
 	return (m_gearArm.GetPosition()* GEAR_DEGREE_CONST);
+}
+
+double Gear::GetRawGearArmPosition() {
+	return m_gearArm.GetPosition();
 }
 
 void Gear::ZeroGearArmPosition() {
@@ -43,14 +47,12 @@ double Gear::GetGearTalonCurrent() {
 	return m_gearArm.GetOutputCurrent();
 }
 
-bool Gear::SetGearMode(bool position) {
+void Gear::SetGearMode(bool position) {
 	if (position) {
 		m_gearArm.SetControlMode(CANTalon::kPosition);
-		return true;
 	}
 	else {
 		m_gearArm.SetControlMode(CANTalon::kPercentVbus);
-		return false;
 	}
 	gearMode = position;
 }
@@ -65,9 +67,13 @@ bool Gear::GetGearMode() {
 }
 
 void Gear::SetGearArmPosition(double gear_speed) {
-	if (GetGearMode() == true){
+	if ((GetGearMode() == true) && (GetGearTalonCurrent() < 0.7)){
 		gear_speed = gear_speed / GEAR_DEGREE_CONST;
 		m_gearArm.Set(gear_speed);
+	}
+	else if (GetGearTalonCurrent() > 0.7) {
+
+		m_gearArm.Set(0.0);
 	}
 	else {
 		m_gearArm.Set(gear_speed);
@@ -93,6 +99,8 @@ void Gear::SetGearArmSetpoint(GearArmSetpoint setpoint) {
 		SetGearArmPosition(GEAR_PACKAGE);
 		break;
 	}
+
+	gearSetpoint = setpoint;
 }
 
 double Gear::GetGearCommandedSpeed() {
@@ -100,7 +108,11 @@ double Gear::GetGearCommandedSpeed() {
 }
 
 double Gear::GetGearSetpoint() {
-	return m_gearArm.GetSetpoint();
+	return gearSetpoint;
+}
+
+double Gear::GetGearError() {
+	return (GetGearArmPosition() - GetGearSetpoint());
 }
 
 double Gear::GearGet() {

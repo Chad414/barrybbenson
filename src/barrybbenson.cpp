@@ -54,13 +54,14 @@ public:
 		}
 		else if (m_driver->ButtonA()) {
 			m_gear.SetGearMode(true);
+			std::cout << "Gear Mode Set: True" << std::endl;
 			m_gear.SetGearArmPosition(20);
 		}
 		else if (m_driver->ButtonB()) {
 			m_gear.ZeroGearArmPosition();
 		}
 		else {
-			//m_gear.SetGearMode(false);
+			m_gear.SetGearMode(false);
 			m_gear.SetGearArmPosition(0.0);
 		}
 
@@ -74,11 +75,14 @@ public:
 		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
 		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
 		SmartDashboard::PutNumber("Gear Setpoint", m_gear.GetGearSetpoint());
-		SmartDashboard::PutBoolean("Gear Mode", m_gear.GetGearMode());
+		SmartDashboard::PutNumber("GearRaw Position", m_gear.GetRawGearArmPosition());
 
-		SmartDashboard::PutNumber("Gear P", TALON_GEAR_P);
-		SmartDashboard::PutNumber("Gear I", TALON_GEAR_I);
-		SmartDashboard::PutNumber("Gear D", TALON_GEAR_D);
+		SmartDashboard::PutBoolean("Gear Mode", m_gear.GetGearMode());
+		SmartDashboard::PutNumber("Gear Error", m_gear.GetGearError());
+
+		SmartDashboard::PutNumber("Gear Arm P", TALON_GEAR_P);
+		SmartDashboard::PutNumber("Gear Arm I", TALON_GEAR_I);
+		SmartDashboard::PutNumber("Gear Arm D", TALON_GEAR_D);
 
 		SmartDashboard::PutNumber("Gear Current", m_gear.GetGearTalonCurrent());
 

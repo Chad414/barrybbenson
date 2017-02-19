@@ -17,7 +17,7 @@
 #define TALON_GEAR_ROLL 12
 
 //gear arm pid values
-#define TALON_GEAR_P 0.01
+#define TALON_GEAR_P 0.1
 #define TALON_GEAR_I 0.0
 #define TALON_GEAR_D 0.0
 #define TALON_GEAR_F 0.0
@@ -44,6 +44,7 @@ private:
 
 	double gearCommandedSpeed;
 	double gearRollerCommandedSpeed;
+	double gearSetpoint;
 
 	bool gearMode;
 public:
@@ -51,15 +52,19 @@ public:
 //gear arm
 	double GetGearArmPosition();
 		//return encoder position
+
+	double GetRawGearArmPosition();
 	void ZeroGearArmPosition();
 		//sets encoder position to 0.0
 
-	bool SetGearMode(bool position);
+	void SetGearMode(bool position);
 		//true is pid mode; false is joystick control
 	bool GetGearMode();
 		//true is pid mode; false is joystick control
 
 	double GetGearTalonCurrent();
+
+	double GetGearError();
 
 	void SetGearArmPosition(double gear_speed);
 		//pid mode, accepts desired position; joystick mode, is % to talon
