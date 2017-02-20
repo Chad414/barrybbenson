@@ -54,7 +54,6 @@ public:
 		}
 		else if (m_driver->ButtonA()) {
 			m_gear.SetGearMode(true);
-			std::cout << "Gear Mode Set: True" << std::endl;
 			m_gear.SetGearArmPosition(20);
 		}
 		else if (m_driver->ButtonB()) {

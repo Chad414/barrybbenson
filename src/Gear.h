@@ -79,7 +79,6 @@ public:
 
 //roller
 	void SetGearRollerSpeed(double roller_speed);
-		//
 	double GetGearRollerCommandedSpeed();
 
 	virtual ~Gear();

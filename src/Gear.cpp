@@ -67,27 +67,26 @@ bool Gear::GetGearMode() {
 }
 
 void Gear::SetGearArmPosition(double gear_speed) {
-	if ((GetGearMode() == true) && (GetGearTalonCurrent() < 0.7)){
-		gear_speed = gear_speed / GEAR_DEGREE_CONST;
-		m_gearArm.Set(gear_speed);
+	if ((GetGearMode() == true) && (GetGearTalonCurrent() < 0.7)){ //position pid, not too high current...
+		gear_speed = gear_speed / GEAR_DEGREE_CONST; //conversion of desired angle to actal
+		m_gearArm.Set(gear_speed); //set here...
 	}
-	else if (GetGearTalonCurrent() > 0.7) {
-
+	else if (GetGearTalonCurrent() > 0.7) { //if current too high, stop running...
+		SetGearMode(false); //change to percent, so sending 0% to motor, force it to percent mode
 		m_gearArm.Set(0.0);
 	}
-	else {
+	else { //if current is ok, not position mode, must be percent mode, assign gear_speed based on percent power to motor
 		m_gearArm.Set(gear_speed);
 	}
 
 	gearCommandedSpeed = gear_speed;
 
-	//m_gearArm.Set(gear_speed);
 }
 
 void Gear::SetGearArmSetpoint(GearArmSetpoint setpoint) {
 	switch (setpoint) {
 	case 0:
-		SetGearArmPosition(GEAR_GROUND);
+		SetGearArmPosition(GEAR_GROUND); //has to go through all of the checks of the SetGearArmPosition function
 		break;
 	case 1:
 		SetGearArmPosition(GEAR_PLACE_FIRST);
@@ -104,7 +103,7 @@ void Gear::SetGearArmSetpoint(GearArmSetpoint setpoint) {
 }
 
 double Gear::GetGearCommandedSpeed() {
-	return gearCommandedSpeed;
+	return gearCommandedSpeed; //gear_speed from SetGearArmPosition function
 }
 
 double Gear::GetGearSetpoint() {
