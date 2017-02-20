@@ -10,7 +10,7 @@
 
 #ifndef SRC_INTAKE_H_
 #define SRC_INTAKE_H_
-#define TALON_INTAKE_ROLLER 0
+#define TALON_INTAKE_ROLLER 1
 #define SOLENOID_INTAKE_ARM 0
 
 class Intake {
