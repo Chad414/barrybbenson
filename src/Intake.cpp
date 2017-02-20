@@ -12,6 +12,12 @@ Intake::~Intake()
 }
 void Intake::SetArm(bool on){
 	m_intakeArm.Set(on);
+
+	ArmStatus = on;
+}
+
+bool Intake::GetArm() {
+	return ArmStatus;
 }
 
 void Intake::SetRoller(double value) {
