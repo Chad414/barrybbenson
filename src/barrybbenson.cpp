@@ -177,6 +177,7 @@ public:
 			m_shoot.Shooter::RunShoot(0.0);
 		}
 
+
 		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.Shooter::GetRRawShooter());
 		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.Shooter::GetLRawShooter());
 

@@ -53,7 +53,7 @@ public:
 
 	double GetShootError();
 
-	bool SetShootMode(bool mode); //true is pid, false is vbus
+	void SetShootMode(bool mode); //true is pid, false is vbus
 	bool GetShootMode();
 
 	void RunPaddle(double paddle_speed);

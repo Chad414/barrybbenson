@@ -33,7 +33,7 @@ void Shooter::RunShoot(double shoot_speed) {
 
 	shooterSpeed = shoot_speed;
 
-	if ((GetShootError() != GetAverageShootSpeed()) && (GetShootError() < 200) && (shooterSpeed != 0.0) ) {
+	if ((GetShootMode() == true) && (fabs(GetShootError()) < 200) && (shooterSpeed != 0.0) ) {
 		RunPaddle(-1.0);
 	}
 	else {
@@ -69,16 +69,14 @@ double Shooter::GetShootError() {
 	return (GetAverageShootSpeed() - shooterSpeed);
 }
 
-bool Shooter::SetShootMode(bool mode) {
+void Shooter::SetShootMode(bool mode) {
 	if (mode) {
 		m_shooterL.SetControlMode(CANTalon::kSpeed);
 		m_shooterR.SetControlMode(CANTalon::kSpeed);
-		return true;
 	}
 	else if (!mode) {
 		m_shooterL.SetControlMode(CANTalon::kPercentVbus);
 		m_shooterR.SetControlMode(CANTalon::kPercentVbus);
-		return false;
 	}
 	shooterMode = mode;
 }
