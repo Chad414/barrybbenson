@@ -10,8 +10,8 @@ Intake::~Intake()
 {
 
 }
-void Intake::SetArm(bool b){
-	m_intakeArm.Set(b);
+void Intake::SetArm(bool on){
+	m_intakeArm.Set(on);
 }
 
 void Intake::SetRoller(double value) {
