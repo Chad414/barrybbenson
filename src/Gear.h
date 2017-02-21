@@ -17,10 +17,15 @@
 #define TALON_GEAR_ROLL 12
 
 //gear arm pid values
-#define TALON_GEAR_P 0.1
-#define TALON_GEAR_I 0.0
-#define TALON_GEAR_D 0.0
-#define TALON_GEAR_F 0.0
+#define TALON_UP_GEAR_P 2.5
+#define TALON_UP_GEAR_I 0.0
+#define TALON_UP_GEAR_D 0.0
+#define TALON_UP_GEAR_F 0.0
+
+#define TALON_DOWN_GEAR_P 0.54
+#define TALON_DOWN_GEAR_I 0.0
+#define TALON_DOWN_GEAR_D 0.0
+#define TALON_DOWN_GEAR_F 0.0
 
 //gear arm constant to make degree
 #define GEAR_DEGREE_CONST 165.75

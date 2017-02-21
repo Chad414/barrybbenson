@@ -22,7 +22,7 @@ Gear::Gear()
 	  m_gearRoll(TALON_GEAR_ROLL)
 {
 	// TODO Auto-generated constructor stub
-	//m_gearArm.SetClosedLoopOutputDirection(true);
+	m_gearArm.SetClosedLoopOutputDirection(true);
 	m_gearArm.SetSensorDirection(true);
 	m_gearArm.SetVoltageRampRate(0);
 	m_gearArm.SetPID(TALON_GEAR_P, TALON_GEAR_I, TALON_GEAR_D);
@@ -67,14 +67,14 @@ bool Gear::GetGearMode() {
 }
 
 void Gear::SetGearArmPosition(double gear_speed) {
-	if ((GetGearMode() == true) && (GetGearTalonCurrent() < 0.7)){ //position pid, not too high current...
+	if ((GetGearMode() == true)) {// && (GetGearTalonCurrent() < 1.5)){ //position pid, not too high current...
 		gear_speed = gear_speed / GEAR_DEGREE_CONST; //conversion of desired angle to actal
 		m_gearArm.Set(gear_speed); //set here...
 	}
-	else if (GetGearTalonCurrent() > 0.7) { //if current too high, stop running...
-		SetGearMode(false); //change to percent, so sending 0% to motor, force it to percent mode
-		m_gearArm.Set(0.0);
-	}
+	//else if (GetGearTalonCurrent() > 1.5) { //if current too high, stop running...
+		//SetGearMode(false); //change to percent, so sending 0% to motor, force it to percent mode
+		//m_gearArm.Set(0.0);
+	//}
 	else { //if current is ok, not position mode, must be percent mode, assign gear_speed based on percent power to motor
 		m_gearArm.Set(gear_speed);
 	}
