@@ -79,10 +79,6 @@ public:
 		SmartDashboard::PutBoolean("Gear Mode", m_gear.GetGearMode());
 		SmartDashboard::PutNumber("Gear Error", m_gear.GetGearError());
 
-		SmartDashboard::PutNumber("Gear Arm P", TALON_GEAR_P);
-		SmartDashboard::PutNumber("Gear Arm I", TALON_GEAR_I);
-		SmartDashboard::PutNumber("Gear Arm D", TALON_GEAR_D);
-
 		SmartDashboard::PutNumber("Gear Current", m_gear.GetGearTalonCurrent());
 
 		SmartDashboard::PutNumber("Gear Roller Commanded Speed", m_gear.GetGearRollerCommandedSpeed());
