@@ -22,6 +22,8 @@ Gear::Gear()
 	  m_gearRoll(TALON_GEAR_ROLL)
 {
 	// TODO Auto-generated constructor stub
+
+	m_rollTime = new Timer;
 	m_gearArm.SetClosedLoopOutputDirection(true);
 	m_gearArm.SetSensorDirection(true);
 	m_gearArm.SetVoltageRampRate(0);
@@ -92,35 +94,13 @@ void Gear::SetGearArmPosition(double gear_speed) {
 	}
 }
 
-void Gear::SetGearArmSetpoint(GearArmSetpoint setpoint) {
-	switch (setpoint) {
-	case 0:
-		SetGearArmPosition(GEAR_GROUND); //has to go through all of the checks of the SetGearArmPosition function
-		break;
-	case 1:
-		SetGearArmPosition(GEAR_PLACE_FIRST);
-		break;
-	case 2:
-		SetGearArmPosition(GEAR_PLACE_SECOND);
-		break;
-	case 3:
-		SetGearArmPosition(GEAR_PACKAGE);
-		break;
-	}
-
-	gearSetpoint = setpoint;
-}
 
 double Gear::GetGearCommandedSpeed() {
-	return gearCommandedSpeed; //gear_speed from SetGearArmPosition function
-}
-
-double Gear::GetGearSetpoint() {
-	return gearSetpoint;
+	return gearCommandedSpeed * GEAR_DEGREE_CONST; //gear_speed from SetGearArmPosition function
 }
 
 double Gear::GetGearError() {
-	return (GetGearArmPosition() - GetGearSetpoint());
+	return (fabs(GetGearArmPosition() - GetGearCommandedSpeed()));
 }
 
 double Gear::GearGet() {

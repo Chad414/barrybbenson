@@ -48,8 +48,8 @@
 	 *
 	 * BUTTONS
 	 * 		A - gear to ground
-	 * 		B - gear to place, wrist out
-	 * 		X - gear to angle off gear
+	 * 		B - gear secondary place
+	 * 		X - gear initial place
 	 * 		Y - gear to package
 	 *
 	 * DPAD
@@ -81,16 +81,19 @@ private:
 
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
+	Timer* m_timer;
+
 
 	PowerDistributionPanel m_pdp;
 
-	Timer m_timer;
 
 	Shooter::Shooter m_shoot;
 	Drivetrain m_drivetrain;
 	Gear m_gear;
-
+	Timer m_currentTimer;
+	Timer m_rollTimer;
 	double totalDriveCurrent;
+	int placeGear = 0;
 
 public:
 
@@ -162,7 +165,8 @@ public:
 
 	void TeleopPeriodic() {
 		TeleopDrive();
-		TeleopShoot();
+		//TeleopShoot();
+		TeleopGear();
 	}
 
 	void TeleopShoot() {
@@ -200,15 +204,25 @@ public:
 	}
 
 	void TeleopDrive() {
-		if (fabs(m_driver->AxisLY()) > 0.2) { // || fabs(m_driver->AxisRX()) > 0.2) {
+
+		SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
+		SmartDashboard::PutNumber("Angle", m_drivetrain.getAngle());
+
+		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
 				//negative is the right way for can 11
 				//negative is the right way for can 10
+		}
 
+		if (m_driver->ButtonX()) {
+			m_drivetrain.setClimbShift(true);
+		}
+		else {
+			m_drivetrain.setClimbShift(false);
 		}
 
 		if (m_driver->ButtonLB()) {
-			if (m_timer.Get() >= 2.0) {
+			if (m_currentTimer.Get() >= 2.0) {
 				m_drivetrain.setShift(false);
 			} else {
 				m_drivetrain.setShift(true);
@@ -223,10 +237,10 @@ public:
 		//SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
 
 		if (totalDriveCurrent >= 2.5) {
-			m_timer.Start();
+			m_currentTimer.Start();
 		} else {
-			m_timer.Stop();
-			m_timer.Reset();
+			m_currentTimer.Stop();
+			m_currentTimer.Reset();
 		}
 
 		//SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
@@ -235,6 +249,74 @@ public:
 		//SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
 		//SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
 		//SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
+	}
+
+	//gear is done !!
+	void TeleopGear() {
+		SmartDashboard::PutNumber("Gear Timer", m_rollTimer.Get());
+		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
+		SmartDashboard::PutBoolean("Gear Mode", m_gear.GetGearMode());
+		SmartDashboard::PutNumber("Gear Raw Position", m_gear.GetRawGearArmPosition());
+		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
+		SmartDashboard::PutNumber("Gear Error", m_gear.GetGearError());
+		SmartDashboard::PutNumber("Gear Place", placeGear);
+		SmartDashboard::PutNumber("Gear Roller Speed", m_gear.GetGearRollerCommandedSpeed());
+
+		if (fabs(m_operator->AxisLY()) > 0.2) {
+			m_gear.SetGearMode(false);
+			m_gear.SetGearArmPosition(m_operator->AxisLY());
+		}
+		else if (m_operator->ButtonA()) {
+			m_gear.SetGearMode(true);
+			m_gear.SetGearArmPosition(GEAR_GROUND);
+		}
+		else if (m_operator->ButtonX()) {
+			m_gear.SetGearMode(true);
+			m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
+		}
+		else if (m_operator->ButtonB()){
+			switch (placeGear){
+				case 0:
+					m_gear.SetGearMode(true);
+					m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
+					if (m_gear.GetGearError() < 5) {
+						placeGear++;
+						m_rollTimer.Stop();
+						m_rollTimer.Reset();
+						m_rollTimer.Start();
+					}
+					break;
+				case 1:
+					m_gear.SetGearRollerSpeed(-0.7);
+					if (m_rollTimer.Get() > 1.0) {
+						m_gear.SetGearRollerSpeed(0.0);
+						placeGear++;
+					}
+					break;
+				case 2:
+					m_gear.SetGearArmPosition(GEAR_PLACE_SECOND);
+					if (m_gear.GetGearError() < 5) {
+						placeGear++;
+					}
+			}
+
+		}
+		else if (m_operator->ButtonY()) {
+			m_gear.SetGearMode(true);
+			m_gear.SetGearArmPosition(GEAR_PACKAGE);
+		}
+		else if (m_operator->ButtonRB()) {
+			m_gear.SetGearRollerSpeed(-1.0);
+		}
+		else if (m_operator->ButtonLB()) {
+			m_gear.SetGearRollerSpeed(1.0);
+		}
+		else {
+			m_gear.SetGearMode(false);
+			m_gear.SetGearArmPosition(0.0);
+			m_gear.SetGearRollerSpeed(0.0);
+			placeGear = 0;
+		}
 	}
 
 	void TestPeriodic() {

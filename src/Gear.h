@@ -31,26 +31,20 @@
 #define GEAR_DEGREE_CONST 165.75
 
 #define GEAR_GROUND 0.0
-#define GEAR_PACKAGE 90.0
-#define GEAR_PLACE_FIRST 45.0
-#define GEAR_PLACE_SECOND 43.0
-
-enum GearArmSetpoint {
-	kGround = 0,
-	kPlaceFirst = 1,
-	kPlaceSecond = 2,
-	kPackage = 3
-};
+#define GEAR_PACKAGE 86.0
+#define GEAR_PLACE_FIRST 70.0
+#define GEAR_PLACE_SECOND 28.0
+#define GEAR_HUMAN_LOAD 80.0
 
 class Gear {
 private:
 	CANTalon m_gearArm;
 	CANTalon m_gearRoll;
+	Timer *m_rollTime;
 
 	double gearCommandedSpeed;
 	double gearRollerCommandedSpeed;
-	double gearSetpoint;
-
+	double gearSetpoint = 0;
 	bool gearMode;
 public:
 	Gear();
@@ -71,9 +65,9 @@ public:
 
 	double GetGearError();
 
+
 	void SetGearArmPosition(double gear_speed);
 		//pid mode, accepts desired position; joystick mode, is % to talon
-	void SetGearArmSetpoint(GearArmSetpoint setpoint);
 
 	double GetGearCommandedSpeed();
 		//pid mode, returns desired position; joystick mode, returns percent value

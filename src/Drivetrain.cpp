@@ -19,6 +19,7 @@ Drivetrain::Drivetrain()
 	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
 	m_gyro(I2C::Port::kMXP),
 	m_shift(SOLENOID_SHIFT),
+	m_climb(SOLENOID_CLIMBER),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_MotionProfile(m_rDriveR)
@@ -92,6 +93,10 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 	m_turn = angle;
 	m_drive.ArcadeDrive(speed, angle);
 	cout << (int)m_rDriveR.GetControlMode() << endl;
+}
+
+void Drivetrain::setClimbShift(bool on) {
+	m_climb.Set(on);
 }
 
 double Drivetrain::getSpeed() {

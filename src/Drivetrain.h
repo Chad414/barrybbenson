@@ -23,7 +23,8 @@
 #define TALON_DRIVE_RM 4
 #define TALON_DRIVE_RR 3
 
-#define SOLENOID_SHIFT 0
+#define SOLENOID_SHIFT 1
+#define SOLENOID_CLIMBER 0
 
 /*
 #ifndef USE_TEST_BENCH
@@ -52,6 +53,8 @@ public:
 	void startMP();
 	void resetMP();
 	void controlMP();
+
+	void setClimbShift(bool on);
 	float getYaw();
 	void resetGyro();
 	double getLeftEncoder();
@@ -91,6 +94,7 @@ private:
 	AHRS m_gyro;
 
 	Solenoid m_shift;
+	Solenoid m_climb;
 
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
