@@ -18,13 +18,10 @@
 
 #define SHOOTER_PADDLE_TALON 9
 
-#define SHOOTER_P 0.01
+#define SHOOTER_P 0.5
 #define SHOOTER_I 0.0
 #define SHOOTER_D 0.0
 #define SHOOTER_F 0.0
-
-namespace Shooter {
-
 class Shooter {
 private:
 	CANTalon m_shooterL;
@@ -67,7 +64,5 @@ public:
 	double getFeeder();
 
 };
-
-} /* namespace Shooter */
 
 #endif /* SRC_SHOOTER_H_ */

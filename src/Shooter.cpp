@@ -7,8 +7,6 @@
 
 #include "Shooter.h"
 
-namespace Shooter {
-
 Shooter::Shooter()
 	: m_shooterL(SHOOTER_LEFT_TALON),
 	  m_shooterR(SHOOTER_RIGHT_TALON),
@@ -16,6 +14,9 @@ Shooter::Shooter()
 	  m_paddle(SHOOTER_PADDLE_TALON)
 {
 	// TODO Auto-generated constructor stub
+
+	m_shooterL.SetPID(SHOOTER_P,SHOOTER_I, SHOOTER_D);
+	m_shooterR.SetPID(SHOOTER_P,SHOOTER_I, SHOOTER_D);
 	m_shooterL.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 	m_shooterR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 
@@ -28,8 +29,16 @@ Shooter::~Shooter() {
 }
 
 void Shooter::RunShoot(double shoot_speed) {
-	m_shooterL.Set(-shoot_speed);
-	m_shooterR.Set(+shoot_speed);
+	if (GetShootMode() == true) {
+		m_shooterL.Set(SHOOTER_RIGHT_TALON);
+		//m_shooterL.SetClosedLoopOutputDirection(true);
+		m_shooterR.Set(+shoot_speed);
+	}
+	else {
+
+		m_shooterL.Set(-shoot_speed);
+		m_shooterR.Set(+shoot_speed);
+	}
 
 	shooterSpeed = shoot_speed;
 
@@ -71,7 +80,7 @@ double Shooter::GetShootError() {
 
 void Shooter::SetShootMode(bool mode) {
 	if (mode) {
-		m_shooterL.SetControlMode(CANTalon::kSpeed);
+		m_shooterL.SetControlMode(CANTalon::kFollower);
 		m_shooterR.SetControlMode(CANTalon::kSpeed);
 	}
 	else if (!mode) {
@@ -115,4 +124,3 @@ double Shooter::getFeeder() {
 	return m_feeder.Get();
 }
 
-} /* namespace Shooter */

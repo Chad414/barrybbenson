@@ -27,7 +27,9 @@ Gear::Gear()
 	m_gearArm.SetClosedLoopOutputDirection(true);
 	m_gearArm.SetSensorDirection(true);
 	m_gearArm.SetVoltageRampRate(0);
-	m_gearArm.SetPID(TALON_UP_GEAR_P, TALON_UP_GEAR_I, TALON_UP_GEAR_D);
+	m_gearArm.SetP(TALON_UP_GEAR_P);
+	m_gearArm.SetI(TALON_UP_GEAR_I);
+	m_gearArm.SetD(TALON_UP_GEAR_D);
 	m_gearArm.SetAllowableClosedLoopErr(0);
 	//m_gearArm.ConfigEncoderCodesPerRev(256);
 	m_gearArm.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
@@ -84,13 +86,19 @@ void Gear::SetGearArmPosition(double gear_speed) {
 	gearCommandedSpeed = gear_speed;
 
 	if ((GetGearMode() == true) && (gearCommandedSpeed > GetRawGearArmPosition())) {
-		m_gearArm.SetPID(TALON_UP_GEAR_P, TALON_UP_GEAR_I, TALON_UP_GEAR_D);
+		m_gearArm.SetP(TALON_UP_GEAR_P);
+		m_gearArm.SetI(TALON_UP_GEAR_I);
+		m_gearArm.SetD(TALON_UP_GEAR_D);
 	}
 	else if ((GetGearMode() == true) && (gearCommandedSpeed < GetRawGearArmPosition())) {
-		m_gearArm.SetPID(TALON_DOWN_GEAR_P, TALON_DOWN_GEAR_I, TALON_DOWN_GEAR_D);
+		m_gearArm.SetP(TALON_DOWN_GEAR_P);
+		m_gearArm.SetI(TALON_DOWN_GEAR_I);
+		m_gearArm.SetD(TALON_DOWN_GEAR_D);
 	}
 	else {
-		m_gearArm.SetPID(TALON_UP_GEAR_P, TALON_UP_GEAR_I, TALON_UP_GEAR_D);
+		m_gearArm.SetP(TALON_UP_GEAR_P);
+		m_gearArm.SetI(TALON_UP_GEAR_I);
+		m_gearArm.SetD(TALON_UP_GEAR_D);
 	}
 }
 

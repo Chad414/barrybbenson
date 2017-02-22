@@ -9,6 +9,7 @@
 #include "Drivetrain.h"
 #include "Shooter.h"
 #include "Gear.h"
+#include "Intake.h"
 
 /*
 	 ***** Driver Joystick Mapping
@@ -87,9 +88,11 @@ private:
 	PowerDistributionPanel m_pdp;
 
 
-	Shooter::Shooter m_shoot;
+	Shooter m_shoot;
 	Drivetrain m_drivetrain;
 	Gear m_gear;
+	Intake m_intake;
+
 	Timer m_currentTimer;
 	Timer m_rollTimer;
 	double totalDriveCurrent;
@@ -141,17 +144,17 @@ public:
 	}
 
 	void DisabledPeriodic() {
-		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.Shooter::GetRRawShooter());
-		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.Shooter::GetLRawShooter());
+		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.GetRRawShooter());
+		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.GetLRawShooter());
 
-		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.Shooter::GetShootMode());
+		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.GetShootMode());
 		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
 
-		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.Shooter::GetLShootSpeed());
-		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.Shooter::GetRShootSpeed());
+		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.GetLShootSpeed());
+		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.GetRShootSpeed());
 
-		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
-		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.Shooter::getRightShoot());
+		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.getLeftShoot());
+		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.getRightShoot());
 	}
 
 	void AutonomousInit() {
@@ -164,42 +167,43 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		TeleopDrive();
-		//TeleopShoot();
-		TeleopGear();
+		//TeleopDrive();
+		TeleopShoot();
+		//TeleopGear();
+		//TeleopIntake();
 	}
 
 	void TeleopShoot() {
 		if (m_driver->ButtonA()) {
-			m_shoot.Shooter::SetShootMode(false);
-			m_shoot.Shooter::RunShoot(1.0);
+			m_shoot.SetShootMode(false);
+			m_shoot.RunShoot(1.0);
 		}
 		else if (m_driver->ButtonB()) {
-			m_shoot.Shooter::SetShootMode(true);
-			m_shoot.Shooter::RunShoot(3400);
+			m_shoot.SetShootMode(true);
+			m_shoot.RunShoot(3400);
 		}
 		else {
-			m_shoot.Shooter::SetShootMode(false);
-			m_shoot.Shooter::RunShoot(0.0);
+			m_shoot.SetShootMode(false);
+			m_shoot.RunShoot(0.0);
 		}
 
 
-		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.Shooter::GetRRawShooter());
-		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.Shooter::GetLRawShooter());
+		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.GetRRawShooter());
+		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.GetLRawShooter());
 
-		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.Shooter::GetShootMode());
+		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.GetShootMode());
 		SmartDashboard::PutNumber("ShooterSpeed", shooterSpeed);
-		SmartDashboard::PutNumber("Get Shoot", m_shoot.Shooter::GetShoot());
+		SmartDashboard::PutNumber("Get Shoot", m_shoot.GetShoot());
 
-		SmartDashboard::PutNumber("Get Paddle", m_shoot.Shooter::GetPaddle());
+		SmartDashboard::PutNumber("Get Paddle", m_shoot.GetPaddle());
 
-		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.Shooter::GetLShootSpeed());
-		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.Shooter::GetRShootSpeed());
-		SmartDashboard::PutNumber("Average Shooter Speed", m_shoot.Shooter::GetAverageShootSpeed());
-		SmartDashboard::PutNumber("Shoot Error", m_shoot.Shooter::GetShootError());
+		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.GetLShootSpeed());
+		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.GetRShootSpeed());
+		SmartDashboard::PutNumber("Average Shooter Speed", m_shoot.GetAverageShootSpeed());
+		SmartDashboard::PutNumber("Shoot Error", m_shoot.GetShootError());
 
-		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.Shooter::getLeftShoot());
-		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.Shooter::getRightShoot());
+		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.getLeftShoot());
+		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.getRightShoot());
 
 	}
 
@@ -249,6 +253,33 @@ public:
 		//SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
 		//SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
 		//SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
+	}
+
+	//intake is ready for test
+	void TeleopIntake() {
+		if (m_operator->GetPOV() == 0.0) {
+			if (m_gear.GetGearArmPosition() > 75) { //checks to see if gear arm is in
+				m_intake.SetHopper(true);
+				m_intake.SetIntakeArm(true);
+			}
+		}
+		else if (m_operator->GetPOV() == 180.0) {
+			m_intake.SetIntakeArm(false);
+			m_intake.SetHopper(false);
+		}
+		else if (m_operator->GetPOV() == 90.0) {
+			m_intake.SetHopper(false);
+		}
+
+		if (m_operator->AxisLT() > 0.2) {
+			m_intake.SetIntakeRoller(-1.0);
+		}
+		else if (m_operator->AxisRT() > 0.2) {
+			m_intake.SetIntakeRoller(1.0);
+		}
+
+		SmartDashboard::PutNumber("Intake Roller", m_intake.GetIntakeRoller());
+		SmartDashboard::PutNumber("Intake POV", m_operator->GetPOV());
 	}
 
 	//gear is done !!
