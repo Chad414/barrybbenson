@@ -8,6 +8,7 @@
 
 #include "Drivetrain.h"
 #include "Shooter.h"
+#include "Gear.h"
 
 /*
 	 ***** Driver Joystick Mapping
@@ -87,6 +88,7 @@ private:
 
 	Shooter::Shooter m_shoot;
 	Drivetrain m_drivetrain;
+	Gear m_gear;
 
 	double totalDriveCurrent;
 
