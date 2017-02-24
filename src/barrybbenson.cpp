@@ -167,10 +167,10 @@ public:
 	}
 
 	void TeleopPeriodic() {
-		//TeleopDrive();
-		TeleopShoot();
-		//TeleopGear();
-		//TeleopIntake();
+		TeleopDrive();
+		//TeleopShoot();
+		TeleopGear();
+		TeleopIntake();
 	}
 
 	void TeleopShoot() {
@@ -272,10 +272,13 @@ public:
 		}
 
 		if (m_operator->AxisLT() > 0.2) {
-			m_intake.SetIntakeRoller(-1.0);
+			m_intake.SetIntakeRoller(1.0);
 		}
 		else if (m_operator->AxisRT() > 0.2) {
-			m_intake.SetIntakeRoller(1.0);
+			m_intake.SetIntakeRoller(-1.0);
+		}
+		else {
+			m_intake.SetIntakeRoller(0.0);
 		}
 
 		SmartDashboard::PutNumber("Intake Roller", m_intake.GetIntakeRoller());
