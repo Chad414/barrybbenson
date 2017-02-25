@@ -55,6 +55,7 @@ public:
 	double GetRawGearArmPosition();
 	void ZeroGearArmPosition();
 		//sets encoder position to 0.0
+	void GameStartGearArmPosition();
 
 	void SetGearMode(bool position);
 		//true is pid mode; false is joystick control

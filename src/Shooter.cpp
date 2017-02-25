@@ -10,7 +10,6 @@
 Shooter::Shooter()
 	: m_shooterL(SHOOTER_LEFT_TALON),
 	  m_shooterR(SHOOTER_RIGHT_TALON),
-	  m_feeder(FEEDER_TALON),
 	  m_paddle(SHOOTER_PADDLE_TALON)
 {
 	// TODO Auto-generated constructor stub
@@ -31,7 +30,7 @@ Shooter::~Shooter() {
 void Shooter::RunShoot(double shoot_speed) {
 	if (GetShootMode() == true) {
 		m_shooterL.Set(SHOOTER_RIGHT_TALON);
-		//m_shooterL.SetClosedLoopOutputDirection(true);
+		m_shooterL.SetClosedLoopOutputDirection(true);
 		m_shooterR.Set(+shoot_speed);
 	}
 	else {
@@ -46,7 +45,7 @@ void Shooter::RunShoot(double shoot_speed) {
 		RunPaddle(-1.0);
 	}
 	else {
-		RunPaddle(0.0);
+		//RunPaddle(0.0);
 	}
 }
 
@@ -111,16 +110,3 @@ double Shooter::getLeftShoot() {
 double Shooter::getRightShoot() {
 	return m_shooterR.GetPosition();
 }
-
-void Shooter::runFeeder() {
-	m_feeder.Set(0.8); // -1.0
-}
-
-void Shooter::stopFeeder() {
-	m_feeder.Set(0);
-}
-
-double Shooter::getFeeder() {
-	return m_feeder.Get();
-}
-

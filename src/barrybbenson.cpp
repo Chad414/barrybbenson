@@ -15,9 +15,9 @@
 	 ***** Driver Joystick Mapping
 	 *
 	 * BUTTONS
-	 * 		A -
-	 * 		B -
-	 * 		X -
+	 * 		A - run shoot full blast
+	 * 		B - run shoot 3400 rpm
+	 * 		X - climb out
 	 * 		Y -
 	 *
 	 * DPAD
@@ -72,7 +72,7 @@
 	 * 		RIGHT - fuel in roller
 	 *
 	 * OTHER
-	 * 		START - shooter up
+	 * 		START - shooter up //not yet because it is currently on driver for testing until the encoder is in
 	 * 		BACK -
 	 *
 	 */
@@ -139,8 +139,9 @@ public:
     }
 
 	void RobotInit() {
-        std::thread visionThread(VisionThread);
-        visionThread.detach();
+        //std::thread visionThread(VisionThread);
+        //visionThread.detach();
+        m_gear.GameStartGearArmPosition();
 	}
 
 	void DisabledPeriodic() {
@@ -168,7 +169,7 @@ public:
 
 	void TeleopPeriodic() {
 		TeleopDrive();
-		//TeleopShoot();
+		TeleopShoot();
 		TeleopGear();
 		TeleopIntake();
 	}
@@ -185,6 +186,16 @@ public:
 		else {
 			m_shoot.SetShootMode(false);
 			m_shoot.RunShoot(0.0);
+		}
+
+		if (m_driver->AxisLT() > 0.2) {
+			m_shoot.RunPaddle(1.0);
+		}
+		else if (m_driver->AxisRT() > 0.2) {
+			m_shoot.RunPaddle(-1.0);
+		}
+		else {
+			m_shoot.RunPaddle(0.0);
 		}
 
 
@@ -340,10 +351,10 @@ public:
 			m_gear.SetGearArmPosition(GEAR_PACKAGE);
 		}
 		else if (m_operator->ButtonRB()) {
-			m_gear.SetGearRollerSpeed(-1.0);
+			m_gear.SetGearRollerSpeed(1.0);
 		}
 		else if (m_operator->ButtonLB()) {
-			m_gear.SetGearRollerSpeed(1.0);
+			m_gear.SetGearRollerSpeed(-1.0);
 		}
 		else {
 			m_gear.SetGearMode(false);

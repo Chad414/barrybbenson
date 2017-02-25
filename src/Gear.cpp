@@ -47,6 +47,10 @@ void Gear::ZeroGearArmPosition() {
 	m_gearArm.SetPosition(0.0);
 }
 
+void Gear::GameStartGearArmPosition() {
+	m_gearArm.SetPosition(GEAR_PACKAGE / GEAR_DEGREE_CONST);
+}
+
 double Gear::GetGearTalonCurrent() {
 	return m_gearArm.GetOutputCurrent();
 }
