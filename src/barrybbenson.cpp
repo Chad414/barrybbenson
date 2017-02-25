@@ -142,6 +142,7 @@ public:
         //std::thread visionThread(VisionThread);
         //visionThread.detach();
         m_gear.GameStartGearArmPosition();
+        m_shoot.ZeroShootEncoder();
 	}
 
 	void DisabledPeriodic() {

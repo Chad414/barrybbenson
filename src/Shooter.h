@@ -37,6 +37,8 @@ public:
 	void RunShoot(double shoot_speed);
 	double GetShoot();
 
+	void ZeroShootEncoder();
+
 	double GetLRawShooter();
 	double GetRRawShooter();
 

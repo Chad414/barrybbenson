@@ -49,6 +49,11 @@ void Shooter::RunShoot(double shoot_speed) {
 	}
 }
 
+void Shooter::ZeroShootEncoder() {
+	m_shooterL.SetPosition(0.0);
+	m_shooterR.SetPosition(0.0);
+}
+
 double Shooter::GetShoot() {
 	return shooterSpeed;
 }
