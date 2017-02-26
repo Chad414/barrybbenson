@@ -31,7 +31,7 @@ void Intake::SetIntakeRoller(double value) {
 }
 
 double Intake::GetIntakeRoller() {
-	return IntakeRoller;
+	return m_intakeRoller.Get();
 }
 
 void Intake::SetHopper(bool on){

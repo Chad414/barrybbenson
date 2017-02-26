@@ -23,8 +23,8 @@
 #define TALON_DRIVE_RM 4
 #define TALON_DRIVE_RR 3
 
-#define SOLENOID_SHIFT 1
-#define SOLENOID_CLIMBER 0
+#define SOLENOID_SHIFT 0
+//#define SOLENOID_CLIMBER 0
 
 /*
 #ifndef USE_TEST_BENCH
@@ -60,6 +60,7 @@ public:
 	double getLeftEncoder();
 	double getRightEncoder();
 	void setShift(bool on);
+	bool getShift();
 	virtual ~Drivetrain();
 
 private:
@@ -94,18 +95,20 @@ private:
 	AHRS m_gyro;
 
 	Solenoid m_shift;
-	Solenoid m_climb;
+	//Solenoid m_climb;
 
 	Encoder m_lEncoder;
 	Encoder m_rEncoder;
 
-
+	Relay m_light;
 
 	MotionProfile m_MotionProfile;
 
 	Timer m_timer;
 
 	double m_turn, m_speed;
+	bool m_shiftValue;
+
 };
 
 #endif /* SRC_DRIVETRAIN_H_ */

@@ -23,7 +23,7 @@ Gear::Gear()
 {
 	// TODO Auto-generated constructor stub
 
-	m_rollTime = new Timer;
+	m_rollTime = new Timer();
 	m_gearArm.SetClosedLoopOutputDirection(true);
 	m_gearArm.SetSensorDirection(true);
 	m_gearArm.SetVoltageRampRate(0);

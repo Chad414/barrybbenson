@@ -178,11 +178,11 @@ public:
 	void TeleopShoot() {
 		if (m_driver->ButtonA()) {
 			m_shoot.SetShootMode(false);
-			m_shoot.RunShoot(1.0);
+			m_shoot.RunShoot(1.00);
 		}
 		else if (m_driver->ButtonB()) {
 			m_shoot.SetShootMode(true);
-			m_shoot.RunShoot(3400);
+			m_shoot.RunShoot(2450);
 		}
 		else {
 			m_shoot.SetShootMode(false);
@@ -223,26 +223,25 @@ public:
 
 		SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getAngle());
+		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
 
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
-				//negative is the right way for can 11
-				//negative is the right way for can 10
 		}
-
+		/*
 		if (m_driver->ButtonX()) {
 			m_drivetrain.setClimbShift(true);
 		}
 		else {
 			m_drivetrain.setClimbShift(false);
 		}
-
+		*/
 		if (m_driver->ButtonLB()) {
-			if (m_currentTimer.Get() >= 2.0) {
-				m_drivetrain.setShift(false);
-			} else {
+			//if (m_currentTimer.Get() >= 2.0) {
+				//m_drivetrain.setShift(false);
+			//} else {
 				m_drivetrain.setShift(true);
-			}
+			//}
 		} else {
 			m_drivetrain.setShift(false);
 		}
@@ -252,31 +251,32 @@ public:
 		//SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
 		//SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
 
-		if (totalDriveCurrent >= 2.5) {
+		/*if (totalDriveCurrent >= 2.5) {
 			m_currentTimer.Start();
 		} else {
 			m_currentTimer.Stop();
 			m_currentTimer.Reset();
-		}
+		}*/
 
-		//SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
-		//SmartDashboard::PutNumber("Left Drive Current - Mini", m_pdp.GetCurrent(5));
-		//SmartDashboard::PutNumber("Left Drive Current - Rear", m_pdp.GetCurrent(6));
-		//SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
-		//SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
-		//SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
+		SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
+		SmartDashboard::PutNumber("Left Drive Current - Mini", m_pdp.GetCurrent(5));
+		SmartDashboard::PutNumber("Left Drive Current - Rear", m_pdp.GetCurrent(6));
+		SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
+		SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
+		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
+		SmartDashboard::PutNumber("Total Current", totalDriveCurrent);
 	}
 
 	//intake is ready for test
 	void TeleopIntake() {
 		if (m_operator->GetPOV() == 0.0) {
-			if (m_gear.GetGearArmPosition() > 75) { //checks to see if gear arm is in
+			//if (m_gear.GetGearArmPosition() > 75) { //checks to see if gear arm is in
 				m_intake.SetHopper(true);
-				m_intake.SetIntakeArm(true);
-			}
+				//m_intake.SetIntakeArm(true);
+			//}
 		}
 		else if (m_operator->GetPOV() == 180.0) {
-			m_intake.SetIntakeArm(false);
+			//m_intake.SetIntakeArm(false);
 			m_intake.SetHopper(false);
 		}
 		else if (m_operator->GetPOV() == 90.0) {
@@ -295,6 +295,7 @@ public:
 
 		SmartDashboard::PutNumber("Intake Roller", m_intake.GetIntakeRoller());
 		SmartDashboard::PutNumber("Intake POV", m_operator->GetPOV());
+		SmartDashboard::PutBoolean("Hopper", m_intake.GetHopper());
 	}
 
 	//gear is done !!
@@ -319,33 +320,6 @@ public:
 		else if (m_operator->ButtonX()) {
 			m_gear.SetGearMode(true);
 			m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
-		}
-		else if (m_operator->ButtonB()){
-			switch (placeGear){
-				case 0:
-					m_gear.SetGearMode(true);
-					m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
-					if (m_gear.GetGearError() < 5) {
-						placeGear++;
-						m_rollTimer.Stop();
-						m_rollTimer.Reset();
-						m_rollTimer.Start();
-					}
-					break;
-				case 1:
-					m_gear.SetGearRollerSpeed(-0.7);
-					if (m_rollTimer.Get() > 1.0) {
-						m_gear.SetGearRollerSpeed(0.0);
-						placeGear++;
-					}
-					break;
-				case 2:
-					m_gear.SetGearArmPosition(GEAR_PLACE_SECOND);
-					if (m_gear.GetGearError() < 5) {
-						placeGear++;
-					}
-			}
-
 		}
 		else if (m_operator->ButtonY()) {
 			m_gear.SetGearMode(true);

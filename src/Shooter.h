@@ -8,6 +8,8 @@
 #ifndef SRC_SHOOTER_H_
 #define SRC_SHOOTER_H_
 
+//2320 rpm
+
 #include "WPILib.h"
 #include "CANTalon.h"
 
@@ -16,10 +18,10 @@
 
 #define SHOOTER_PADDLE_TALON 9
 
-#define SHOOTER_P 0.5
+#define SHOOTER_P 0.09
 #define SHOOTER_I 0.0
 #define SHOOTER_D 0.0
-#define SHOOTER_F 0.0
+#define SHOOTER_F 0.03765
 class Shooter {
 private:
 	CANTalon m_shooterL;

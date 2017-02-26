@@ -15,9 +15,14 @@ Shooter::Shooter()
 	// TODO Auto-generated constructor stub
 
 	m_shooterL.SetPID(SHOOTER_P,SHOOTER_I, SHOOTER_D);
+	m_shooterL.SetF(SHOOTER_F);
 	m_shooterR.SetPID(SHOOTER_P,SHOOTER_I, SHOOTER_D);
+	m_shooterR.SetF(SHOOTER_F);
 	m_shooterL.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
 	m_shooterR.SetFeedbackDevice(CANTalon::CtreMagEncoder_Relative);
+
+	m_shooterL.ConfigEncoderCodesPerRev(4096);
+	m_shooterR.ConfigEncoderCodesPerRev(4096);
 
 	m_shooterL.SetSensorDirection(false);
 	m_shooterR.SetSensorDirection(true);
@@ -34,7 +39,6 @@ void Shooter::RunShoot(double shoot_speed) {
 		m_shooterR.Set(+shoot_speed);
 	}
 	else {
-
 		m_shooterL.Set(-shoot_speed);
 		m_shooterR.Set(+shoot_speed);
 	}

@@ -19,9 +19,10 @@ Drivetrain::Drivetrain()
 	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
 	m_gyro(I2C::Port::kMXP),
 	m_shift(SOLENOID_SHIFT),
-	m_climb(SOLENOID_CLIMBER),
+	//m_climb(SOLENOID_CLIMBER),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
+	m_light(0),
 	m_MotionProfile(m_rDriveR)
 {
 
@@ -37,6 +38,8 @@ Drivetrain::Drivetrain()
 	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
 	m_drive.SetSafetyEnabled(false);
+
+	m_light.Set(Relay::kForward);
 }
 
 // DriveWrapper Functions
@@ -87,17 +90,18 @@ void Drivetrain::InitTeleop()
 }
 
 
+
 void Drivetrain::ArcadeDrive(double speed, double angle){
 	m_drive.SetSafetyEnabled(true);
 	m_speed = speed;
 	m_turn = angle;
 	m_drive.ArcadeDrive(speed, angle);
-	cout << (int)m_rDriveR.GetControlMode() << endl;
+	//m_rDriveR.Set(.1);
 }
 
-void Drivetrain::setClimbShift(bool on) {
+/*void Drivetrain::setClimbShift(bool on) {
 	m_climb.Set(on);
-}
+}*/
 
 double Drivetrain::getSpeed() {
 	return m_speed;
@@ -143,6 +147,11 @@ double Drivetrain::getRightEncoder() {
 
 void Drivetrain::setShift(bool on) {
 	m_shift.Set(on);
+	m_shiftValue = on;
+}
+
+bool Drivetrain::getShift() {
+	return m_shiftValue;
 }
 
 Drivetrain::~Drivetrain() {
