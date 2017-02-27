@@ -43,6 +43,8 @@
 
 #define ENCODER_CODES_PER_REVOLUTION 256
 
+#define DRIVE_ENCODER_CONVERSION 2.63
+
 #define DISTANCE_P 0
 #define DISTANCE_I 0
 #define DISTANCE_D 0
@@ -67,10 +69,13 @@ public:
 	void resetGyro();
 	double getLeftEncoder();
 	double getRightEncoder();
+	void zeroDriveEncoders();
 	void setShift(bool on);
 	bool getShift();
 	void setTurn(double turn);
 	void setSpeed(double speed);
+	double getTotalDriveCurrent();
+
 	virtual ~Drivetrain();
 
 private:

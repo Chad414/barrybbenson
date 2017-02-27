@@ -36,10 +36,11 @@ Drivetrain::Drivetrain()
 	m_lDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_lDriveF.SetSensorDirection(true);
 	m_rDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
-	m_rDriveF.SetSensorDirection(true);
+	m_rDriveF.SetSensorDirection(false);
 
 
-	m_rDriveR.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
+	m_rDriveF.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
+	m_lDriveF.ConfigEncoderCodesPerRev(ENCODER_CODES_PER_REVOLUTION);
 
 	m_drive.SetSafetyEnabled(false);
 
@@ -129,8 +130,6 @@ void Drivetrain::InitTeleop()
 	m_rDriveR.Set(0);
 }
 
-
-
 void Drivetrain::ArcadeDrive(double speed, double angle){
 	m_drive.SetSafetyEnabled(true);
 	m_speed = speed;
@@ -178,11 +177,16 @@ void Drivetrain::resetGyro() {
 }
 
 double Drivetrain::getLeftEncoder() {
-	return m_lDriveF.GetPosition();
+	return m_lDriveF.GetPosition() * DRIVE_ENCODER_CONVERSION;
 }
 
 double Drivetrain::getRightEncoder() {
-	return m_rDriveF.GetPosition();
+	return m_rDriveF.GetPosition() * DRIVE_ENCODER_CONVERSION;
+}
+
+void Drivetrain::zeroDriveEncoders() {
+	m_rDriveF.SetPosition(0.0);
+	m_lDriveF.SetPosition(0.0);
 }
 
 void Drivetrain::setShift(bool on) {
@@ -200,6 +204,15 @@ void Drivetrain::setTurn(double turn) {
 
 void Drivetrain::setSpeed(double speed) {
 	ArcadeDrive(speed, m_turn);
+}
+
+double Drivetrain::getTotalDriveCurrent() {
+	return m_lDriveF.GetOutputCurrent()
+			+ m_lDriveM.GetOutputCurrent()
+			+ m_lDriveR.GetOutputCurrent()
+			+ m_rDriveF.GetOutputCurrent()
+			+ m_rDriveM.GetOutputCurrent()
+			+ m_rDriveR.GetOutputCurrent();
 }
 
 Drivetrain::~Drivetrain() {

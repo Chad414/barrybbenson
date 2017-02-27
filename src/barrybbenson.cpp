@@ -106,13 +106,6 @@ public:
 	barrybbenson() : m_pdp(0) {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
-
-		totalDriveCurrent = m_pdp.GetCurrent(7)
-				+ m_pdp.GetCurrent(5)
-				+ m_pdp.GetCurrent(6)
-				+ m_pdp.GetCurrent(2)
-				+ m_pdp.GetCurrent(4)
-				+ m_pdp.GetCurrent(3);
 	}
 
     static void VisionThread() {
@@ -143,6 +136,7 @@ public:
         //visionThread.detach();
         m_gear.GameStartGearArmPosition();
         m_shoot.ZeroShootEncoder();
+        m_drivetrain.zeroDriveEncoders();
 	}
 
 	void DisabledPeriodic() {
@@ -258,13 +252,13 @@ public:
 			m_currentTimer.Reset();
 		}*/
 
-		SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
+		/*SmartDashboard::PutNumber("Left Drive Current - Front", m_pdp.GetCurrent(7));
 		SmartDashboard::PutNumber("Left Drive Current - Mini", m_pdp.GetCurrent(5));
 		SmartDashboard::PutNumber("Left Drive Current - Rear", m_pdp.GetCurrent(6));
 		SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
 		SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
-		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));
-		SmartDashboard::PutNumber("Total Current", totalDriveCurrent);
+		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));*/
+		SmartDashboard::PutNumber("Total Current", m_drivetrain.getTotalDriveCurrent());
 	}
 
 	//intake is ready for test
