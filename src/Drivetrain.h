@@ -76,6 +76,54 @@ public:
 	void setSpeed(double speed);
 	double getTotalDriveCurrent();
 
+	//--------------------------------------------------------------------------------
+
+	double GetAverageDistance();
+	/*
+	 * Gets left encoder speed
+	 */
+	double GetLSpeed();
+
+	/*
+	 * Gets right encoder speed
+	 */
+	double GetRSpeed();
+
+	/*
+	 * Gets average encoder speed
+	 */
+	double GetAverageSpeed();
+	/******************************
+	 * Motor Control
+	 ******************************/
+	float GetSpeed();
+	float GetTurn();
+
+	/*****************************
+	 * 	PID
+	 *****************************/
+	void EnablePID();
+	void DisablePID();
+
+	bool IsPIDEnabled();
+
+	void SetPIDSetpoint(double distance, double angle);
+
+	double GetDistancePIDSetpoint();
+	double GetAnglePIDSetpoint();
+
+	void SetAnglePID(float p, float i, float d);
+
+	void SetDistancePIDMax(float maximum);
+
+	double GetAngleP();
+	double GetAngleI();
+	double GetAngleD();
+
+	bool DistanceAtSetpoint();
+	bool AngleAtSetpoint();
+	//--------------------------------------------------------------------------------
+
 	virtual ~Drivetrain();
 
 private:

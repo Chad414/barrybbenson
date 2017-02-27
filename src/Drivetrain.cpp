@@ -215,5 +215,107 @@ double Drivetrain::getTotalDriveCurrent() {
 			+ m_rDriveR.GetOutputCurrent();
 }
 
+double Drivetrain::GetAverageDistance(){
+	return getLeftEncoder();
+}
+
+double Drivetrain::GetLSpeed() {
+	return m_lDriveF.GetSpeed() * DRIVE_ENCODER_CONVERSION;
+}
+
+double Drivetrain::GetRSpeed() {
+	return m_rDriveF.GetSpeed() * DRIVE_ENCODER_CONVERSION;
+}
+
+double Drivetrain::GetAverageSpeed(){
+	return((GetLSpeed() + GetRSpeed()) / 2);
+}
+
+float Drivetrain::GetSpeed(){
+	return(m_speed);
+}
+
+float Drivetrain::GetTurn(){
+	return(m_turn);
+}
+
+void Drivetrain::EnablePID() {
+	if (!m_distancePID.IsEnabled()) {
+		m_distancePID.Enable();
+	}
+	if (!m_anglePID.IsEnabled()) {
+		m_anglePID.Enable();
+	}
+}
+
+void Drivetrain::DisablePID() {
+	if (m_distancePID.IsEnabled()) {
+		m_distancePID.Disable();
+	}
+
+	if (m_anglePID.IsEnabled()) {
+		m_anglePID.Disable();
+	}
+}
+
+bool Drivetrain::IsPIDEnabled() {
+	if (m_distancePID.IsEnabled() || m_anglePID.IsEnabled()) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void Drivetrain::SetPIDSetpoint(double distance, double angle) {
+	m_distancePID.SetSetpoint(distance);
+	m_anglePID.SetSetpoint(angle);
+}
+
+double Drivetrain::GetDistancePIDSetpoint() {
+	return m_distancePID.GetSetpoint();
+}
+
+double Drivetrain::GetAnglePIDSetpoint() {
+	return m_anglePID.GetSetpoint();
+}
+
+void Drivetrain::SetAnglePID(float p, float i, float d) {
+	m_anglePID.SetPID(p, i, d);
+}
+
+void Drivetrain::SetDistancePIDMax(float maximum) {
+	m_distancePID.SetOutputRange(-maximum, maximum);
+}
+
+double Drivetrain::GetAngleP() {
+	return m_anglePID.GetP();
+}
+
+double Drivetrain::GetAngleI() {
+	return m_anglePID.GetI();
+}
+
+double Drivetrain::GetAngleD() {
+	return m_anglePID.GetD();
+}
+
+bool Drivetrain::DistanceAtSetpoint() {
+	if (fabs(GetDistancePIDSetpoint() - GetAverageDistance()) < 4) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool Drivetrain::AngleAtSetpoint() {
+	if (fabs(GetAnglePIDSetpoint() - getYaw()) < 2.5) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 Drivetrain::~Drivetrain() {
 }
