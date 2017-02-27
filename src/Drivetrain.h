@@ -43,6 +43,14 @@
 
 #define ENCODER_CODES_PER_REVOLUTION 256
 
+#define DISTANCE_P 0
+#define DISTANCE_I 0
+#define DISTANCE_D 0
+
+#define ANGLE_P 0
+#define ANGLE_I 0
+#define ANGLE_D 0
+
 class Drivetrain {
 public:
 	Drivetrain();
@@ -61,6 +69,8 @@ public:
 	double getRightEncoder();
 	void setShift(bool on);
 	bool getShift();
+	void setTurn(double turn);
+	void setSpeed(double speed);
 	virtual ~Drivetrain();
 
 private:
@@ -77,6 +87,26 @@ private:
 	   private:
 		SpeedController* m_drive1;
 		SpeedController* m_drive2;
+	};
+
+	class DistancePIDWrapper : public PIDSource, public PIDOutput {
+	public:
+		DistancePIDWrapper(Drivetrain* drivetrain);
+		virtual ~DistancePIDWrapper();
+		double PIDGet() override;
+		void PIDWrite(double output) override;
+	private:
+		Drivetrain* m_drivetrain;
+	};
+
+	class AnglePIDWrapper : public PIDSource, public PIDOutput {
+	public:
+		AnglePIDWrapper(Drivetrain* drivetrain);
+		virtual ~AnglePIDWrapper();
+		double PIDGet() override;
+		void PIDWrite(double output) override;
+	private:
+		Drivetrain* m_drivetrain;
 	};
 
 	CANTalon m_lDriveF;
@@ -105,6 +135,12 @@ private:
 	MotionProfile m_MotionProfile;
 
 	Timer m_timer;
+
+	DistancePIDWrapper m_distancePIDWrapper;
+	AnglePIDWrapper m_anglePIDWrapper;
+
+	PIDController m_distancePID;
+	PIDController m_anglePID;
 
 	double m_turn, m_speed;
 	bool m_shiftValue;
