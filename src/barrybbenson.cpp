@@ -117,9 +117,6 @@ private:
 
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
-	//bool autonDriveFinished = 0;
-	//bool autonTurnFinished = 0;
-	//bool autonPlaceGearFinished = 0;
 
 public:
 
@@ -260,17 +257,29 @@ public:
 		m_drivetrain.SetPIDSetpoint(m_autonInitialDistance, 0);//m_drivetrain.getYaw());
 
 		if (m_drivetrain.GetDistancePIDError() < 4){
-			m_drivetrain.EnablePID();
-			return false;
-		}
-		else {
 			m_drivetrain.DisablePID();
 			return true;
 		}
+		else {
+			m_drivetrain.EnablePID();
+			return false;
+		}
 	}
+
 	bool autonTurnFinished() {
+		m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_autonBackUpAngle);
+
+		if (m_drivetrain.GetAnglePIDError() < 4) {
+			m_drivetrain.DisablePID();
+			return true;
+		} else {
+			m_drivetrain.EnablePID();
+			return false;
+		}
 	}
+
 	bool autonPlaceGearFinished(){
+		m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance, );
 	}
 
 	void TeleopInit() {

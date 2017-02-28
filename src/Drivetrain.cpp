@@ -96,7 +96,7 @@ Drivetrain::DistancePIDWrapper::~DistancePIDWrapper() {
 }
 
 double Drivetrain::DistancePIDWrapper::PIDGet () {
-	return(m_drivetrain->getLeftEncoder() / DRIVE_ENCODER_CONVERSION);
+	return(m_drivetrain->GetAverageDistance() / DRIVE_ENCODER_CONVERSION);
 }
 
 void Drivetrain::DistancePIDWrapper::PIDWrite(double output) {
