@@ -45,11 +45,11 @@
 
 #define DRIVE_ENCODER_CONVERSION 2.63
 
-#define DISTANCE_P 0.08
+#define DISTANCE_P 0.4
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
-#define ANGLE_P 0.06
+#define ANGLE_P 0.1
 #define ANGLE_I 0
 #define ANGLE_D 0
 
@@ -59,6 +59,8 @@ public:
 	void InitTeleop();
 	void ArcadeDrive(double speed, double angle);
 	double getSpeed();
+	double getDriveTalonL();
+	double getDriveTalonR();
 	double getAngle();
 	void startMP();
 	void resetMP();
@@ -69,6 +71,10 @@ public:
 	void resetGyro();
 	double getLeftEncoder();
 	double getRightEncoder();
+
+	double getLeftEncoderRaw();
+	double getRightEncoderRaw();
+
 	void zeroDriveEncoders();
 	void setShift(bool on);
 	bool getShift();
@@ -109,9 +115,13 @@ public:
 
 	void SetPIDSetpoint(double distance, double angle);
 
+	double GetRotationPIDError();
+	double GetDistancePIDError();
 	double GetDistanceToSetpoint();
 	double GetDistancePIDSetpoint();
 	double GetAnglePIDSetpoint();
+	bool AnglePIDIsEnabled();
+	double GetAnglePIDError();
 
 	void SetAnglePID(float p, float i, float d);
 

@@ -84,7 +84,9 @@ private:
 	HotJoystick* m_operator;
 	Timer* m_timer;
 
+
 	PowerDistributionPanel m_pdp;
+
 
 	Shooter m_shoot;
 	Drivetrain m_drivetrain;
@@ -93,6 +95,7 @@ private:
 
 	Timer m_currentTimer;
 	Timer m_rollTimer;
+	double totalDriveCurrent;
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
 	unsigned autonDriveFinished = 0;
@@ -160,7 +163,6 @@ public:
 		autonDriveFinished = 0;
 		autonTurnFinished = 0;
 		autonPlaceGearFinished = 0;
-
 	}
 
 	void AutonomousPeriodic() {
@@ -190,13 +192,26 @@ public:
 
 	void TeleopInit() {
 		m_drivetrain.DisablePID();
+		m_drivetrain.zeroDriveEncoders();
 	}
 
 	void TeleopPeriodic() {
+		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+		SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
+		SmartDashboard::PutNumber("Drive Distance Error", m_drivetrain.GetDistancePIDError());
+		SmartDashboard::PutNumber("Drive Angle Error", m_drivetrain.GetAnglePIDError());
+
+		SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
+		SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
 		TeleopDrive();
 
+		if (m_operator->ButtonA()) {
+			m_drivetrain.resetGyro();
+			m_drivetrain.zeroDriveEncoders();
+		}
+
 		if (m_operator->ButtonX()) {
-			m_drivetrain.SetPIDSetpoint(50, 0);
+			m_drivetrain.SetPIDSetpoint(180, 0);//m_drivetrain.getYaw());
 
 			if (fabs(m_drivetrain.GetDistanceToSetpoint()) > 3){
 				m_drivetrain.EnablePID();
@@ -263,11 +278,13 @@ public:
 		SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getAngle());
 		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
+		SmartDashboard::PutNumber("Drivetrain Gyro Angle", m_drivetrain.getYaw());
+		SmartDashboard::PutNumber("Drivetrain Average Distance", m_drivetrain.GetAverageDistance());
+		SmartDashboard::PutNumber("Drivetrain Distance to Setpoint", m_drivetrain.GetDistanceToSetpoint());
+		SmartDashboard::PutNumber("Drivetrain Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
 
-		SmartDashboard::PutNumber("Gyro Angle", m_drivetrain.getAngle());
-		SmartDashboard::PutNumber("Average Distance", m_drivetrain.GetAverageDistance());
-		SmartDashboard::PutNumber("Distance to Setpoint", m_drivetrain.GetDistanceToSetpoint());
-		SmartDashboard::PutNumber("Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
+		SmartDashboard::PutNumber("Drive Left Front Talon Get", m_drivetrain.getDriveTalonL());
+		SmartDashboard::PutNumber("Drive Right Front Talon Get", m_drivetrain.getDriveTalonR());
 
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
@@ -292,8 +309,8 @@ public:
 
 		//SmartDashboard::PutNumber("Forward and Backward", m_drivetrain.getSpeed());
 		//SmartDashboard::PutNumber("Turning", m_drivetrain.getAngle());
-		//SmartDashboard::PutNumber("Left Drive Encoder", m_drivetrain.getLeftEncoder());
-		//SmartDashboard::PutNumber("Right Drive Encoder", m_drivetrain.getRightEncoder());
+		SmartDashboard::PutNumber("Drivetrain Left Drive Encoder", m_drivetrain.getLeftEncoder());
+		SmartDashboard::PutNumber("Drivetrain Right Drive Encoder", m_drivetrain.getRightEncoder());
 
 		/*if (totalDriveCurrent >= 2.5) {
 			m_currentTimer.Start();
@@ -308,7 +325,7 @@ public:
 		SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
 		SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
 		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));*/
-		SmartDashboard::PutNumber("Total Current", m_drivetrain.getTotalDriveCurrent());
+		SmartDashboard::PutNumber("Drivetrain Total Current", m_drivetrain.getTotalDriveCurrent());
 	}
 
 	//intake is ready for test

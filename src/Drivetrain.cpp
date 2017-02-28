@@ -96,12 +96,12 @@ Drivetrain::DistancePIDWrapper::~DistancePIDWrapper() {
 }
 
 double Drivetrain::DistancePIDWrapper::PIDGet () {
-	return(m_drivetrain->getLeftEncoder());
+	return(m_drivetrain->getLeftEncoder() / DRIVE_ENCODER_CONVERSION);
 }
 
 void Drivetrain::DistancePIDWrapper::PIDWrite(double output) {
 	SmartDashboard::PutNumber("* Drive PID Write", output);
-	m_drivetrain->setSpeed(output* 0.8);
+	m_drivetrain->setSpeed(output*0.7);
 }
 
 // AnglePIDWrapper Functions
@@ -114,12 +114,12 @@ Drivetrain::AnglePIDWrapper::~AnglePIDWrapper() {
 }
 
 double Drivetrain::AnglePIDWrapper::PIDGet() {
-	return m_drivetrain->getAngle();
+	return m_drivetrain->getYaw();
 }
 
 void Drivetrain::AnglePIDWrapper::PIDWrite(double output) {
 	SmartDashboard::PutNumber("Turn PID Output", output);
-	m_drivetrain->setTurn(output);
+	m_drivetrain->setTurn(-output);
 }
 
 // Drivetrain Functions
@@ -136,6 +136,14 @@ void Drivetrain::ArcadeDrive(double speed, double angle){
 	m_turn = angle;
 	m_drive.ArcadeDrive(speed, angle);
 	//m_rDriveR.Set(.1);
+}
+
+double Drivetrain::getDriveTalonL() {
+	return m_lDriveF.Get();
+}
+
+double Drivetrain::getDriveTalonR() {
+	return m_rDriveF.Get();
 }
 
 /*void Drivetrain::setClimbShift(bool on) {
@@ -164,6 +172,13 @@ double Drivetrain::getLeftEncoder() {
 
 double Drivetrain::getRightEncoder() {
 	return m_rDriveF.GetPosition() * DRIVE_ENCODER_CONVERSION;
+}
+
+double Drivetrain::getLeftEncoderRaw() {
+	return m_lDriveF.GetPosition();
+}
+double Drivetrain::getRightEncoderRaw() {
+	return m_rDriveF.GetPosition();
 }
 
 void Drivetrain::zeroDriveEncoders() {
@@ -254,16 +269,32 @@ void Drivetrain::SetPIDSetpoint(double distance, double angle) {
 	m_anglePID.SetSetpoint(angle);
 }
 
+double Drivetrain::GetDistancePIDError() {
+	return m_distancePID.GetError()* DRIVE_ENCODER_CONVERSION;
+}
+
+double Drivetrain::GetRotationPIDError() {
+	return m_distancePID.GetError();
+}
+
 double Drivetrain::GetDistanceToSetpoint() {
 	return (GetDistancePIDSetpoint() - GetAverageDistance());
 }
 
 double Drivetrain::GetDistancePIDSetpoint() {
-	return m_distancePID.GetSetpoint()* DRIVE_ENCODER_CONVERSION;
+	return (m_distancePID.GetSetpoint()* DRIVE_ENCODER_CONVERSION);
 }
 
 double Drivetrain::GetAnglePIDSetpoint() {
-	return m_anglePID.GetSetpoint()* DRIVE_ENCODER_CONVERSION;
+	return m_anglePID.GetSetpoint();
+}
+
+double Drivetrain::GetAnglePIDError() {
+	return m_anglePID.GetError();
+}
+
+bool Drivetrain::AnglePIDIsEnabled() {
+	return m_anglePID.IsEnabled();
 }
 
 void Drivetrain::SetAnglePID(float p, float i, float d) {
