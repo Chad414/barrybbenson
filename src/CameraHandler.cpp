@@ -21,5 +21,5 @@ double CameraHandler::GetTargetNormalizedCenter() {
 }
 
 double CameraHandler::GetAngle() {
-	return GetTargetNormalizedCenter() * 34.25;
+	return GetTargetNormalizedCenter() * -22.0287958;
 }

@@ -7,6 +7,7 @@
 #include <opencv2/core/core.hpp>
 
 #include "Drivetrain.h"
+#include "CameraHandler.h"
 #include "Shooter.h"
 #include "Gear.h"
 #include "Intake.h"
@@ -103,6 +104,7 @@ private:
 	Drivetrain m_drivetrain;
 	Gear m_gear;
 	Intake m_intake;
+	CameraHandler m_cameraHandler;
 
 	autonType m_autonType;
 
@@ -114,6 +116,7 @@ private:
 	double m_autonBackUpAngle;
 	double m_autonBackUpDistance;
 	bool m_placeGear;
+
 
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
@@ -154,8 +157,8 @@ public:
     }
 
 	void RobotInit() {
-        //std::thread visionThread(VisionThread);
-        //visionThread.detach();
+        std::thread visionThread(VisionThread);
+        visionThread.detach();
         m_gear.GameStartGearArmPosition();
         m_shoot.ZeroShootEncoder();
         m_drivetrain.zeroDriveEncoders();
@@ -195,9 +198,9 @@ public:
 			placeGear = true;
 		}
 		else if (m_autonType == 2) { //blue center gear
-			m_autonInitialDistance = -76;
+			m_autonInitialDistance = 0;
 			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
+			m_autonBackUpDistance = -76;
 			placeGear = true;
 		}
 		else if (m_autonType == 3) { //blue right gear
@@ -213,9 +216,9 @@ public:
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = -76;
+			m_autonInitialDistance = 0;
 			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
+			m_autonBackUpDistance = -76;
 			placeGear = true;
 		}
 		else if (m_autonType == 6) { //red right gear
@@ -243,14 +246,19 @@ public:
 			}
 			break;
 		case 2:
-			if (autonPlaceGearFinished() == true) {
+			if (autonBackUpFinished() == true) {
 				m_autonCase++;
 			}
 			break;
 		case 3:
-			m_autonCase++;
+			if (autonPlaceGearFinished() == true) {
+				m_autonCase++;
+			}
 			break;
+		case 4:
+			m_autonCase++;
 		}
+
 	}
 
 	bool autonDriveFinished() {
@@ -278,8 +286,28 @@ public:
 		}
 	}
 
+	bool autonBackUpFinished() {
+		m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance + 20, m_autonBackUpAngle);
+
+		if (m_drivetrain.GetDistancePIDError() < 4) {
+			m_drivetrain.DisablePID();
+			return true;
+		} else {
+			m_drivetrain.EnablePID();
+			return false;
+		}
+
+	}
+
 	bool autonPlaceGearFinished(){
-		//m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance, );
+		m_drivetrain.SetPIDSetpoint(-20, m_cameraHandler.GetAngle());
+		if (m_drivetrain.GetDistancePIDError() < 2) {
+			m_drivetrain.DisablePID();
+			return true;
+		} else {
+			m_drivetrain.EnablePID();
+			return false;
+		}
 	}
 
 	void TeleopInit() {
@@ -295,6 +323,9 @@ public:
 
 		SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
 		SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
+
+		SmartDashboard::PutNumber("Peg X", SmartDashboard::GetNumber("xPeg", 0));
+		SmartDashboard::PutNumber("Boiler X", SmartDashboard::GetNumber("xBoiler", 0));
 
 		TeleopDrive();
 		TeleopShoot();
