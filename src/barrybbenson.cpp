@@ -117,9 +117,9 @@ private:
 
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
-	bool autonDriveFinished = 0;
-	bool autonTurnFinished = 0;
-	bool autonPlaceGearFinished = 0;
+	//bool autonDriveFinished = 0;
+	//bool autonTurnFinished = 0;
+	//bool autonPlaceGearFinished = 0;
 
 public:
 
@@ -186,10 +186,6 @@ public:
 
 		m_drivetrain.resetGyro();
 		m_drivetrain.zeroDriveEncoders();
-
-		autonDriveFinished = 0;
-		autonTurnFinished = 0;
-		autonPlaceGearFinished = 0;
 	}
 
 	void AutonomousPeriodic() {
@@ -240,17 +236,17 @@ public:
 
 		switch (m_autonCase){
 		case 0:
-			if (autonDriveFinished == true) {
+			if (autonDriveFinished() == true) {
 				m_autonCase++;
 			}
 			break;
 		case 1:
-			if (autonTurnFinished == true) {
+			if (autonTurnFinished() == true) {
 				m_autonCase++;
 			}
 			break;
 		case 2:
-			if (autonPlaceGearFinished == true) {
+			if (autonPlaceGearFinished() == true) {
 				m_autonCase++;
 			}
 			break;
@@ -271,6 +267,10 @@ public:
 			m_drivetrain.DisablePID();
 			return true;
 		}
+	}
+	bool autonTurnFinished() {
+	}
+	bool autonPlaceGearFinished(){
 	}
 
 	void TeleopInit() {
@@ -313,19 +313,6 @@ public:
 	}
 
 	void TeleopShoot() {
-		if (m_driver->ButtonA()) {
-			m_shoot.SetShootMode(false);
-			m_shoot.RunShoot(1.00);
-		}
-		else if (m_driver->ButtonB()) {
-			m_shoot.SetShootMode(true);
-			m_shoot.RunShoot(2450);
-		}
-		else {
-			m_shoot.SetShootMode(false);
-			m_shoot.RunShoot(0.0);
-		}
-
 		if (m_driver->AxisLT() > 0.2) {
 			m_shoot.RunPaddle(1.0);
 		}
@@ -372,14 +359,14 @@ public:
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());
 		}
-		/*
-		if (m_driver->ButtonX()) {
+
+		if (m_driver->ButtonRB()) {
 			m_drivetrain.setClimbShift(true);
 		}
 		else {
 			m_drivetrain.setClimbShift(false);
 		}
-		*/
+
 		if (m_driver->ButtonLB()) {
 			//if (m_currentTimer.Get() >= 2.0) {
 				//m_drivetrain.setShift(false);

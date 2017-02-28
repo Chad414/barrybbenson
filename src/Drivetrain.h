@@ -67,6 +67,8 @@ public:
 	void controlMP();
 
 	void setClimbShift(bool on);
+
+	void setClimbShift(bool on);
 	float getYaw();
 	void resetGyro();
 	double getLeftEncoder();

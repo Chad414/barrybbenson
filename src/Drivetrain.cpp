@@ -146,9 +146,9 @@ double Drivetrain::getDriveTalonR() {
 	return m_rDriveF.Get();
 }
 
-/*void Drivetrain::setClimbShift(bool on) {
+void Drivetrain::setClimbShift(bool on) {
 	m_climb.Set(on);
-}*/
+}
 
 double Drivetrain::getSpeed() {
 	return m_speed;
