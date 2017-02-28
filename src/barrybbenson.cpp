@@ -10,6 +10,8 @@
 #include "Shooter.h"
 #include "Gear.h"
 #include "Intake.h"
+//Auto Selector -> get
+//Select Auto -> put
 
 /*
 	 ***** Driver Joystick Mapping
@@ -76,6 +78,15 @@
 	 * 		BACK -
 	 *
 	 */
+enum autonType {
+	kDoNothing = 0,
+	kBlueLeftGear = 1,
+	kBlueCenterGear = 2,
+	kBlueRightGear = 3,
+	kRedLeftGear = 4,
+	kRedCenterGear = 5,
+	kRedRightGear = 6
+};
 
 class barrybbenson: public HotBot {
 private:
@@ -93,14 +104,22 @@ private:
 	Gear m_gear;
 	Intake m_intake;
 
+	autonType m_autonType;
+
 	Timer m_currentTimer;
 	Timer m_rollTimer;
 	double totalDriveCurrent;
+
+	double m_autonInitialDistance;
+	double m_autonBackUpAngle;
+	double m_autonBackUpDistance;
+	bool m_placeGear;
+
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
-	unsigned autonDriveFinished = 0;
-	unsigned autonTurnFinished = 0;
-	unsigned autonPlaceGearFinished = 0;
+	bool autonDriveFinished = 0;
+	bool autonTurnFinished = 0;
+	bool autonPlaceGearFinished = 0;
 
 public:
 
@@ -110,6 +129,8 @@ public:
 	barrybbenson() : m_pdp(0) {
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
+
+		m_autonType = kDoNothing;
 	}
 
     static void VisionThread() {
@@ -155,10 +176,16 @@ public:
 
 		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.getLeftShoot());
 		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.getRightShoot());
+
+		m_autonType = (autonType)SmartDashboard::GetNumber("Auto Selector", 0);
+
 	}
 
 	void AutonomousInit() {
 		m_autonCase = 0;
+
+		m_drivetrain.resetGyro();
+		m_drivetrain.zeroDriveEncoders();
 
 		autonDriveFinished = 0;
 		autonTurnFinished = 0;
@@ -167,6 +194,49 @@ public:
 
 	void AutonomousPeriodic() {
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+
+		if (m_autonType == 1) { //blue left gear
+			m_autonInitialDistance = 208;
+			m_autonBackUpAngle = -60;
+			m_autonBackUpDistance = -80;
+			placeGear = true;
+		}
+		else if (m_autonType == 2) { //blue center gear
+			m_autonInitialDistance = -76;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = true;
+		}
+		else if (m_autonType == 3) { //blue right gear
+			m_autonInitialDistance = 208;
+			m_autonBackUpAngle = 60;
+			m_autonBackUpDistance = -80;
+			placeGear = true;
+		}
+		else if (m_autonType == 4) { //red left gear
+			m_autonInitialDistance = 208;
+			m_autonBackUpAngle = -60;
+			m_autonBackUpDistance = -80;
+			placeGear = true;
+		}
+		else if (m_autonType == 5) { //red center gear
+			m_autonInitialDistance = -76;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = true;
+		}
+		else if (m_autonType == 6) { //red right gear
+			m_autonInitialDistance = 208;
+			m_autonBackUpAngle = 60;
+			m_autonBackUpDistance = -80;
+			placeGear = true;
+		}
+		else {
+			m_autonInitialDistance = 0;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+		}
 
 		switch (m_autonCase){
 		case 0:
@@ -187,6 +257,19 @@ public:
 		case 3:
 			m_autonCase++;
 			break;
+		}
+	}
+
+	bool autonDriveFinished() {
+		m_drivetrain.SetPIDSetpoint(m_autonInitialDistance, 0);//m_drivetrain.getYaw());
+
+		if (m_drivetrain.GetDistancePIDError() < 4){
+			m_drivetrain.EnablePID();
+			return false;
+		}
+		else {
+			m_drivetrain.DisablePID();
+			return true;
 		}
 	}
 
@@ -377,6 +460,33 @@ public:
 		else if (m_operator->ButtonA()) {
 			m_gear.SetGearMode(true);
 			m_gear.SetGearArmPosition(GEAR_GROUND);
+		}
+		else if (m_operator->ButtonB()){
+			switch (placeGear){
+				case 0:
+					m_gear.SetGearMode(true);
+					m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
+					if (m_gear.GetGearError() < 5) {
+						placeGear++;
+						m_rollTimer.Stop();
+						m_rollTimer.Reset();
+						m_rollTimer.Start();
+					}
+					break;
+				case 1:
+					m_gear.SetGearRollerSpeed(-0.7);
+					if (m_rollTimer.Get() > 1.0) {
+						m_gear.SetGearRollerSpeed(0.0);
+						placeGear++;
+					}
+					break;
+				case 2:
+					m_gear.SetGearArmPosition(GEAR_PLACE_SECOND);
+					if (m_gear.GetGearError() < 5) {
+						placeGear++;
+					}
+			}
+
 		}
 		else if (m_operator->ButtonX()) {
 			m_gear.SetGearMode(true);
