@@ -279,7 +279,7 @@ public:
 	}
 
 	bool autonPlaceGearFinished(){
-		m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance, );
+		//m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance, );
 	}
 
 	void TeleopInit() {
