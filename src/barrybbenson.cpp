@@ -286,30 +286,11 @@ public:
 
 		SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
 		SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
+
 		TeleopDrive();
-
-		if (m_operator->ButtonA()) {
-			m_drivetrain.resetGyro();
-			m_drivetrain.zeroDriveEncoders();
-		}
-
-		if (m_operator->ButtonX()) {
-			m_drivetrain.SetPIDSetpoint(180, 0);//m_drivetrain.getYaw());
-
-			if (fabs(m_drivetrain.GetDistanceToSetpoint()) > 3){
-				m_drivetrain.EnablePID();
-			}
-			else {
-				m_drivetrain.DisablePID();
-			}
-		}
-		else {
-			m_drivetrain.DisablePID();
-		}
-
-		//TeleopShoot();
-		//TeleopGear();
-		//TeleopIntake();
+		TeleopShoot();
+		TeleopGear();
+		TeleopIntake();
 	}
 
 	void TeleopShoot() {
@@ -321,6 +302,15 @@ public:
 		}
 		else {
 			m_shoot.RunPaddle(0.0);
+		}
+
+		if (m_operator->ButtonStart()) {
+			m_shoot.SetShootMode(true);
+			m_shoot.RunShoot(2450);
+		}
+		else {
+			m_shoot.SetShootMode(false);
+			m_shoot.RunShoot(0.9);
 		}
 
 
@@ -368,11 +358,7 @@ public:
 		}
 
 		if (m_driver->ButtonLB()) {
-			//if (m_currentTimer.Get() >= 2.0) {
-				//m_drivetrain.setShift(false);
-			//} else {
-				m_drivetrain.setShift(true);
-			//}
+			m_drivetrain.setShift(true);
 		} else {
 			m_drivetrain.setShift(false);
 		}
@@ -462,7 +448,7 @@ public:
 					break;
 				case 1:
 					m_gear.SetGearRollerSpeed(-0.7);
-					if (m_rollTimer.Get() > 1.0) {
+					if (m_rollTimer.Get() > 3.0) {
 						m_gear.SetGearRollerSpeed(0.0);
 						placeGear++;
 					}
