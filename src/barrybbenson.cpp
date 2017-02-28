@@ -157,16 +157,33 @@ public:
 	}
 
 	void AutonomousPeriodic() {
+		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 	}
 
 	void TeleopInit() {
+		m_drivetrain.DisablePID();
 	}
 
 	void TeleopPeriodic() {
 		TeleopDrive();
-		TeleopShoot();
-		TeleopGear();
-		TeleopIntake();
+
+		if (m_operator->ButtonX()) {
+			m_drivetrain.SetPIDSetpoint(50, 0);
+
+			if (fabs(m_drivetrain.GetDistanceToSetpoint()) > 3){
+				m_drivetrain.EnablePID();
+			}
+			else {
+				m_drivetrain.DisablePID();
+			}
+		}
+		else {
+			m_drivetrain.DisablePID();
+		}
+
+		//TeleopShoot();
+		//TeleopGear();
+		//TeleopIntake();
 	}
 
 	void TeleopShoot() {
@@ -218,6 +235,11 @@ public:
 		SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getAngle());
 		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
+
+		SmartDashboard::PutNumber("Gyro Angle", m_drivetrain.getAngle());
+		SmartDashboard::PutNumber("Average Distance", m_drivetrain.GetAverageDistance());
+		SmartDashboard::PutNumber("Distance to Setpoint", m_drivetrain.GetDistanceToSetpoint());
+		SmartDashboard::PutNumber("Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
 
 		if (fabs(m_driver->AxisLY()) > 0.2 || fabs(m_driver->AxisRX()) > 0.2) {
 			m_drivetrain.ArcadeDrive(-m_driver->AxisLY(), -m_driver->AxisRX());

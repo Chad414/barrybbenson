@@ -101,7 +101,7 @@ double Drivetrain::DistancePIDWrapper::PIDGet () {
 
 void Drivetrain::DistancePIDWrapper::PIDWrite(double output) {
 	SmartDashboard::PutNumber("* Drive PID Write", output);
-	m_drivetrain->setSpeed(output);
+	m_drivetrain->setSpeed(output* 0.8);
 }
 
 // AnglePIDWrapper Functions
@@ -150,30 +150,12 @@ double Drivetrain::getAngle() {
 	return m_turn;
 }
 
-void Drivetrain::startMP() {
-	/*
-	m_rDriveR.SetControlMode(CANTalon::ControlMode::kFollower);
-	m_rDriveR.Set(TALON_DRIVE_LR);
-	*/
-
-	m_MotionProfile.Start();
-
-}
-
-void Drivetrain::resetMP() {
-	m_MotionProfile.Reset();
-}
-
-void Drivetrain::controlMP() { // Calls Control() from MotionProfile
-	m_MotionProfile.Control();
-}
-
 float Drivetrain::getYaw(){ // Get Gyro Yaw
-	return 0; // m_gyro.GetYaw();
+	return m_gyro.GetYaw();
 }
 
 void Drivetrain::resetGyro() {
-	//m_gyro.Reset();
+	m_gyro.Reset();
 }
 
 double Drivetrain::getLeftEncoder() {
@@ -216,7 +198,7 @@ double Drivetrain::getTotalDriveCurrent() {
 }
 
 double Drivetrain::GetAverageDistance(){
-	return getLeftEncoder();
+	return ((getLeftEncoder() + getRightEncoder()) /2);
 }
 
 double Drivetrain::GetLSpeed() {
@@ -268,16 +250,20 @@ bool Drivetrain::IsPIDEnabled() {
 }
 
 void Drivetrain::SetPIDSetpoint(double distance, double angle) {
-	m_distancePID.SetSetpoint(distance);
+	m_distancePID.SetSetpoint(distance / DRIVE_ENCODER_CONVERSION);
 	m_anglePID.SetSetpoint(angle);
 }
 
+double Drivetrain::GetDistanceToSetpoint() {
+	return (GetDistancePIDSetpoint() - GetAverageDistance());
+}
+
 double Drivetrain::GetDistancePIDSetpoint() {
-	return m_distancePID.GetSetpoint();
+	return m_distancePID.GetSetpoint()* DRIVE_ENCODER_CONVERSION;
 }
 
 double Drivetrain::GetAnglePIDSetpoint() {
-	return m_anglePID.GetSetpoint();
+	return m_anglePID.GetSetpoint()* DRIVE_ENCODER_CONVERSION;
 }
 
 void Drivetrain::SetAnglePID(float p, float i, float d) {

@@ -45,11 +45,11 @@
 
 #define DRIVE_ENCODER_CONVERSION 2.63
 
-#define DISTANCE_P 0
+#define DISTANCE_P 0.08
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
-#define ANGLE_P 0
+#define ANGLE_P 0.06
 #define ANGLE_I 0
 #define ANGLE_D 0
 
@@ -109,6 +109,7 @@ public:
 
 	void SetPIDSetpoint(double distance, double angle);
 
+	double GetDistanceToSetpoint();
 	double GetDistancePIDSetpoint();
 	double GetAnglePIDSetpoint();
 
