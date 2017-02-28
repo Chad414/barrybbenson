@@ -84,9 +84,7 @@ private:
 	HotJoystick* m_operator;
 	Timer* m_timer;
 
-
 	PowerDistributionPanel m_pdp;
-
 
 	Shooter m_shoot;
 	Drivetrain m_drivetrain;
@@ -95,8 +93,11 @@ private:
 
 	Timer m_currentTimer;
 	Timer m_rollTimer;
-	double totalDriveCurrent;
 	int placeGear = 0;
+	unsigned m_autonCase = 0;
+	unsigned autonDriveFinished = 0;
+	unsigned autonTurnFinished = 0;
+	unsigned autonPlaceGearFinished = 0;
 
 public:
 
@@ -154,10 +155,37 @@ public:
 	}
 
 	void AutonomousInit() {
+		m_autonCase = 0;
+
+		autonDriveFinished = 0;
+		autonTurnFinished = 0;
+		autonPlaceGearFinished = 0;
+
 	}
 
 	void AutonomousPeriodic() {
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+
+		switch (m_autonCase){
+		case 0:
+			if (autonDriveFinished == true) {
+				m_autonCase++;
+			}
+			break;
+		case 1:
+			if (autonTurnFinished == true) {
+				m_autonCase++;
+			}
+			break;
+		case 2:
+			if (autonPlaceGearFinished == true) {
+				m_autonCase++;
+			}
+			break;
+		case 3:
+			m_autonCase++;
+			break;
+		}
 	}
 
 	void TeleopInit() {
