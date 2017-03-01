@@ -1,3 +1,4 @@
+
 /*
  * Drivetrain.h
  *
@@ -23,8 +24,8 @@
 #define TALON_DRIVE_RM 4
 #define TALON_DRIVE_RR 3
 
-#define SOLENOID_SHIFT 0
-#define SOLENOID_CLIMBER 1
+#define SOLENOID_SHIFT 1 //0 on practice
+#define SOLENOID_CLIMBER 0 //1 on practice
 
 /*
 #ifndef USE_TEST_BENCH

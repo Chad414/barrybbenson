@@ -17,7 +17,7 @@ public:
 
 	double GetTargetNormalizedCenter();
 	double GetAngle();
-	bool seeTarget()
+	bool seeTarget();
 };
 
 #endif /* CAMERAHANDLER_H_ */
