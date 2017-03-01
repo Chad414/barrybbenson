@@ -86,7 +86,8 @@ enum autonType {
 	kBlueRightGear = 3,
 	kRedLeftGear = 4,
 	kRedCenterGear = 5,
-	kRedRightGear = 6
+	kRedRightGear = 6,
+	kDriveStraight5Ft = 7
 };
 
 class barrybbenson: public HotBot {
@@ -184,11 +185,15 @@ public:
 	void AutonomousInit() {
 		m_autonCase = 0;
 
+		m_autonType = kDoNothing;
+		m_drivetrain.setShift(true);
 		m_drivetrain.resetGyro();
 		m_drivetrain.zeroDriveEncoders();
 	}
 
 	void AutonomousPeriodic() {
+
+		m_drivetrain.setShift(true);
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 
 		if (m_autonType == 1) { //blue left gear
@@ -227,6 +232,12 @@ public:
 			m_autonBackUpDistance = -80;
 			placeGear = true;
 		}
+		else if (m_autonType == 7) {
+			m_autonInitialDistance = 60;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+		}
 		else {
 			m_autonInitialDistance = 0;
 			m_autonBackUpAngle = 0;
@@ -241,7 +252,7 @@ public:
 			}
 			break;
 		case 1:
-			if (autonTurnFinished() == true) {
+			if ((autonTurnFinished() == true) && (placeGear == true)) {
 				m_autonCase++;
 			}
 			break;
@@ -265,6 +276,7 @@ public:
 		m_drivetrain.SetPIDSetpoint(m_autonInitialDistance, 0);//m_drivetrain.getYaw());
 
 		if (m_drivetrain.GetDistancePIDError() < 4){
+			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			return true;
 		}
@@ -278,6 +290,7 @@ public:
 		m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_autonBackUpAngle);
 
 		if (m_drivetrain.GetAnglePIDError() < 4) {
+			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			return true;
 		} else {
@@ -291,6 +304,7 @@ public:
 
 		if (m_drivetrain.GetDistancePIDError() < 4) {
 			m_drivetrain.DisablePID();
+			m_drivetrain.zeroDriveEncoders();
 			return true;
 		} else {
 			m_drivetrain.EnablePID();
@@ -301,7 +315,9 @@ public:
 
 	bool autonPlaceGearFinished(){
 		m_drivetrain.SetPIDSetpoint(-20, m_cameraHandler.GetAngle());
+
 		if (m_drivetrain.GetDistancePIDError() < 2) {
+			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			return true;
 		} else {
