@@ -136,16 +136,16 @@ public:
 
     static void VisionThread() {
         cs::UsbCamera m_camera = CameraServer::GetInstance()->StartAutomaticCapture();
-        cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
+        //cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
         std::cout << "Camera Capture Started" << std::endl;
         m_camera.SetResolution(320, 240);
         m_camera.SetExposureManual(10);
         m_camera.SetExposureHoldCurrent();
         m_camera.SetBrightness(2);
-        m_camera2.SetResolution(320, 240);
-        m_camera2.SetExposureManual(10);
-        m_camera2.SetExposureHoldCurrent();
-        m_camera2.SetBrightness(2);
+        //m_camera2.SetResolution(320, 240);
+        //m_camera2.SetExposureManual(10);
+        //m_camera2.SetExposureHoldCurrent();
+        //m_camera2.SetBrightness(2);
         cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
         cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("USBCamera", 320, 240);
         cv::Mat source;
