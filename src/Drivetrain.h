@@ -122,6 +122,8 @@ public:
 	double GetAnglePIDSetpoint();
 	bool AnglePIDIsEnabled();
 	double GetAnglePIDError();
+	void resetAnglePID();
+	void resetDistancePID();
 
 	void SetAnglePID(float p, float i, float d);
 

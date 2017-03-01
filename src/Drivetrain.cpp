@@ -293,6 +293,14 @@ double Drivetrain::GetAnglePIDError() {
 	return m_anglePID.GetError();
 }
 
+void Drivetrain::resetAnglePID() {
+	m_anglePID.Reset();
+}
+
+void Drivetrain::resetDistancePID() {
+	m_distancePID.Reset();
+}
+
 bool Drivetrain::AnglePIDIsEnabled() {
 	return m_anglePID.IsEnabled();
 }

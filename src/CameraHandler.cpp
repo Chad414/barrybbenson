@@ -23,3 +23,11 @@ double CameraHandler::GetTargetNormalizedCenter() {
 double CameraHandler::GetAngle() {
 	return GetTargetNormalizedCenter() * -22.0287958;
 }
+
+bool CameraHandler::seeTarget() {
+	if (GetTargetNormalizedCenter() > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}

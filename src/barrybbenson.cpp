@@ -185,7 +185,7 @@ public:
 	void AutonomousInit() {
 		m_autonCase = 0;
 
-		m_autonType = kDoNothing;
+		m_autonType = kRedRightGear;
 		m_drivetrain.setShift(true);
 		m_drivetrain.resetGyro();
 		m_drivetrain.zeroDriveEncoders();
@@ -195,6 +195,18 @@ public:
 
 		m_drivetrain.setShift(true);
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+		SmartDashboard::PutNumber("Auton Case", m_autonCase);
+		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+		SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
+		SmartDashboard::PutNumber("Drive Distance Error", m_drivetrain.GetDistancePIDError());
+		SmartDashboard::PutNumber("Drive Angle Error", m_drivetrain.GetAnglePIDError());
+
+		SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
+		SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
+
+		SmartDashboard::PutNumber("Peg X", SmartDashboard::GetNumber("xPeg", 0));
+		SmartDashboard::PutNumber("Boiler X", SmartDashboard::GetNumber("xBoiler", 0));
+
 
 		if (m_autonType == 1) { //blue left gear
 			m_autonInitialDistance = 208;
@@ -278,6 +290,8 @@ public:
 		if (m_drivetrain.GetDistancePIDError() < 4){
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
+			m_drivetrain.resetAnglePID();
+			m_drivetrain.resetDistancePID();
 			return true;
 		}
 		else {
@@ -292,6 +306,8 @@ public:
 		if (m_drivetrain.GetAnglePIDError() < 4) {
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
+			m_drivetrain.resetAnglePID();
+			m_drivetrain.resetDistancePID();
 			return true;
 		} else {
 			m_drivetrain.EnablePID();
@@ -305,6 +321,8 @@ public:
 		if (m_drivetrain.GetDistancePIDError() < 4) {
 			m_drivetrain.DisablePID();
 			m_drivetrain.zeroDriveEncoders();
+			m_drivetrain.resetAnglePID();
+			m_drivetrain.resetDistancePID();
 			return true;
 		} else {
 			m_drivetrain.EnablePID();
@@ -319,6 +337,8 @@ public:
 		if (m_drivetrain.GetDistancePIDError() < 2) {
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
+			m_drivetrain.resetAnglePID();
+			m_drivetrain.resetDistancePID();
 			return true;
 		} else {
 			m_drivetrain.EnablePID();
