@@ -185,7 +185,7 @@ public:
 	void AutonomousInit() {
 		m_autonCase = 0;
 
-		m_autonType = kRedRightGear;
+		m_autonType = kRedCenterGear;
 		m_drivetrain.setShift(true);
 		m_drivetrain.resetGyro();
 		m_drivetrain.zeroDriveEncoders();
@@ -233,9 +233,9 @@ public:
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = 0;
+			m_autonInitialDistance = -52;
 			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = -76;
+			m_autonBackUpDistance = 0;
 			placeGear = true;
 		}
 		else if (m_autonType == 6) { //red right gear
@@ -257,7 +257,7 @@ public:
 			placeGear = false;
 		}
 
-		switch (m_autonCase){
+		/*switch (m_autonCase){
 		case 0:
 			if (autonDriveFinished() == true) {
 				m_autonCase++;
@@ -279,7 +279,24 @@ public:
 			}
 			break;
 		case 4:
-			m_autonCase++;
+			m_autonCase = 0;
+		}*/
+
+		switch(m_autonCase) {
+		case 0:
+			if(autonGearFinished() == true) {
+				m_autonCase++;
+			}
+			break;
+		case 1:
+			if(autonDriveFinished() == true) {
+				m_autonCase++;
+			}
+			break;
+		case 2:
+			if(autonRollOutFinished() == true) {
+
+			}
 		}
 
 	}
@@ -328,10 +345,9 @@ public:
 			m_drivetrain.EnablePID();
 			return false;
 		}
-
 	}
 
-	bool autonPlaceGearFinished(){
+	bool autonPlaceGearFinished() {
 		m_drivetrain.SetPIDSetpoint(-20, m_cameraHandler.GetAngle());
 
 		if (m_drivetrain.GetDistancePIDError() < 2) {
@@ -344,6 +360,27 @@ public:
 			m_drivetrain.EnablePID();
 			return false;
 		}
+	}
+
+	bool autonGearFinished() {
+		m_gear.SetGearMode(true);
+		m_gear.SetGearArmPosition(70.0);
+		/*if (m_gear.GetGearError() < 5) {
+			return true;
+		}*/
+		return true;
+	}
+
+	bool autonRollOutFinished() {
+		m_rollTimer.Stop();
+		m_rollTimer.Reset();
+		m_rollTimer.Start();
+		m_gear.SetGearRollerSpeed(-0.7);
+		if (m_rollTimer.Get() > 3.0) {
+			m_gear.SetGearRollerSpeed(0.0);
+			return true;
+		}
+		return false;
 	}
 
 	void TeleopInit() {
