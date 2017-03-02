@@ -121,6 +121,7 @@ private:
 
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
+	bool m_autonCenterGear = 0;
 
 public:
 
@@ -186,6 +187,7 @@ public:
 		m_autonCase = 0;
 
 		m_autonType = kRedCenterGear;
+		m_autonCenterGear = false;
 		m_drivetrain.setShift(true);
 		m_drivetrain.resetGyro();
 		m_drivetrain.zeroDriveEncoders();
@@ -227,6 +229,7 @@ public:
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			placeGear = true;
+			m_autonCenterGear = true;
 		}
 		else if (m_autonType == 3) { //blue right gear
 			m_autonInitialDistance = 208;
@@ -245,6 +248,7 @@ public:
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			placeGear = true;
+			m_autonCenterGear = true;
 		}
 		else if (m_autonType == 6) { //red right gear
 			m_autonInitialDistance = 208;
@@ -265,62 +269,61 @@ public:
 			placeGear = false;
 		}
 
-		/*switch (m_autonCase){
-		case 0:
-			if (autonDriveFinished() == true) {
-				m_autonCase++;
+		if (m_autonCenterGear == true) {
+			switch(m_autonCase) {
+			case 0:
+				if(autonCenterGearFinished() == true) {
+					std::cout << "autonCenterGearFinished" << std::endl;
+					m_autonCase++;
+				}
+				break;
+			case 1:
+				if(autonDriveFinished() == true) {
+					std::cout << "autonDriveFinished" << std::endl;
+					m_autonCase++;
+				}
+				break;
+			case 2:
+				m_rollTimer.Start();
+				if(autonRollOutFinished() == true) {
+					std::cout << "autonRollOutFinished" << std::endl;
+					m_autonCase++;
+				}
+				break;
 			}
-			break;
-		case 1:
-			if ((autonTurnFinished() == true) && (placeGear == true)) {
-				m_autonCase++;
+		} else {
+			switch (m_autonCase){
+			case 0:
+				if (autonDriveFinished() == true) {
+					m_autonCase++;
+				}
+				break;
+			case 1:
+				if ((autonTurnFinished() == true) && (placeGear == true)) {
+					m_autonCase++;
+				}
+				break;
+			case 2:
+				if (autonBackUpFinished() == true) {
+					m_autonCase++;
+				}
+				break;
+			case 3:
+				if (autonPlaceGearFinished() == true) {
+					m_autonCase++;
+				}
+				break;
+			case 4:
+				m_autonCase = 0;
 			}
-			break;
-		case 2:
-			if (autonBackUpFinished() == true) {
-				m_autonCase++;
-			}
-			break;
-		case 3:
-			if (autonPlaceGearFinished() == true) {
-				m_autonCase++;
-			}
-			break;
-		case 4:
-			m_autonCase = 0;
-		}*/
-
-		switch(m_autonCase) {
-		case 0:
-			if(autonCenterGearFinished() == true) {
-				std::cout << "autonCenterGearFinished" << std::endl;
-				m_autonCase++;
-			}
-			break;
-		case 1:
-			if(autonDriveFinished() == true) {
-				std::cout << "autonDriveFinished" << std::endl;
-				m_autonCase++;
-			}
-			break;
-		case 2:
-			m_rollTimer.Start();
-			if(autonRollOutFinished() == true) {
-				std::cout << "autonRollOutFinished" << std::endl;
-				m_autonCase++;
-			}
-			break;
 		}
 
 	}
 
 	bool autonDriveFinished() {
 		m_drivetrain.SetPIDSetpoint(m_autonInitialDistance, 0);//m_drivetrain.getYaw());
-		//std::cout << "Auton Drive Called With = " << m_autonInitialDistance << std::endl;
-		//std::cout << "Auton Drive Setpoint = " << m_drivetrain.getDistanceSetPoint() << std::endl;
 
 		if (fabs(m_drivetrain.GetDistancePIDError()) < 4) {
-			std::cout << "Distance PID Error = " << m_drivetrain.GetDistancePIDError() << std::endl;
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			m_drivetrain.resetAnglePID();
@@ -336,7 +339,7 @@ public:
 	bool autonTurnFinished() {
 		m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_autonBackUpAngle);
 
-		if (m_drivetrain.GetAnglePIDError() < 4) {
+		if (fabs(m_drivetrain.GetAnglePIDError()) < 4) {
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			m_drivetrain.resetAnglePID();
@@ -351,7 +354,7 @@ public:
 	bool autonBackUpFinished() {
 		m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance + 20, m_autonBackUpAngle);
 
-		if (m_drivetrain.GetDistancePIDError() < 4) {
+		if (fabs(m_drivetrain.GetDistancePIDError()) < 4) {
 			m_drivetrain.DisablePID();
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.resetAnglePID();
@@ -366,7 +369,7 @@ public:
 	bool autonPlaceGearFinished() {
 		m_drivetrain.SetPIDSetpoint(-20, m_cameraHandler.GetAngle());
 
-		if (m_drivetrain.GetDistancePIDError() < 2) {
+		if (fabs(m_drivetrain.GetDistancePIDError()) < 2) {
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			m_drivetrain.resetAnglePID();
