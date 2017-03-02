@@ -77,6 +77,8 @@ public:
 	double GetGearSetpoint();
 		//return pid setpoint
 
+	void resetRoller();
+
 //roller
 	void SetGearRollerSpeed(double roller_speed);
 	double GetGearRollerCommandedSpeed();

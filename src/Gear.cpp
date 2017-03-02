@@ -128,6 +128,10 @@ double Gear::GetGearRollerCommandedSpeed() {
 	return gearRollerCommandedSpeed;
 }
 
+void Gear::resetRoller() {
+	m_gearRoll.SetPosition(0.0);
+}
+
 Gear::~Gear() {
 	// TODO Auto-generated destructor stub
 }

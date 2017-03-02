@@ -4,8 +4,7 @@ Intake::Intake()
 	:	m_intakeRoller(TALON_INTAKE_ROLLER),
 		m_intakeArmOut(SOLENOID_INTAKE_ARM_OUT),
 		m_intakeArmIn(SOLENOID_INTAKE_ARM_IN),
-		m_hopperOut(SOLENOID_HOPPER_OUT),
-		m_hopperIn(SOLENOID_HOPPER_IN)
+		m_hopper(SOLENOID_HOPPER_OUT, SOLENOID_HOPPER_IN)
 {
 
 }
@@ -35,9 +34,11 @@ double Intake::GetIntakeRoller() {
 }
 
 void Intake::SetHopper(bool on){
-	m_hopperOut.Set(on);
-	m_hopperIn.Set(!on);
-	Hopper = on;
+	if (on) {
+		m_hopper.Set(DoubleSolenoid::Value::kForward);
+	} else {
+		m_hopper.Set(DoubleSolenoid::Value::kReverse);
+	}
 }
 
 bool Intake::GetHopper() {

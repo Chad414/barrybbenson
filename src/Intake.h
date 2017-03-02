@@ -15,8 +15,8 @@
 #define SOLENOID_INTAKE_ARM_OUT 4
 #define SOLENOID_INTAKE_ARM_IN 5
 
-#define SOLENOID_HOPPER_OUT 2
-#define SOLENOID_HOPPER_IN 3
+#define SOLENOID_HOPPER_OUT 4
+#define SOLENOID_HOPPER_IN 5
 
 class Intake {
 private:
@@ -25,8 +25,10 @@ private:
 	Solenoid m_intakeArmOut;
 	Solenoid m_intakeArmIn;
 
-	Solenoid m_hopperOut;
-	Solenoid m_hopperIn;
+	//Solenoid m_hopperOut;
+	//Solenoid m_hopperIn;
+
+	DoubleSolenoid m_hopper;
 
 	bool IntakeArm;
 	bool Hopper;

@@ -342,5 +342,9 @@ bool Drivetrain::AngleAtSetpoint() {
 	}
 }
 
+double Drivetrain::getDistanceSetPoint() {
+	return m_distancePID.GetSetpoint();
+}
+
 Drivetrain::~Drivetrain() {
 }

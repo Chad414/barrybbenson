@@ -18,10 +18,10 @@
 
 #define SHOOTER_PADDLE_TALON 9
 
-#define SHOOTER_P 0.09
+#define SHOOTER_P 0.04 //0.09
 #define SHOOTER_I 0.0
 #define SHOOTER_D 0.0
-#define SHOOTER_F 0.03765
+#define SHOOTER_F 0.02788 //0.03765
 class Shooter {
 private:
 	CANTalon m_shooterL;

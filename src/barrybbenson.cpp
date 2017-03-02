@@ -158,8 +158,8 @@ public:
     }
 
 	void RobotInit() {
-        std::thread visionThread(VisionThread);
-        visionThread.detach();
+        //std::thread visionThread(VisionThread);
+        //visionThread.detach();
         m_gear.GameStartGearArmPosition();
         m_shoot.ZeroShootEncoder();
         m_drivetrain.zeroDriveEncoders();
@@ -189,6 +189,10 @@ public:
 		m_drivetrain.setShift(true);
 		m_drivetrain.resetGyro();
 		m_drivetrain.zeroDriveEncoders();
+		m_gear.GameStartGearArmPosition();
+		m_rollTimer.Reset();
+		m_gear.resetRoller();
+		m_gear.SetGearRollerSpeed(0.0);
 	}
 
 	void AutonomousPeriodic() {
@@ -207,6 +211,10 @@ public:
 		SmartDashboard::PutNumber("Peg X", SmartDashboard::GetNumber("xPeg", 0));
 		SmartDashboard::PutNumber("Boiler X", SmartDashboard::GetNumber("xBoiler", 0));
 
+		SmartDashboard::PutNumber("Drive Left Front Talon Get", m_drivetrain.getDriveTalonL());
+		SmartDashboard::PutNumber("Drive Right Front Talon Get", m_drivetrain.getDriveTalonR());
+		//std::cout << "Roller Timer" << m_rollTimer.Get() << std::endl;
+
 
 		if (m_autonType == 1) { //blue left gear
 			m_autonInitialDistance = 208;
@@ -215,9 +223,9 @@ public:
 			placeGear = true;
 		}
 		else if (m_autonType == 2) { //blue center gear
-			m_autonInitialDistance = 0;
+			m_autonInitialDistance = -59.0;
 			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = -76;
+			m_autonBackUpDistance = 0;
 			placeGear = true;
 		}
 		else if (m_autonType == 3) { //blue right gear
@@ -233,7 +241,7 @@ public:
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = -52;
+			m_autonInitialDistance = -59.0;
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			placeGear = true;
@@ -284,27 +292,35 @@ public:
 
 		switch(m_autonCase) {
 		case 0:
-			if(autonGearFinished() == true) {
+			if(autonCenterGearFinished() == true) {
+				std::cout << "autonCenterGearFinished" << std::endl;
 				m_autonCase++;
 			}
 			break;
 		case 1:
 			if(autonDriveFinished() == true) {
+				std::cout << "autonDriveFinished" << std::endl;
 				m_autonCase++;
 			}
 			break;
 		case 2:
+			m_rollTimer.Start();
 			if(autonRollOutFinished() == true) {
-
+				std::cout << "autonRollOutFinished" << std::endl;
+				m_autonCase++;
 			}
+			break;
 		}
 
 	}
 
 	bool autonDriveFinished() {
 		m_drivetrain.SetPIDSetpoint(m_autonInitialDistance, 0);//m_drivetrain.getYaw());
+		//std::cout << "Auton Drive Called With = " << m_autonInitialDistance << std::endl;
+		//std::cout << "Auton Drive Setpoint = " << m_drivetrain.getDistanceSetPoint() << std::endl;
 
-		if (m_drivetrain.GetDistancePIDError() < 4){
+		if (fabs(m_drivetrain.GetDistancePIDError()) < 4) {
+			std::cout << "Distance PID Error = " << m_drivetrain.GetDistancePIDError() << std::endl;
 			m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			m_drivetrain.resetAnglePID();
@@ -362,9 +378,9 @@ public:
 		}
 	}
 
-	bool autonGearFinished() {
+	bool autonCenterGearFinished() {
 		m_gear.SetGearMode(true);
-		m_gear.SetGearArmPosition(70.0);
+		m_gear.SetGearArmPosition(63.0);
 		/*if (m_gear.GetGearError() < 5) {
 			return true;
 		}*/
@@ -372,12 +388,11 @@ public:
 	}
 
 	bool autonRollOutFinished() {
-		m_rollTimer.Stop();
-		m_rollTimer.Reset();
-		m_rollTimer.Start();
 		m_gear.SetGearRollerSpeed(-0.7);
-		if (m_rollTimer.Get() > 3.0) {
+		if (m_rollTimer.Get() > 1.0) {
+			std::cout << "Roller Stopped" << std::endl;
 			m_gear.SetGearRollerSpeed(0.0);
+			m_rollTimer.Stop();
 			return true;
 		}
 		return false;
@@ -419,11 +434,10 @@ public:
 
 		if (m_operator->ButtonStart()) {
 			m_shoot.SetShootMode(true);
-			m_shoot.RunShoot(2450);
-		}
-		else {
+			m_shoot.RunShoot(3200); //2450
+		} else {
 			m_shoot.SetShootMode(false);
-			m_shoot.RunShoot(0.9);
+			m_shoot.RunShoot(0.0);
 		}
 
 

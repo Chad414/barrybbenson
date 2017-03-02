@@ -138,6 +138,8 @@ public:
 	bool AngleAtSetpoint();
 	//--------------------------------------------------------------------------------
 
+	double getDistanceSetPoint();
+
 	virtual ~Drivetrain();
 
 private:
