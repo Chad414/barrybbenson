@@ -46,10 +46,10 @@ void Shooter::RunShoot(double shoot_speed) {
 	shooterSpeed = shoot_speed;
 
 	if ((GetShootMode() == true) && (fabs(GetShootError()) < 200) && (shooterSpeed != 0.0) ) {
-		RunPaddle(-1.0);
+		shooterAtSpeed = true;
 	}
 	else {
-		//RunPaddle(0.0);
+		shooterAtSpeed = false;
 	}
 }
 
@@ -118,4 +118,8 @@ double Shooter::getLeftShoot() {
 
 double Shooter::getRightShoot() {
 	return m_shooterR.GetPosition();
+}
+
+bool Shooter::ReturnShooterAtSpeed() {
+	return shooterAtSpeed;
 }

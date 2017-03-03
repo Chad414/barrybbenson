@@ -32,6 +32,7 @@ private:
 	double shooterSpeed;
 	double paddleSpeed;
 	bool shooterMode;
+	bool shooterAtSpeed;
 public:
 	Shooter();
 	virtual ~Shooter();
@@ -59,6 +60,7 @@ public:
 	double getLeftShoot();
 	double getRightShoot();
 
+	bool ReturnShooterAtSpeed();
 
 };
 

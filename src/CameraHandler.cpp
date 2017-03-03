@@ -17,11 +17,11 @@ CameraHandler::~CameraHandler() {
 }
 
 double CameraHandler::GetTargetNormalizedCenter() {
-	return SmartDashboard::GetNumber("ImageXCenter", 0.0);
+	return SmartDashboard::GetNumber("Peg X", 0.0);
 }
 
 double CameraHandler::GetAngle() {
-	return GetTargetNormalizedCenter() * -22.0287958;
+	return GetTargetNormalizedCenter() * GYRO_GAIN;
 }
 
 bool CameraHandler::seeTarget() {

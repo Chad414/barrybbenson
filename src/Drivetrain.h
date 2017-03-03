@@ -50,7 +50,7 @@
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
-#define ANGLE_P 0.1
+#define ANGLE_P 0.14
 #define ANGLE_I 0
 #define ANGLE_D 0
 
@@ -60,8 +60,6 @@ public:
 	void InitTeleop();
 	void ArcadeDrive(double speed, double angle);
 	double getSpeed();
-	double getDriveTalonL();
-	double getDriveTalonR();
 	double getAngle();
 	void startMP();
 	void resetMP();
@@ -82,6 +80,10 @@ public:
 	void setTurn(double turn);
 	void setSpeed(double speed);
 	double getTotalDriveCurrent();
+
+	double turnPIDSpeed = 0.55;
+	double distancePIDOutput = 0;
+	double anglePIDOutput = 0;
 
 	//--------------------------------------------------------------------------------
 
@@ -139,6 +141,7 @@ public:
 	//--------------------------------------------------------------------------------
 
 	double getDistanceSetPoint();
+	void setTurnPIDSpeed(double speed);
 
 	virtual ~Drivetrain();
 
