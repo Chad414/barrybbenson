@@ -65,6 +65,13 @@ public:
 	void resetMP();
 	void controlMP();
 
+	double getFrontLeftTalon();
+	double getMiniLeftTalon();
+	double getBackLeftTalon();
+	double getFrontRightTalon();
+	double getMiniRightTalon();
+	double getBackRightTalon();
+
 	void setClimbShift(bool on);
 	float getYaw();
 	void resetGyro();
@@ -82,6 +89,7 @@ public:
 	double getTotalDriveCurrent();
 
 	double turnPIDSpeed = 0.55;
+	double distancePIDSpeed = 0.7;
 	double distancePIDOutput = 0;
 	double anglePIDOutput = 0;
 
@@ -142,6 +150,7 @@ public:
 
 	double getDistanceSetPoint();
 	void setTurnPIDSpeed(double speed);
+	void setDistancePIDSpeed(double speed);
 
 	virtual ~Drivetrain();
 

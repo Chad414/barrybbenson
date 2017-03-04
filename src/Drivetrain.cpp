@@ -102,7 +102,7 @@ double Drivetrain::DistancePIDWrapper::PIDGet () {
 void Drivetrain::DistancePIDWrapper::PIDWrite(double output) {
 	//SmartDashboard::PutNumber("* Drive PID Write", output);
 	m_drivetrain->distancePIDOutput = output;
-	m_drivetrain->setSpeed(output * 0.7);
+	m_drivetrain->setSpeed(output * m_drivetrain->distancePIDSpeed);
 }
 
 // AnglePIDWrapper Functions
@@ -196,6 +196,33 @@ void Drivetrain::setTurn(double turn) {
 void Drivetrain::setSpeed(double speed) {
 	ArcadeDrive(speed, m_turn);
 }
+
+double Drivetrain::getFrontRightTalon() {
+	return m_rDriveF.Get();
+}
+
+double Drivetrain::getMiniRightTalon() {
+	return m_rDriveM.Get();
+}
+
+double Drivetrain::getBackRightTalon() {
+	return m_rDriveR.Get();
+}
+
+double Drivetrain::getFrontLeftTalon() {
+	return m_lDriveF.Get();
+}
+
+double Drivetrain::getMiniLeftTalon() {
+	return m_lDriveM.Get();
+}
+
+double Drivetrain::getBackLeftTalon() {
+	return m_lDriveR.Get();
+}
+
+
+
 
 double Drivetrain::getTotalDriveCurrent() {
 	return m_lDriveF.GetOutputCurrent()
@@ -342,6 +369,10 @@ double Drivetrain::getDistanceSetPoint() {
 
 void Drivetrain::setTurnPIDSpeed(double speed) {
 	turnPIDSpeed = speed;
+}
+
+void Drivetrain::setDistancePIDSpeed(double speed) {
+	distancePIDSpeed = speed;
 }
 
 Drivetrain::~Drivetrain() {

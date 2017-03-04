@@ -17,12 +17,12 @@
 #define TALON_GEAR_ROLL 12
 
 //gear arm pid values
-#define TALON_UP_GEAR_P 2.5
+#define TALON_UP_GEAR_P 2.7
 #define TALON_UP_GEAR_I 0.0
 #define TALON_UP_GEAR_D 0.0
 #define TALON_UP_GEAR_F 0.0
 
-#define TALON_DOWN_GEAR_P 0.54
+#define TALON_DOWN_GEAR_P 1.3
 #define TALON_DOWN_GEAR_I 0.0
 #define TALON_DOWN_GEAR_D 0.0
 #define TALON_DOWN_GEAR_F 0.0
@@ -32,7 +32,7 @@
 
 #define GEAR_GROUND 0.0
 #define GEAR_PACKAGE 86.0
-#define GEAR_PLACE_FIRST 70.0
+#define GEAR_PLACE_FIRST 62.0 //70.0
 #define GEAR_PLACE_SECOND 28.0
 #define GEAR_HUMAN_LOAD 80.0
 
@@ -65,7 +65,6 @@ public:
 	double GetGearTalonCurrent();
 
 	double GetGearError();
-
 
 	void SetGearArmPosition(double gear_speed);
 		//pid mode, accepts desired position; joystick mode, is % to talon
