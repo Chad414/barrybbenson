@@ -80,8 +80,6 @@
 	 *
 	 */
 
-static int m_exposure = 10;
-
 enum autonType {
 	kDoNothing = 0,
 	kBlueLeftGear = 1,
@@ -121,7 +119,7 @@ private:
 	double m_autonBackUpDistance;
 	bool m_placeGear;
 
-	//int m_exposure = 10;
+	int m_exposure = 10;
 
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
@@ -144,19 +142,16 @@ public:
         cs::UsbCamera m_camera = CameraServer::GetInstance()->StartAutomaticCapture();
         //cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
         std::cout << "Camera Capture Started" << std::endl;
-        m_camera.SetResolution(320, 240);
-        m_camera.SetExposureManual(m_exposure);
+        m_camera.SetResolution(160, 120);
         m_camera.SetExposureHoldCurrent();
         m_camera.SetBrightness(2);
-        /*m_camera2.SetResolution(320, 240);
-        m_camera2.SetExposureManual(10);
-        m_camera2.SetExposureHoldCurrent();
-        m_camera2.SetBrightness(2);*/
+        m_camera.SetFPS(30);
         cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-        cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("USBCamera", 320, 240);
+        cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("USBCamera", 160, 120);
         cv::Mat source;
         cv::Mat output;
         while(true) {
+        	m_camera.SetExposureManual(SmartDashboard::GetNumber("DB/Slider 0", 50));
             cvSink.GrabFrame(source);
             cvtColor(source, output, cv::COLOR_BGR2BGR565);
             outputStreamStd.PutFrame(output);
