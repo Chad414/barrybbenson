@@ -19,7 +19,9 @@
 
 Gear::Gear()
 	: m_gearArm(TALON_GEAR_ARM),
-	  m_gearRoll(TALON_GEAR_ROLL)
+	  m_gearRoll(TALON_GEAR_ROLL),
+	  m_gearOpen(GEAR_OPEN),
+	  m_gearClose(GEAR_CLOSE)
 {
 	// TODO Auto-generated constructor stub
 
@@ -48,7 +50,8 @@ void Gear::ZeroGearArmPosition() {
 }
 
 void Gear::GameStartGearArmPosition() {
-	m_gearArm.SetPosition(GEAR_PACKAGE / GEAR_DEGREE_CONST);
+	//m_gearArm.SetPosition(GEAR_PACKAGE / GEAR_DEGREE_CONST);
+	m_gearArm.SetPosition(0);
 }
 
 double Gear::GetGearTalonCurrent() {
@@ -130,6 +133,16 @@ double Gear::GetGearRollerCommandedSpeed() {
 
 void Gear::resetRoller() {
 	m_gearRoll.SetPosition(0.0);
+}
+
+void Gear::openGearIntake(bool open) {
+	if(open == true) {
+		m_gearOpen.Set(true);
+		m_gearClose.Set(false);
+	} else {
+		m_gearOpen.Set(false);
+		m_gearClose.Set(true);
+ 	 }
 }
 
 Gear::~Gear() {

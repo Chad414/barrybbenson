@@ -16,6 +16,9 @@
 #define TALON_GEAR_ARM 8
 #define TALON_GEAR_ROLL 12
 
+#define GEAR_OPEN 4
+#define GEAR_CLOSE 5
+
 //gear arm pid values
 #define TALON_UP_GEAR_P 2.7
 #define TALON_UP_GEAR_I 0.0
@@ -30,17 +33,20 @@
 //gear arm constant to make degree
 #define GEAR_DEGREE_CONST 165.75
 
-#define GEAR_GROUND 0.0
-#define GEAR_PACKAGE 86.0
-#define GEAR_PLACE_FIRST 62.0 //70.0
-#define GEAR_PLACE_SECOND 28.0
-#define GEAR_HUMAN_LOAD 80.0
+#define GEAR_GROUND -87.0
+#define GEAR_PACKAGE 0.0
+#define GEAR_PLACE_FIRST -32.0 //70.0
+#define GEAR_PLACE_SECOND 0.0
+#define GEAR_HUMAN_LOAD 0.0
 
 class Gear {
 private:
 	CANTalon m_gearArm;
 	CANTalon m_gearRoll;
 	Timer *m_rollTime;
+
+	Solenoid m_gearOpen;
+	Solenoid m_gearClose;
 
 	double gearCommandedSpeed;
 	double gearRollerCommandedSpeed;
@@ -77,6 +83,8 @@ public:
 		//return pid setpoint
 
 	void resetRoller();
+
+	void openGearIntake(bool open);
 
 //roller
 	void SetGearRollerSpeed(double roller_speed);

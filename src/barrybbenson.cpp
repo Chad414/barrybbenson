@@ -161,7 +161,8 @@ public:
 	void RobotInit() {
         std::thread visionThread(VisionThread);
         visionThread.detach();
-        m_gear.GameStartGearArmPosition();
+        //m_gear.GameStartGearArmPosition();
+        m_gear.ZeroGearArmPosition();
         m_shoot.ZeroShootEncoder();
         m_drivetrain.zeroDriveEncoders();
         m_autonType = kDoNothing;
@@ -738,6 +739,12 @@ public:
 		}
 		else {
 			m_gear.SetGearRollerSpeed(0.0);
+		}
+
+		if (m_operator->GetPOV() == 90.0) {
+			m_gear.openGearIntake(true);
+		} else {
+			m_gear.openGearIntake(false);
 		}
 
 	}
