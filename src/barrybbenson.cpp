@@ -151,7 +151,7 @@ public:
         cv::Mat source;
         cv::Mat output;
         while(true) {
-        	m_camera.SetExposureManual(SmartDashboard::GetNumber("DB/Slider 0", 50));
+        	m_camera.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
             cvSink.GrabFrame(source);
             cvtColor(source, output, cv::COLOR_BGR2BGR565);
             outputStreamStd.PutFrame(output);
@@ -159,6 +159,7 @@ public:
     }
 
 	void RobotInit() {
+		SmartDashboard::PutNumber("m_exposure", m_exposure);
         std::thread visionThread(VisionThread);
         visionThread.detach();
         //m_gear.GameStartGearArmPosition();
@@ -198,6 +199,9 @@ public:
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
 
 		m_autonType = (autonType)SmartDashboard::GetNumber("Auto Selector", 0);
+
+		m_exposure = 10;
+		SmartDashboard::PutNumber("m_exposure", m_exposure);
 
 	}
 
@@ -493,7 +497,8 @@ public:
 		m_drivetrain.DisablePID();
 		m_drivetrain.zeroDriveEncoders();
 		m_drivetrain.resetGyro();
-		m_exposure = 50;
+		m_exposure = 40;
+		SmartDashboard::PutNumber("m_exposure", m_exposure);
 	}
 
 	void TeleopPeriodic() {
