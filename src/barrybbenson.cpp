@@ -740,6 +740,12 @@ public:
 			m_gear.SetGearRollerSpeed(0.0);
 		}
 
+		if (m_operator->GetPOV() == 90.0) {
+			m_gear.openGearIntake(true);
+		} else {
+			m_gear.openGearIntake(false);
+		}
+
 	}
 
 	void TestPeriodic() {

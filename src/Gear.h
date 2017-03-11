@@ -16,6 +16,9 @@
 #define TALON_GEAR_ARM 8
 #define TALON_GEAR_ROLL 12
 
+#define GEAR_OPEN 4
+#define GEAR_CLOSE 5
+
 //gear arm pid values
 #define TALON_UP_GEAR_P 2.7
 #define TALON_UP_GEAR_I 0.0
@@ -41,6 +44,9 @@ private:
 	CANTalon m_gearArm;
 	CANTalon m_gearRoll;
 	Timer *m_rollTime;
+
+	Solenoid m_gearOpen;
+	Solenoid m_gearClose;
 
 	double gearCommandedSpeed;
 	double gearRollerCommandedSpeed;
@@ -77,6 +83,8 @@ public:
 		//return pid setpoint
 
 	void resetRoller();
+
+	void openGearIntake(bool open);
 
 //roller
 	void SetGearRollerSpeed(double roller_speed);
