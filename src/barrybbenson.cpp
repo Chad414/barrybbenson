@@ -161,7 +161,8 @@ public:
 	void RobotInit() {
         std::thread visionThread(VisionThread);
         visionThread.detach();
-        m_gear.GameStartGearArmPosition();
+        //m_gear.GameStartGearArmPosition();
+        m_gear.ZeroGearArmPosition();
         m_shoot.ZeroShootEncoder();
         m_drivetrain.zeroDriveEncoders();
         m_autonType = kDoNothing;

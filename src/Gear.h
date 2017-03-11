@@ -33,11 +33,11 @@
 //gear arm constant to make degree
 #define GEAR_DEGREE_CONST 165.75
 
-#define GEAR_GROUND 0.0
-#define GEAR_PACKAGE 86.0
-#define GEAR_PLACE_FIRST 62.0 //70.0
-#define GEAR_PLACE_SECOND 28.0
-#define GEAR_HUMAN_LOAD 80.0
+#define GEAR_GROUND -87.0
+#define GEAR_PACKAGE 0.0
+#define GEAR_PLACE_FIRST -32.0 //70.0
+#define GEAR_PLACE_SECOND -28.0
+#define GEAR_HUMAN_LOAD -80.0
 
 class Gear {
 private:
