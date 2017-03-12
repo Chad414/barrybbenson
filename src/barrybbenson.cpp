@@ -96,7 +96,7 @@ private:
 
 	HotJoystick* m_driver;
 	HotJoystick* m_operator;
-	Timer* m_timer;
+	Timer m_timer;
 
 
 	PowerDistributionPanel m_pdp;
@@ -216,6 +216,58 @@ public:
 		m_rollTimer.Reset();
 		m_gear.resetRoller();
 		m_gear.SetGearRollerSpeed(0.0);
+
+		if (m_autonType == 1) { //blue left gear
+			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = 60;
+			m_autonBackUpDistance = -70.0; //-61.0
+			placeGear = true;
+		}
+		else if (m_autonType == 2) { //blue center gear
+			m_autonInitialDistance = -77.0;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = true;
+			m_autonCenterGear = true;
+		}
+		else if (m_autonType == 3) { //blue right gear
+			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = -60;
+			m_autonBackUpDistance = -70.0; //-61.0
+			placeGear = true;
+		}
+		else if (m_autonType == 4) { //red left gear
+			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = 60;
+			m_autonBackUpDistance = -70.0; //-61.0
+			placeGear = true;
+		}
+		else if (m_autonType == 5) { //red center gear
+			m_autonInitialDistance = -77.0;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = true;
+			m_autonCenterGear = true;
+		}
+		else if (m_autonType == 6) { //red right gear
+			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = -60;
+			m_autonBackUpDistance = -70.0; //-61.0
+			placeGear = true;
+		}
+		else if (m_autonType == 7) {
+			m_autonInitialDistance = 60;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+		}
+		else {
+			m_autonInitialDistance = 0;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+		}
+
 	}
 
 	void AutonomousPeriodic() {
@@ -224,7 +276,7 @@ public:
 		SmartDashboard::PutNumber("Auton Type", m_autonType);
 
 		//m_drivetrain.setShift(true);
-		/*SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 		SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
@@ -249,62 +301,8 @@ public:
 		SmartDashboard::PutBoolean("Auton Place Gear", placeGear);
 		SmartDashboard::PutBoolean("Auton Center Gear", m_autonCenterGear);
 
-		*/
+
 		//std::cout << "Roller Timer" << m_rollTimer.Get() << std::endl;
-
-		std::cout << m_autonCase << std::endl;
-
-
-		if (m_autonType == 1) { //blue left gear
-			m_autonInitialDistance = -86.0;
-			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -55.0;
-			placeGear = true;
-		}
-		else if (m_autonType == 2) { //blue center gear
-			m_autonInitialDistance = -77.0;
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = true;
-			m_autonCenterGear = true;
-		}
-		else if (m_autonType == 3) { //blue right gear
-			m_autonInitialDistance = -86.0;
-			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -55.0; //-61.0
-			placeGear = true;
-		}
-		else if (m_autonType == 4) { //red left gear
-			m_autonInitialDistance = -86.0;
-			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -55.0;
-			placeGear = true;
-		}
-		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = -77.0;
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = true;
-			m_autonCenterGear = true;
-		}
-		else if (m_autonType == 6) { //red right gear
-			m_autonInitialDistance = -86.0;
-			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -55.0; //-61.0
-			placeGear = true;
-		}
-		else if (m_autonType == 7) {
-			m_autonInitialDistance = 60;
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = false;
-		}
-		else {
-			m_autonInitialDistance = 0;
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = false;
-		}
 
 		if (m_autonCenterGear == true) {
 			switch(m_autonCase) {
@@ -321,23 +319,9 @@ public:
 				}
 				break;
 			case 2:
-				m_rollTimer.Start();
-				if(autonRollOutFinished() == true && m_rollTimer.Get() >= 2.0) {
-					std::cout << "autonRollOutFinished" << std::endl;
-					m_autonCase++;
-					m_rollTimer.Stop();
-					m_drivetrain.setDistancePIDSpeed(0.5);
-					m_drivetrain.zeroDriveEncoders();
-				}
-				break;
-			case 3:
-				if(autonDropOff() == true) {
+				if (autonReleaseGear() == true) {
 					m_autonCase++;
 				}
-				break;
-			case 4:
-				m_drivetrain.setDistancePIDSpeed(0.7);
-				m_autonCase++;
 				break;
 			}
 		} else {
@@ -346,11 +330,16 @@ public:
 				//m_autonCase++;
 				if (autonDriveFinished() == true) {
 					m_autonCase++;
+					SmartDashboard::PutNumber("TUNE0_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE0_DISTANCE", m_drivetrain.GetAverageDistance());
 				}
 				break;
 			case 1:
 				//m_autonCase++;
 				if ((autonTurnFinished() == true) && (placeGear == true)) {
+					SmartDashboard::PutNumber("TUNE1_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE1_DISTANCE", m_drivetrain.GetAverageDistance());
+					SmartDashboard::PutNumber("TUNE1_XPEG", SmartDashboard::GetNumber("xPeg", 0));
 					m_drivetrain.resetGyro();
 					m_autonCase++;
 				}
@@ -358,37 +347,38 @@ public:
 			case 2:
 				if (autonTuneAngle() == true) {
 					//m_arlinaInches = SmartDashboard::GetNumber("dPeg", 0.0) * -10.65;
+					SmartDashboard::PutNumber("TUNE2_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE2_DISTANCE", m_drivetrain.GetAverageDistance());
+					SmartDashboard::PutNumber("TUNE2_XPEG", SmartDashboard::GetNumber("xPeg", 0));
+					SmartDashboard::PutNumber("TUNE2_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());
+					m_drivetrain.resetGyro();
 					m_autonCase++;
 				}
 				break;
 			case 3:
 				if (autonArmFinished() == true) {
 					m_autonCase++;
+					m_timer.Reset();
+					m_timer.Start();
 				}
 				break;
 			case 4:
-				if (autonBackUpFinished() == true) {
+				if (autonPauseFinished(0.3) == true) {
 					m_autonCase++;
+					m_drivetrain.resetGyro();
 				}
 				break;
 			case 5:
-				m_rollTimer.Start();
-					if(autonRollOutFinished() == true && m_rollTimer.Get() >= 2.0) {
-						std::cout << "autonRollOutFinished" << std::endl;
-						m_autonCase++;
-						m_rollTimer.Stop();
-						m_drivetrain.setDistancePIDSpeed(0.5);
-						m_drivetrain.zeroDriveEncoders();
-					}
-				break;
-			case 6:
-				if(autonDropOff() == true) {
+				if (autonBackUpFinished() == true) {
 					m_autonCase++;
+					SmartDashboard::PutNumber("TUNE5_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE5_DISTANCE", m_drivetrain.GetAverageDistance());
 				}
 				break;
-			case 7:
-				m_drivetrain.setDistancePIDSpeed(0.7);
-				m_autonCase++;
+			case 6:
+				if (autonReleaseGear() == true) {
+					m_autonCase++;
+				}
 				break;
 			}
 		}
@@ -491,6 +481,19 @@ public:
 			m_drivetrain.EnablePID();
 			return false;
 		}
+	}
+
+	bool autonPauseFinished(double length) {
+		if (m_timer.Get() >= length) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	bool autonReleaseGear() {
+		m_gear.openGearIntake(true);
+		return true;
 	}
 
 	void TeleopInit() {
