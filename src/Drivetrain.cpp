@@ -33,6 +33,8 @@ Drivetrain::Drivetrain()
 	m_turn = 0;
 	m_speed = 0;
 
+	m_shiftTimer.Reset();
+
 	m_lDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_lDriveF.SetSensorDirection(true);
 	m_rDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
@@ -133,6 +135,12 @@ void Drivetrain::InitTeleop()
 }
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
+	if (m_shift.Get() == true && m_shiftTimer.Get() < 0.5) {
+		if (speed >= SHIFT_THRESH) {
+			speed *= SHIFT_THRESH;
+			setDriveToCoastMode();
+		}
+	}
 	m_drive.SetSafetyEnabled(true);
 	m_speed = speed;
 	m_turn = angle;
@@ -181,12 +189,18 @@ void Drivetrain::zeroDriveEncoders() {
 }
 
 void Drivetrain::setShift(bool on) {
+	if (on) {
+		m_shiftTimer.Start();
+	} else {
+		setDriveToBrakeMode();
+		m_shiftTimer.Stop();
+		m_shiftTimer.Reset();
+	}
 	m_shift.Set(on);
-	m_shiftValue = on;
 }
 
 bool Drivetrain::getShift() {
-	return m_shiftValue;
+	return m_shift.Get();
 }
 
 void Drivetrain::setTurn(double turn) {
@@ -373,6 +387,24 @@ void Drivetrain::setTurnPIDSpeed(double speed) {
 
 void Drivetrain::setDistancePIDSpeed(double speed) {
 	distancePIDSpeed = speed;
+}
+
+void Drivetrain::setDriveToBrakeMode() {
+	m_lDriveF.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
+	m_lDriveM.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
+	m_lDriveR.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
+	m_rDriveF.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
+	m_rDriveM.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
+	m_rDriveR.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
+}
+
+void Drivetrain::setDriveToCoastMode() {
+	m_lDriveF.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
+	m_lDriveM.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
+	m_lDriveR.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
+	m_rDriveF.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
+	m_rDriveM.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
+	m_rDriveR.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
 }
 
 Drivetrain::~Drivetrain() {

@@ -216,11 +216,12 @@ public:
 		m_rollTimer.Reset();
 		m_gear.resetRoller();
 		m_gear.SetGearRollerSpeed(0.0);
+		m_drivetrain.setDistancePIDSpeed(0.7);
 
 		if (m_autonType == 1) { //blue left gear
 			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -70.0; //-61.0
+			m_autonBackUpDistance = -67.0; //-61.0
 			placeGear = true;
 		}
 		else if (m_autonType == 2) { //blue center gear
@@ -233,13 +234,13 @@ public:
 		else if (m_autonType == 3) { //blue right gear
 			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -70.0; //-61.0
+			m_autonBackUpDistance = -67.0; //-61.0
 			placeGear = true;
 		}
 		else if (m_autonType == 4) { //red left gear
 			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -70.0; //-61.0
+			m_autonBackUpDistance = -67.0; //-61.0
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
@@ -252,7 +253,7 @@ public:
 		else if (m_autonType == 6) { //red right gear
 			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -70.0; //-61.0
+			m_autonBackUpDistance = -67.0; //-61.0
 			placeGear = true;
 		}
 		else if (m_autonType == 7) {
@@ -378,6 +379,22 @@ public:
 			case 6:
 				if (autonReleaseGear() == true) {
 					m_autonCase++;
+					m_drivetrain.setDistancePIDSpeed(0.4);
+					m_drivetrain.zeroDriveEncoders();
+					m_timer.Reset();
+					m_timer.Start();
+				}
+				break;
+			case 7:
+				if (autonPauseFinished(0.75) == true) {
+					m_autonCase++;
+					m_drivetrain.resetGyro();
+				}
+				break;
+			case 8:
+				if (autonDropOff() == true) {
+					m_autonCase++;
+					m_drivetrain.setDistancePIDSpeed(0.7);
 				}
 				break;
 			}
@@ -579,7 +596,7 @@ public:
 
 	void TeleopDrive() {
 
-		/*
+
 		SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
 		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
@@ -588,7 +605,7 @@ public:
 		SmartDashboard::PutNumber("Drivetrain Distance to Setpoint", m_drivetrain.GetDistanceToSetpoint());
 		SmartDashboard::PutNumber("Drivetrain Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
 
-		*/
+
 
 		//SmartDashboard::PutNumber("Driver LY", m_driver->AxisLY());
 		//SmartDashboard::PutNumber("Driver RX", m_driver->AxisRX());
@@ -656,9 +673,6 @@ public:
 		}
 		else if (m_operator->GetPOV() == 180.0) {
 			//m_intake.SetIntakeArm(false);
-			m_intake.SetHopper(false);
-		}
-		else if (m_operator->GetPOV() == 90.0) {
 			m_intake.SetHopper(false);
 		}
 

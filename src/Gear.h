@@ -16,8 +16,8 @@
 #define TALON_GEAR_ARM 8
 #define TALON_GEAR_ROLL 12
 
-#define GEAR_OPEN 4
-#define GEAR_CLOSE 5
+#define GEAR_OPEN 2 // 4
+#define GEAR_CLOSE 3  // 5
 
 //gear arm pid values
 #define TALON_UP_GEAR_P 2.7
@@ -33,7 +33,7 @@
 //gear arm constant to make degree
 #define GEAR_DEGREE_CONST 165.75
 
-#define GEAR_GROUND -87.0
+#define GEAR_GROUND -89.0
 #define GEAR_PACKAGE 0.0
 #define GEAR_PLACE_FIRST -32.0 //70.0
 #define GEAR_PLACE_SECOND 0.0

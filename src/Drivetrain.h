@@ -54,6 +54,8 @@
 #define ANGLE_I 0
 #define ANGLE_D 0
 
+#define SHIFT_THRESH 0.5
+
 class Drivetrain {
 public:
 	Drivetrain();
@@ -152,6 +154,9 @@ public:
 	void setTurnPIDSpeed(double speed);
 	void setDistancePIDSpeed(double speed);
 
+	void setDriveToBrakeMode();
+	void setDriveToCoastMode();
+
 	virtual ~Drivetrain();
 
 private:
@@ -215,7 +220,7 @@ private:
 
 	MotionProfile m_MotionProfile;
 
-	Timer m_timer;
+	Timer m_shiftTimer;
 
 	DistancePIDWrapper m_distancePIDWrapper;
 	AnglePIDWrapper m_anglePIDWrapper;
@@ -224,7 +229,6 @@ private:
 	PIDController m_anglePID;
 
 	double m_turn, m_speed;
-	bool m_shiftValue;
 
 };
 
