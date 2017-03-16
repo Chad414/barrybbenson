@@ -117,6 +117,8 @@ private:
 	double m_autonInitialDistance;
 	double m_autonBackUpAngle;
 	double m_autonBackUpDistance;
+	double m_autonLineAngle;
+	double m_autonCrossLine;
 	bool m_placeGear;
 
 	int m_exposure = 10;
@@ -219,9 +221,11 @@ public:
 		m_drivetrain.setDistancePIDSpeed(0.7);
 
 		if (m_autonType == 1) { //blue left gear
-			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -83.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = 60;
 			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonLineAngle = -70.0;
+			m_autonCrossLine = -60.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 2) { //blue center gear
@@ -235,12 +239,16 @@ public:
 			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = -60;
 			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonLineAngle = 70.0;
+			m_autonCrossLine = -60.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 4) { //red left gear
-			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -83.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = 60;
 			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonLineAngle = -70.0;
+			m_autonCrossLine = -60.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
@@ -254,6 +262,8 @@ public:
 			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = -60;
 			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonLineAngle = 70.0;
+			m_autonCrossLine = -60.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 7) {
@@ -308,7 +318,7 @@ public:
 		if (m_autonCenterGear == true) {
 			switch(m_autonCase) {
 			case 0:
-				if(autonArmFinished() == true) {
+				if(autonArmFinished(GEAR_PLACE_FIRST) == true) {
 					std::cout << "autonCenterGearFinished" << std::endl;
 					m_autonCase++;
 				}
@@ -331,16 +341,16 @@ public:
 				//m_autonCase++;
 				if (autonDriveFinished() == true) {
 					m_autonCase++;
-					SmartDashboard::PutNumber("TUNE0_ANGLE", m_drivetrain.getAngle());
-					SmartDashboard::PutNumber("TUNE0_DISTANCE", m_drivetrain.GetAverageDistance());
+					/*SmartDashboard::PutNumber("TUNE0_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE0_DISTANCE", m_drivetrain.GetAverageDistance());*/
 				}
 				break;
 			case 1:
 				//m_autonCase++;
-				if ((autonTurnFinished() == true) && (placeGear == true)) {
-					SmartDashboard::PutNumber("TUNE1_ANGLE", m_drivetrain.getAngle());
+				if ((autonTurnFinished(m_autonBackUpAngle) == true) && (placeGear == true)) {
+					/*SmartDashboard::PutNumber("TUNE1_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE1_DISTANCE", m_drivetrain.GetAverageDistance());
-					SmartDashboard::PutNumber("TUNE1_XPEG", SmartDashboard::GetNumber("xPeg", 0));
+					SmartDashboard::PutNumber("TUNE1_XPEG", SmartDashboard::GetNumber("xPeg", 0));*/
 					m_drivetrain.resetGyro();
 					m_autonCase++;
 				}
@@ -348,38 +358,38 @@ public:
 			case 2:
 				if (autonTuneAngle() == true) {
 					//m_arlinaInches = SmartDashboard::GetNumber("dPeg", 0.0) * -10.65;
-					SmartDashboard::PutNumber("TUNE2_ANGLE", m_drivetrain.getAngle());
+					/*SmartDashboard::PutNumber("TUNE2_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE2_DISTANCE", m_drivetrain.GetAverageDistance());
 					SmartDashboard::PutNumber("TUNE2_XPEG", SmartDashboard::GetNumber("xPeg", 0));
-					SmartDashboard::PutNumber("TUNE2_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());
+					SmartDashboard::PutNumber("TUNE2_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());*/
 					m_drivetrain.resetGyro();
 					m_autonCase++;
 				}
 				break;
 			case 3:
-				if (autonArmFinished() == true) {
+				if (autonArmFinished(GEAR_PLACE_FIRST) == true) {
 					m_autonCase++;
 					m_timer.Reset();
 					m_timer.Start();
 				}
 				break;
 			case 4:
-				if (autonPauseFinished(0.3) == true) {
+				if (autonPauseFinished(0.1) == true) {
 					m_autonCase++;
 					m_drivetrain.resetGyro();
 				}
 				break;
 			case 5:
-				if (autonBackUpFinished() == true) {
+				if (autonBackUpFinished(m_autonBackUpDistance) == true) {
 					m_autonCase++;
-					SmartDashboard::PutNumber("TUNE5_ANGLE", m_drivetrain.getAngle());
-					SmartDashboard::PutNumber("TUNE5_DISTANCE", m_drivetrain.GetAverageDistance());
+					//SmartDashboard::PutNumber("TUNE5_ANGLE", m_drivetrain.getAngle());
+					//SmartDashboard::PutNumber("TUNE5_DISTANCE", m_drivetrain.GetAverageDistance());
 				}
 				break;
 			case 6:
 				if (autonReleaseGear() == true) {
 					m_autonCase++;
-					m_drivetrain.setDistancePIDSpeed(0.4);
+					m_drivetrain.setDistancePIDSpeed(0.45);
 					m_drivetrain.zeroDriveEncoders();
 					m_timer.Reset();
 					m_timer.Start();
@@ -394,7 +404,23 @@ public:
 			case 8:
 				if (autonDropOff() == true) {
 					m_autonCase++;
-					m_drivetrain.setDistancePIDSpeed(0.7);
+					m_drivetrain.setDistancePIDSpeed(0.8);
+				}
+				break;
+			case 9:
+				if ((autonTurnFinished(m_autonLineAngle) == true) && (placeGear == true)) {
+					m_drivetrain.resetGyro();
+					m_autonCase++;
+				}
+				break;
+			case 10:
+				if (autonBackUpFinished(m_autonCrossLine) == true) {
+					m_autonCase++;
+				}
+				break;
+			case 11:
+				if (autonArmFinished(GEAR_PACKAGE) == true) {
+					m_autonCase++;
 				}
 				break;
 			}
@@ -418,8 +444,8 @@ public:
 		}
 	}
 
-	bool autonTurnFinished() {
-		m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_autonBackUpAngle);
+	bool autonTurnFinished(double angle) {
+		m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), angle);
 
 		if (fabs(m_drivetrain.GetAnglePIDError()) < 5) {
 			m_drivetrain.zeroDriveEncoders();
@@ -433,8 +459,8 @@ public:
 		}
 	}
 
-	bool autonBackUpFinished() {
-		m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance, 0);
+	bool autonBackUpFinished(double distance) {
+		m_drivetrain.SetPIDSetpoint(distance, 0);
 
 		if (fabs(m_drivetrain.GetDistancePIDError()) < 4) {
 			m_drivetrain.DisablePID();
@@ -463,9 +489,9 @@ public:
 		}
 	}
 
-	bool autonArmFinished() {
+	bool autonArmFinished(double angle) {
 		m_gear.SetGearMode(true);
-		m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
+		m_gear.SetGearArmPosition(angle);
 		/*if (m_gear.GetGearError() < 5) {
 			return true;
 		}*/
@@ -487,7 +513,7 @@ public:
 	bool autonDropOff() {
 		m_drivetrain.SetPIDSetpoint(20.0, 0);
 
-		if (fabs(m_drivetrain.GetDistancePIDError()) < 2) {
+		if (fabs(m_drivetrain.GetDistancePIDError()) < 6) {
 			m_gear.SetGearRollerSpeed(0.0);
 			m_drivetrain.DisablePID();
 			m_drivetrain.zeroDriveEncoders();

@@ -91,7 +91,7 @@ public:
 	double getTotalDriveCurrent();
 
 	double turnPIDSpeed = 0.55;
-	double distancePIDSpeed = 0.7;
+	double distancePIDSpeed = 0.8;
 	double distancePIDOutput = 0;
 	double anglePIDOutput = 0;
 

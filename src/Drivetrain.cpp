@@ -136,7 +136,7 @@ void Drivetrain::InitTeleop()
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
 	if (m_shift.Get() == true && m_shiftTimer.Get() < 0.5) {
-		if (speed >= SHIFT_THRESH) {
+		if (fabs(speed) >= SHIFT_THRESH) {
 			speed *= SHIFT_THRESH;
 			setDriveToCoastMode();
 		}
