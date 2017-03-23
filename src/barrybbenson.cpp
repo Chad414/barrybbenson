@@ -140,16 +140,16 @@ public:
 
     static void VisionThread() {
         cs::UsbCamera m_camera = CameraServer::GetInstance()->StartAutomaticCapture();
-        //cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
+        cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
         std::cout << "Camera Capture Started" << std::endl;
         m_camera.SetResolution(160, 120);
         m_camera.SetExposureHoldCurrent();
         m_camera.SetBrightness(2);
         m_camera.SetFPS(30);
-        /*m_camera2.SetResolution(160, 120);
+        m_camera2.SetResolution(160, 120);
         m_camera2.SetExposureHoldCurrent();
         m_camera2.SetBrightness(2);
-        m_camera2.SetFPS(30);*/
+        m_camera2.SetFPS(30);
         while(true) {
         	m_camera.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
         	m_camera.SetBrightness(SmartDashboard::GetNumber("m_brightness", 2));
