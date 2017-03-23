@@ -14,6 +14,7 @@
 #include "CANTalon.h"
 #include "MotionProfile.h"
 #include "AHRS.h"
+#include "PigeonImu.h"
 
 #define USE_TEST_BENCH
 
@@ -95,6 +96,7 @@ public:
 	double distancePIDOutput = 0;
 	double anglePIDOutput = 0;
 
+	double yawPitchRoll [3];
 	//--------------------------------------------------------------------------------
 
 	double GetAverageDistance();
@@ -233,6 +235,8 @@ private:
 
 	PIDController m_distancePID;
 	PIDController m_anglePID;
+
+	PigeonImu m_pidgey;
 
 	double m_turn, m_speed;
 

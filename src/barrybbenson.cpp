@@ -153,8 +153,8 @@ public:
         while(true) {
         	m_camera.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
         	m_camera.SetBrightness(SmartDashboard::GetNumber("m_brightness", 2));
-        	/*m_camera2.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
-        	m_camera2.SetBrightness(SmartDashboard::GetNumber("m_brightness", 2));*/
+        	m_camera2.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
+        	m_camera2.SetBrightness(SmartDashboard::GetNumber("m_brightness", 2));
         }
     }
 

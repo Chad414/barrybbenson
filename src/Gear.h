@@ -11,6 +11,7 @@
 #include "RobotUtils/RobotUtils.h"
 #include "WPILib.h"
 #include "CANTalon.h"
+#include "PigeonImu.h"
 
 //talon definition
 #define TALON_GEAR_ARM 8
