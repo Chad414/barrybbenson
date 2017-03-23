@@ -46,7 +46,7 @@
 
 #define DRIVE_ENCODER_CONVERSION 2.63
 
-#define DISTANCE_P 0.4
+#define DISTANCE_P 0.44
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
@@ -54,7 +54,7 @@
 #define ANGLE_I 0
 #define ANGLE_D 0
 
-#define SHIFT_THRESH 0.5
+#define SHIFT_THRESH 0.0
 
 class Drivetrain {
 public:
@@ -146,6 +146,10 @@ public:
 	double GetAngleI();
 	double GetAngleD();
 
+	//--------------------------------------------------------------------------------
+	double GetGyroAngle();
+
+
 	bool DistanceAtSetpoint();
 	bool AngleAtSetpoint();
 	//--------------------------------------------------------------------------------
@@ -156,6 +160,8 @@ public:
 
 	void setDriveToBrakeMode();
 	void setDriveToCoastMode();
+
+	void setAngleP(double p);
 
 	virtual ~Drivetrain();
 
@@ -208,7 +214,7 @@ private:
 
 	RobotDrive m_drive;
 
-	AHRS m_gyro;
+	//AHRS m_gyro;
 
 	Solenoid m_shift;
 	Solenoid m_climb;
@@ -218,9 +224,9 @@ private:
 
 	Relay m_light;
 
-	MotionProfile m_MotionProfile;
+	//MotionProfile m_MotionProfile;
 
-	Timer m_shiftTimer;
+	AnalogGyro m_newGyro;
 
 	DistancePIDWrapper m_distancePIDWrapper;
 	AnglePIDWrapper m_anglePIDWrapper;

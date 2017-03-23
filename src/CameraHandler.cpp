@@ -25,7 +25,7 @@ double CameraHandler::GetAngle() {
 }
 
 bool CameraHandler::seeTarget() {
-	if (GetTargetNormalizedCenter() > 0) {
+	if (fabs(GetTargetNormalizedCenter()) > 0.0) {
 		return true;
 	} else {
 		return false;

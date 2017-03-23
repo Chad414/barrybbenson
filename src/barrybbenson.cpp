@@ -3,8 +3,8 @@
 #include <iostream>
 #include "RobotUtils/RobotUtils.h"
 #include "CameraServer.h"
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/core/core.hpp>
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include <opencv2/core/core.hpp>
 
 #include "Drivetrain.h"
 #include "CameraHandler.h"
@@ -98,9 +98,7 @@ private:
 	HotJoystick* m_operator;
 	Timer m_timer;
 
-
 	PowerDistributionPanel m_pdp;
-
 
 	Shooter m_shoot;
 	Drivetrain m_drivetrain;
@@ -119,9 +117,8 @@ private:
 	double m_autonBackUpDistance;
 	double m_autonLineAngle;
 	double m_autonCrossLine;
+	double m_autonCrossLineAngle;
 	bool m_placeGear;
-
-	int m_exposure = 10;
 
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
@@ -140,6 +137,7 @@ public:
 		m_autonType = kDoNothing;
 	}
 
+
     static void VisionThread() {
         cs::UsbCamera m_camera = CameraServer::GetInstance()->StartAutomaticCapture();
         //cs::UsbCamera m_camera2 = CameraServer::GetInstance()->StartAutomaticCapture();
@@ -148,20 +146,20 @@ public:
         m_camera.SetExposureHoldCurrent();
         m_camera.SetBrightness(2);
         m_camera.SetFPS(30);
-        cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-        cs::CvSource outputStreamStd = CameraServer::GetInstance()->PutVideo("USBCamera", 160, 120);
-        cv::Mat source;
-        cv::Mat output;
+        /*m_camera2.SetResolution(160, 120);
+        m_camera2.SetExposureHoldCurrent();
+        m_camera2.SetBrightness(2);
+        m_camera2.SetFPS(30);*/
         while(true) {
         	m_camera.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
-            cvSink.GrabFrame(source);
-            cvtColor(source, output, cv::COLOR_BGR2BGR565);
-            outputStreamStd.PutFrame(output);
+        	m_camera.SetBrightness(SmartDashboard::GetNumber("m_brightness", 2));
+        	/*m_camera2.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
+        	m_camera2.SetBrightness(SmartDashboard::GetNumber("m_brightness", 2));*/
         }
     }
 
 	void RobotInit() {
-		SmartDashboard::PutNumber("m_exposure", m_exposure);
+		SmartDashboard::PutNumber("m_exposure", 10);
         std::thread visionThread(VisionThread);
         visionThread.detach();
         //m_gear.GameStartGearArmPosition();
@@ -175,15 +173,16 @@ public:
 
 		SmartDashboard::PutNumber("Auton Type", m_autonType);
 
-		SmartDashboard::PutNumber("Gear Timer", m_rollTimer.Get());
+		/*SmartDashboard::PutNumber("Gear Timer", m_rollTimer.Get());
 		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
 		SmartDashboard::PutBoolean("Gear Mode", m_gear.GetGearMode());
 		SmartDashboard::PutNumber("Gear Raw Position", m_gear.GetRawGearArmPosition());
 		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
 		SmartDashboard::PutNumber("Gear Error", m_gear.GetGearError());
 		SmartDashboard::PutNumber("Gear Place", placeGear);
-		SmartDashboard::PutNumber("Gear Roller Speed", m_gear.GetGearRollerCommandedSpeed());
+		SmartDashboard::PutNumber("Gear Roller Speed", m_gear.GetGearRollerCommandedSpeed());*/
 
+		/*
 		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.GetRRawShooter());
 		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.GetLRawShooter());
 
@@ -198,12 +197,12 @@ public:
 
 		SmartDashboard::PutNumber("Drive Left Front Talon Get", m_drivetrain.getLeftEncoder());
 		SmartDashboard::PutNumber("Drive Right Front Talon Get", m_drivetrain.getRightEncoder());
-		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
+		*/
 
+		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
 		m_autonType = (autonType)SmartDashboard::GetNumber("Auto Selector", 0);
 
-		m_exposure = 10;
-		SmartDashboard::PutNumber("m_exposure", m_exposure);
+		SmartDashboard::PutNumber("m_exposure", 10);
 
 	}
 
@@ -221,53 +220,59 @@ public:
 		m_drivetrain.setDistancePIDSpeed(0.7);
 
 		if (m_autonType == 1) { //blue left gear
-			m_autonInitialDistance = -83.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -103.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonBackUpDistance = -64.0; //-61.0
 			m_autonLineAngle = -70.0;
-			m_autonCrossLine = -60.0;
+			m_autonCrossLine = -72.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 2) { //blue center gear
-			m_autonInitialDistance = -77.0;
+			m_autonInitialDistance = -83.0;
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
+			m_autonLineAngle = -75;
+			m_autonCrossLine = -100;
+			m_autonCrossLineAngle = 75;
 			placeGear = true;
 			m_autonCenterGear = true;
 		}
 		else if (m_autonType == 3) { //blue right gear
-			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -103.0; // 86.0 for comp bot, 77.0 for practice
 			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonBackUpDistance = -64.0; //-61.0
 			m_autonLineAngle = 70.0;
-			m_autonCrossLine = -60.0;
+			m_autonCrossLine = -72.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 4) { //red left gear
-			m_autonInitialDistance = -83.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -103.0; // 86.0 for comp bot, 77.0 for practice
 			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonBackUpDistance = -64.0; //-61.0
 			m_autonLineAngle = -70.0;
-			m_autonCrossLine = -60.0;
+			m_autonCrossLine = -72.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = -77.0;
+			m_autonInitialDistance = -83.0;
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
+			m_autonLineAngle = -75;
+			m_autonCrossLine = -100;
+			m_autonCrossLineAngle = 75;
 			placeGear = true;
 			m_autonCenterGear = true;
 		}
 		else if (m_autonType == 6) { //red right gear
-			m_autonInitialDistance = -77.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -103.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -67.0; //-61.0
+			m_autonBackUpDistance = -64.0; //-61.0
 			m_autonLineAngle = 70.0;
-			m_autonCrossLine = -60.0;
+			m_autonCrossLine = -72.0;
 			placeGear = true;
 		}
 		else if (m_autonType == 7) {
-			m_autonInitialDistance = 60;
+			m_autonInitialDistance = -150.0;
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			placeGear = false;
@@ -290,11 +295,12 @@ public:
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
-		SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
-		SmartDashboard::PutNumber("Drive Distance Error", m_drivetrain.GetDistancePIDError());
+		//SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
+		//SmartDashboard::PutNumber("Drive Distance Error", m_drivetrain.GetDistancePIDError());
 		SmartDashboard::PutNumber("Drive Angle Error", m_drivetrain.GetAnglePIDError());
 
 		SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
+		SmartDashboard::PutNumber("Drive Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
 		SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
 
 		SmartDashboard::PutNumber("Peg X", SmartDashboard::GetNumber("xPeg", 0));
@@ -306,11 +312,11 @@ public:
 		SmartDashboard::PutNumber("Tune Angle", m_cameraHandler.GetAngle());
 		SmartDashboard::PutNumber("Peg Distance", SmartDashboard::GetNumber("dPeg", 0.0));
 
-		SmartDashboard::PutNumber("Auton Initial Distance", m_autonInitialDistance);
+		/*SmartDashboard::PutNumber("Auton Initial Distance", m_autonInitialDistance);
 		SmartDashboard::PutNumber("Auton Backup Angle", m_autonBackUpAngle);
 		SmartDashboard::PutNumber("Auton Backup Distance", m_autonBackUpDistance);
 		SmartDashboard::PutBoolean("Auton Place Gear", placeGear);
-		SmartDashboard::PutBoolean("Auton Center Gear", m_autonCenterGear);
+		SmartDashboard::PutBoolean("Auton Center Gear", m_autonCenterGear);*/
 
 
 		//std::cout << "Roller Timer" << m_rollTimer.Get() << std::endl;
@@ -332,6 +338,61 @@ public:
 			case 2:
 				if (autonReleaseGear() == true) {
 					m_autonCase++;
+					m_drivetrain.setDistancePIDSpeed(0.45);
+					m_drivetrain.zeroDriveEncoders();
+					m_timer.Reset();
+					m_timer.Start();
+				}
+				break;
+			case 3:
+				if (autonPauseFinished(0.75) == true) {
+					m_autonCase++;
+					m_drivetrain.resetGyro();
+				}
+				break;
+			case 4:
+				if (autonDropOff() == true) {
+					m_autonCase++;
+					m_drivetrain.resetGyro();
+					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.setDistancePIDSpeed(0.8);
+					m_drivetrain.setAngleP(1.6);
+				}
+				break;
+			case 5:
+				if (autonBackUpFinished(50) == true) {
+					m_drivetrain.resetGyro();
+					m_autonCase++;
+				}
+				break;
+			case 6:
+				if (autonTurnFinished(m_autonLineAngle) == true) {
+					m_autonCase++;
+					m_drivetrain.resetGyro();
+					m_drivetrain.zeroDriveEncoders();
+				}
+				break;
+			case 7:
+				if (autonBackUpFinished(m_autonCrossLine) == true) {
+					m_drivetrain.zeroDriveEncoders();
+					m_autonCase++;
+				}
+				break;
+			case 8:
+				if (autonArmFinished(GEAR_PACKAGE) == true) {
+					m_autonCase++;
+				}
+				break;
+			case 9:
+				if (autonTurnFinished(m_autonCrossLineAngle) == true) {
+					m_autonCase++;
+					m_drivetrain.resetGyro();
+					m_drivetrain.zeroDriveEncoders();
+				}
+				break;
+			case 10:
+				if (autonBackUpFinished(-100) == true) {
+					m_autonCase++;
 				}
 				break;
 			}
@@ -341,16 +402,17 @@ public:
 				//m_autonCase++;
 				if (autonDriveFinished() == true) {
 					m_autonCase++;
+					m_drivetrain.setAngleP(1.6);
 					/*SmartDashboard::PutNumber("TUNE0_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE0_DISTANCE", m_drivetrain.GetAverageDistance());*/
 				}
 				break;
 			case 1:
-				//m_autonCase++;
 				if ((autonTurnFinished(m_autonBackUpAngle) == true) && (placeGear == true)) {
-					/*SmartDashboard::PutNumber("TUNE1_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE1_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE1_DISTANCE", m_drivetrain.GetAverageDistance());
-					SmartDashboard::PutNumber("TUNE1_XPEG", SmartDashboard::GetNumber("xPeg", 0));*/
+					SmartDashboard::PutNumber("TUNE1_XPEG", SmartDashboard::GetNumber("xPeg", 0));
+					SmartDashboard::PutNumber("TUNE1_ANGLE_ERROR", m_drivetrain.GetAnglePIDError());
 					m_drivetrain.resetGyro();
 					m_autonCase++;
 				}
@@ -358,15 +420,17 @@ public:
 			case 2:
 				if (autonTuneAngle() == true) {
 					//m_arlinaInches = SmartDashboard::GetNumber("dPeg", 0.0) * -10.65;
-					/*SmartDashboard::PutNumber("TUNE2_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE2_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE2_DISTANCE", m_drivetrain.GetAverageDistance());
 					SmartDashboard::PutNumber("TUNE2_XPEG", SmartDashboard::GetNumber("xPeg", 0));
-					SmartDashboard::PutNumber("TUNE2_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());*/
+					SmartDashboard::PutNumber("TUNE2_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());
 					m_drivetrain.resetGyro();
+					m_drivetrain.setAngleP(ANGLE_P);
 					m_autonCase++;
 				}
 				break;
 			case 3:
+
 				if (autonArmFinished(GEAR_PLACE_FIRST) == true) {
 					m_autonCase++;
 					m_timer.Reset();
@@ -405,11 +469,13 @@ public:
 				if (autonDropOff() == true) {
 					m_autonCase++;
 					m_drivetrain.setDistancePIDSpeed(0.8);
+					m_drivetrain.setAngleP(1.6);
 				}
 				break;
 			case 9:
 				if ((autonTurnFinished(m_autonLineAngle) == true) && (placeGear == true)) {
 					m_drivetrain.resetGyro();
+					m_drivetrain.setAngleP(ANGLE_P);
 					m_autonCase++;
 				}
 				break;
@@ -543,8 +609,8 @@ public:
 		m_drivetrain.DisablePID();
 		m_drivetrain.zeroDriveEncoders();
 		m_drivetrain.resetGyro();
-		m_exposure = 40;
-		SmartDashboard::PutNumber("m_exposure", m_exposure);
+		SmartDashboard::PutNumber("m_exposure", 80);
+		SmartDashboard::PutNumber("m_brightness", 50);
 	}
 
 	void TeleopPeriodic() {
@@ -564,6 +630,8 @@ public:
 		SmartDashboard::PutNumber("Peg Distance", SmartDashboard::GetNumber("dPeg", 0.0));
 
 		*/
+
+
 		TeleopDrive();
 		TeleopShoot();
 		TeleopGear();
@@ -595,10 +663,6 @@ public:
 			m_shoot.RunShoot(0.0);
 		}
 
-		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.GetLShootSpeed());
-		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.GetRShootSpeed());
-
-
 		/*
 		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.GetRRawShooter());
 		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.GetLRawShooter());
@@ -622,14 +686,15 @@ public:
 
 	void TeleopDrive() {
 
-
-		SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
+		SmartDashboard::PutNumber("* Angle", m_drivetrain.GetGyroAngle());
+
+		/*SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
 		SmartDashboard::PutNumber("Drivetrain Gyro Angle", m_drivetrain.getYaw());
 		SmartDashboard::PutNumber("Drivetrain Average Distance", m_drivetrain.GetAverageDistance());
 		SmartDashboard::PutNumber("Drivetrain Distance to Setpoint", m_drivetrain.GetDistanceToSetpoint());
-		SmartDashboard::PutNumber("Drivetrain Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
+		SmartDashboard::PutNumber("Drivetrain Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());*/
 
 
 
@@ -686,7 +751,7 @@ public:
 		SmartDashboard::PutNumber("Right Drive Current - Front", m_pdp.GetCurrent(2));
 		SmartDashboard::PutNumber("Right Drive Current - Mini", m_pdp.GetCurrent(4));
 		SmartDashboard::PutNumber("Right Drive Current - Rear", m_pdp.GetCurrent(3));*/
-		SmartDashboard::PutNumber("Drivetrain Total Current", m_drivetrain.getTotalDriveCurrent());
+		//SmartDashboard::PutNumber("Drivetrain Total Current", m_drivetrain.getTotalDriveCurrent());
 	}
 
 	//intake is ready for test
@@ -701,6 +766,7 @@ public:
 			//m_intake.SetIntakeArm(false);
 			m_intake.SetHopper(false);
 		}
+		/*
 
 		if (m_operator->AxisLT() > 0.2) {
 			m_intake.SetIntakeRoller(1.0);
@@ -712,15 +778,16 @@ public:
 			m_intake.SetIntakeRoller(0.0);
 		}
 
-		SmartDashboard::PutNumber("Intake Roller", m_intake.GetIntakeRoller());
-		SmartDashboard::PutNumber("Intake POV", m_operator->GetPOV());
-		SmartDashboard::PutBoolean("Hopper", m_intake.GetHopper());
+		*/
+		//SmartDashboard::PutNumber("Intake Roller", m_intake.GetIntakeRoller());
+		//SmartDashboard::PutNumber("Intake POV", m_operator->GetPOV());
+		//SmartDashboard::PutBoolean("Hopper", m_intake.GetHopper());
 	}
 
 	//gear is done !!
 	void TeleopGear() {
-		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
-		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
+		/*SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
+		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());*/
 
 		/*
 		SmartDashboard::PutNumber("Gear Timer", m_rollTimer.Get());

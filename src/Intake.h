@@ -12,18 +12,18 @@
 #define SRC_INTAKE_H_
 #define TALON_INTAKE_ROLLER 1
 
-#define SOLENOID_INTAKE_ARM_OUT 9
-#define SOLENOID_INTAKE_ARM_IN 10
+//#define SOLENOID_INTAKE_ARM_OUT 9
+//#define SOLENOID_INTAKE_ARM_IN 10
 
 #define SOLENOID_HOPPER_OUT 4
 #define SOLENOID_HOPPER_IN 5
 
 class Intake {
 private:
-	CANTalon m_intakeRoller;
+	//CANTalon m_intakeRoller;
 
-	Solenoid m_intakeArmOut;
-	Solenoid m_intakeArmIn;
+	//Solenoid m_intakeArmOut;
+	//Solenoid m_intakeArmIn;
 
 	//Solenoid m_hopperOut;
 	//Solenoid m_hopperIn;
@@ -35,11 +35,11 @@ private:
 	double IntakeRoller;
 public:
 	Intake();
-	void SetIntakeArm(bool on);
-	void SetIntakeRoller(double value);
-	double GetIntakeRoller();
+	//void SetIntakeArm(bool on);
+	//void SetIntakeRoller(double value);
+	//double GetIntakeRoller();
 
-	bool GetIntakeArm();
+	//bool GetIntakeArm();
 	void SetHopper(bool on);
 	bool GetHopper();
 	virtual ~Intake();

@@ -17,23 +17,22 @@ Drivetrain::Drivetrain()
 	m_driveWrapperL(&m_lDriveF, &m_lDriveM),
 	m_driveWrapperR(&m_rDriveF, &m_rDriveM),
 	m_drive(m_driveWrapperL, m_lDriveR, m_driveWrapperR, m_rDriveR),
-	m_gyro(I2C::Port::kMXP),
+	//m_gyro(I2C::Port::kMXP),
 	m_shift(SOLENOID_SHIFT),
 	m_climb(SOLENOID_CLIMBER),
 	m_lEncoder(DRIVE_ENCODER_LF, DRIVE_ENCODER_LR, true),
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_light(0),
-	m_MotionProfile(m_rDriveR),
+	//m_MotionProfile(m_rDriveR),
+	m_newGyro(0),
 	m_distancePIDWrapper(this),
 	m_anglePIDWrapper(this),
 	m_distancePID(DISTANCE_P, DISTANCE_I, DISTANCE_D, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05),
 	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, &m_anglePIDWrapper, &m_anglePIDWrapper, 0.05)
-{
 
+{
 	m_turn = 0;
 	m_speed = 0;
-
-	m_shiftTimer.Reset();
 
 	m_lDriveF.SetFeedbackDevice(CANTalon::QuadEncoder);
 	m_lDriveF.SetSensorDirection(true);
@@ -47,6 +46,7 @@ Drivetrain::Drivetrain()
 	m_drive.SetSafetyEnabled(false);
 
 	m_light.Set(Relay::kForward);
+
 }
 
 // DriveWrapper Functions
@@ -121,7 +121,7 @@ double Drivetrain::AnglePIDWrapper::PIDGet() {
 }
 
 void Drivetrain::AnglePIDWrapper::PIDWrite(double output) {
-	SmartDashboard::PutNumber("Turn PID Output", output);
+	//SmartDashboard::PutNumber("Turn PID Output", output);
 	m_drivetrain->setTurn(-output * m_drivetrain->turnPIDSpeed);
 	m_drivetrain->anglePIDOutput = output;
 }
@@ -135,12 +135,12 @@ void Drivetrain::InitTeleop()
 }
 
 void Drivetrain::ArcadeDrive(double speed, double angle){
-	if (m_shift.Get() == true && m_shiftTimer.Get() < 0.5) {
+	/*if (m_shift.Get() == true && m_shiftTimer.Get() < 0.0) {
 		if (fabs(speed) >= SHIFT_THRESH) {
 			speed *= SHIFT_THRESH;
 			setDriveToCoastMode();
 		}
-	}
+	}*/
 	m_drive.SetSafetyEnabled(true);
 	m_speed = speed;
 	m_turn = angle;
@@ -161,11 +161,15 @@ double Drivetrain::getAngle() {
 }
 
 float Drivetrain::getYaw(){ // Get Gyro Yaw
-	return m_gyro.GetYaw();
+	return m_newGyro.GetAngle(); //m_gyro.GetYaw();
 }
 
 void Drivetrain::resetGyro() {
-	m_gyro.Reset();
+	m_newGyro.Reset(); //m_gyro.Reset();
+}
+
+double Drivetrain::GetGyroAngle() {
+	return m_newGyro.GetAngle();
 }
 
 double Drivetrain::getLeftEncoder() {
@@ -189,13 +193,13 @@ void Drivetrain::zeroDriveEncoders() {
 }
 
 void Drivetrain::setShift(bool on) {
-	if (on) {
+	/*if (on) {
 		m_shiftTimer.Start();
 	} else {
 		setDriveToBrakeMode();
 		m_shiftTimer.Stop();
 		m_shiftTimer.Reset();
-	}
+	}*/
 	m_shift.Set(on);
 }
 
@@ -389,6 +393,7 @@ void Drivetrain::setDistancePIDSpeed(double speed) {
 	distancePIDSpeed = speed;
 }
 
+/*
 void Drivetrain::setDriveToBrakeMode() {
 	m_lDriveF.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
 	m_lDriveM.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Brake);
@@ -405,6 +410,10 @@ void Drivetrain::setDriveToCoastMode() {
 	m_rDriveF.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
 	m_rDriveM.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
 	m_rDriveR.ConfigNeutralMode(CANSpeedController::NeutralMode::kNeutralMode_Coast);
+}*/
+
+void Drivetrain::setAngleP(double p) {
+	m_anglePID.SetPID(p, ANGLE_I, ANGLE_D);
 }
 
 Drivetrain::~Drivetrain() {

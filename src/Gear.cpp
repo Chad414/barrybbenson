@@ -148,4 +148,3 @@ void Gear::openGearIntake(bool open) {
 Gear::~Gear() {
 	// TODO Auto-generated destructor stub
 }
-
