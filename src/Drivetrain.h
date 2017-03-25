@@ -51,9 +51,9 @@
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
-#define ANGLE_P 1.2
+#define ANGLE_P 0.4 //0.4 //1.15
 #define ANGLE_I 0
-#define ANGLE_D 0
+#define ANGLE_D 0.0
 
 #define SHIFT_THRESH 0.0
 
@@ -129,6 +129,10 @@ public:
 	bool IsPIDEnabled();
 
 	void SetPIDSetpoint(double distance, double angle);
+
+	void SetAngleAbsoluteTolerance(double tolerance);
+	void ResetAnglePIDController();
+	void ResetDrivePIDController();
 
 	double GetRotationPIDError();
 	double GetDistancePIDError();
@@ -228,7 +232,7 @@ private:
 
 	//MotionProfile m_MotionProfile;
 
-	AnalogGyro m_newGyro;
+	//AnalogGyro m_newGyro;
 
 	DistancePIDWrapper m_distancePIDWrapper;
 	AnglePIDWrapper m_anglePIDWrapper;

@@ -25,12 +25,12 @@ Drivetrain::Drivetrain()
 	m_rEncoder(DRIVE_ENCODER_RF, DRIVE_ENCODER_RR, false),
 	m_light(0),
 	//m_MotionProfile(m_rDriveR),
-	m_newGyro(0),
+	//m_newGyro(0),
 	m_distancePIDWrapper(this),
 	m_anglePIDWrapper(this),
 	m_distancePID(DISTANCE_P, DISTANCE_I, DISTANCE_D, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05),
 	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, &m_anglePIDWrapper, &m_anglePIDWrapper, 0.05),
-	m_pidgey(TALON_GEAR_ROLL)
+	m_pidgey(&m_lDriveR)
 {
 	m_turn = 0;
 	m_speed = 0;
@@ -163,17 +163,19 @@ double Drivetrain::getAngle() {
 
 float Drivetrain::getYaw(){ // Get Gyro Yaw
 	//return m_newGyro.GetAngle(); //m_gyro.GetYaw();
-	return m_pidgey.GetYawPitchRoll(yawPitchRoll);
+	m_pidgey.GetYawPitchRoll(yawPitchRoll);
+
+	return -yawPitchRoll[0];
 }
 
 void Drivetrain::resetGyro() {
 	//m_newGyro.Reset(); //m_gyro.Reset();
 	m_pidgey.SetYaw(0.0);
 }
-
+/*
 double Drivetrain::GetGyroAngle() {
 	return m_newGyro.GetAngle();
-}
+}*/
 
 double Drivetrain::getLeftEncoder() {
 	return m_lDriveF.GetPosition() * DRIVE_ENCODER_CONVERSION;
@@ -243,7 +245,17 @@ double Drivetrain::getBackLeftTalon() {
 }
 
 
+void Drivetrain::SetAngleAbsoluteTolerance(double tolerance) {
+	m_anglePID.SetAbsoluteTolerance(tolerance);
+}
 
+void Drivetrain::ResetAnglePIDController() {
+	m_anglePID.Reset();
+}
+
+void Drivetrain::ResetDrivePIDController() {
+	m_distancePID.Reset();
+}
 
 double Drivetrain::getTotalDriveCurrent() {
 	return m_lDriveF.GetOutputCurrent()

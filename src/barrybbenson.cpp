@@ -88,7 +88,8 @@ enum autonType {
 	kRedLeftGear = 4,
 	kRedCenterGear = 5,
 	kRedRightGear = 6,
-	kDriveStraight5Ft = 7
+	kDriveStraight5Ft = 7,
+	kAutonCase = 8
 };
 
 class barrybbenson: public HotBot {
@@ -212,6 +213,10 @@ public:
 		m_autonCenterGear = false;
 		m_drivetrain.setShift(false);
 		m_drivetrain.resetGyro();
+
+		m_drivetrain.ResetAnglePIDController();
+		m_drivetrain.ResetDrivePIDController();
+
 		m_drivetrain.zeroDriveEncoders();
 		m_gear.GameStartGearArmPosition();
 		m_rollTimer.Reset();
@@ -271,8 +276,14 @@ public:
 			m_autonCrossLine = -72.0;
 			placeGear = true;
 		}
-		else if (m_autonType == 7) {
-			m_autonInitialDistance = -150.0;
+		else if (m_autonType == 7) { //drive straight
+			m_autonInitialDistance = -150.0; //-150
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+		}
+		else if (m_autonType == 8) {
+			m_autonInitialDistance = -280.0;
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			placeGear = false;
@@ -292,7 +303,7 @@ public:
 		SmartDashboard::PutNumber("Auton Type", m_autonType);
 
 		//m_drivetrain.setShift(true);
-		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+		//SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 
 		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 		//SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
@@ -320,6 +331,8 @@ public:
 
 
 		//std::cout << "Roller Timer" << m_rollTimer.Get() << std::endl;
+
+		SmartDashboard::PutNumber("DRIVE P Value", m_drivetrain.GetAngleP());
 
 		if (m_autonCenterGear == true) {
 			switch(m_autonCase) {
@@ -356,7 +369,7 @@ public:
 					m_drivetrain.resetGyro();
 					m_drivetrain.zeroDriveEncoders();
 					m_drivetrain.setDistancePIDSpeed(0.8);
-					m_drivetrain.setAngleP(1.6);
+					m_drivetrain.setAngleP(0.4);
 				}
 				break;
 			case 5:
@@ -397,12 +410,15 @@ public:
 				break;
 			}
 		} else {
+			m_drivetrain.SetAngleAbsoluteTolerance(0.0);
+			m_drivetrain.setDistancePIDSpeed(1.0);
+
 			switch (m_autonCase){
 			case 0:
 				//m_autonCase++;
 				if (autonDriveFinished() == true) {
 					m_autonCase++;
-					m_drivetrain.setAngleP(1.6);
+					m_drivetrain.setAngleP(0.4);//1.6);
 					/*SmartDashboard::PutNumber("TUNE0_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE0_DISTANCE", m_drivetrain.GetAverageDistance());*/
 				}
@@ -453,7 +469,7 @@ public:
 			case 6:
 				if (autonReleaseGear() == true) {
 					m_autonCase++;
-					m_drivetrain.setDistancePIDSpeed(0.45);
+//m_drivetrain.setDistancePIDSpeed(0.45);
 					m_drivetrain.zeroDriveEncoders();
 					m_timer.Reset();
 					m_timer.Start();
@@ -468,7 +484,7 @@ public:
 			case 8:
 				if (autonDropOff() == true) {
 					m_autonCase++;
-					m_drivetrain.setDistancePIDSpeed(0.8);
+//m_drivetrain.setDistancePIDSpeed(0.8);
 					m_drivetrain.setAngleP(1.6);
 				}
 				break;
@@ -663,6 +679,11 @@ public:
 			m_shoot.RunShoot(0.0);
 		}
 
+		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.getLeftShoot());
+		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.getRightShoot());
+		SmartDashboard::PutNumber("Average Shooter Speed", m_shoot.GetAverageShootSpeed());
+
+
 		/*
 		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.GetRRawShooter());
 		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.GetLRawShooter());
@@ -675,11 +696,9 @@ public:
 
 		SmartDashboard::PutNumber("Get Paddle", m_shoot.GetPaddle());
 
-		SmartDashboard::PutNumber("Average Shooter Speed", m_shoot.GetAverageShootSpeed());
 		SmartDashboard::PutNumber("Shoot Error", m_shoot.GetShootError());
 
-		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.getLeftShoot());
-		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.getRightShoot());
+
 		*/
 
 	}
@@ -687,7 +706,7 @@ public:
 	void TeleopDrive() {
 
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
-		SmartDashboard::PutNumber("* Angle", m_drivetrain.GetGyroAngle());
+		//SmartDashboard::PutNumber("* Angle", m_drivetrain.GetGyroAngle());
 
 		/*SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
