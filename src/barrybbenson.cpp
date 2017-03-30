@@ -283,7 +283,7 @@ public:
 			placeGear = false;
 		}
 		else if (m_autonType == 8) {
-			m_autonInitialDistance = -280.0;
+			m_autonInitialDistance = -69.0;
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			placeGear = false;
@@ -415,17 +415,18 @@ public:
 			}
 		} else {
 			m_drivetrain.SetAngleAbsoluteTolerance(0.0);
-			m_drivetrain.setDistancePIDSpeed(1.0);
+			m_drivetrain.setDistancePIDSpeed(0.8);
 
 			switch (m_autonCase){
 			case 0:
 				//m_autonCase++;
 				if (autonDriveFinished(m_autonInitialDistance, 0) == true) {
 					m_autonCase++;
-					m_drivetrain.setAngleP(0.4);//1.6);
+					m_drivetrain.setAngleP(ANGLE_P);//1.6);
 					SmartDashboard::PutNumber("TUNE0_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE0_DISTANCE", m_drivetrain.GetAverageDistance());
 					SmartDashboard::PutNumber("TUNE0_DISTANCE_ERROR", m_drivetrain.GetDistancePIDError());
+					m_drivetrain.zeroDriveEncoders();
 				}
 				break;
 			case 1:
@@ -490,7 +491,7 @@ public:
 				if (autonDropOff() == true) {
 					m_autonCase++;
 //m_drivetrain.setDistancePIDSpeed(0.8);
-					m_drivetrain.setAngleP(1.6);
+					m_drivetrain.setAngleP(ANGLE_P);
 				}
 				break;
 			case 9:
@@ -519,7 +520,7 @@ public:
 		m_drivetrain.SetPIDSetpoint(distance, angle);//m_drivetrain.getYaw());
 
 		if (fabs(m_drivetrain.GetDistancePIDError()) < 4) {
-			m_drivetrain.zeroDriveEncoders();
+			//m_drivetrain.zeroDriveEncoders();
 			m_drivetrain.DisablePID();
 			m_drivetrain.resetAnglePID();
 			m_drivetrain.resetDistancePID();
@@ -711,12 +712,13 @@ public:
 	void TeleopDrive() {
 
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
+		SmartDashboard::PutNumber("Drivetrain Average Distance", m_drivetrain.GetAverageDistance());
 		//SmartDashboard::PutNumber("* Angle", m_drivetrain.GetGyroAngle());
 
 		/*SmartDashboard::PutNumber("Axis RX", -m_driver->AxisRX());
 		SmartDashboard::PutBoolean("Shift", m_drivetrain.getShift());
 		SmartDashboard::PutNumber("Drivetrain Gyro Angle", m_drivetrain.getYaw());
-		SmartDashboard::PutNumber("Drivetrain Average Distance", m_drivetrain.GetAverageDistance());
+
 		SmartDashboard::PutNumber("Drivetrain Distance to Setpoint", m_drivetrain.GetDistanceToSetpoint());
 		SmartDashboard::PutNumber("Drivetrain Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());*/
 
