@@ -17,9 +17,9 @@ public:
 	CameraHandler();
 	virtual ~CameraHandler();
 
-	double GetTargetNormalizedCenter();
-	double GetAngle();
-	bool seeTarget();
+	double GetPegTargetNormalizedCenter();
+	double GetPegAngle();
+	bool seePegTarget();
 };
 
 #endif /* CAMERAHANDLER_H_ */

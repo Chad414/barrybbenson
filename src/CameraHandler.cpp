@@ -16,16 +16,16 @@ CameraHandler::~CameraHandler() {
 	// TODO Auto-generated destructor stub
 }
 
-double CameraHandler::GetTargetNormalizedCenter() {
+double CameraHandler::GetPegTargetNormalizedCenter() {
 	return SmartDashboard::GetNumber("Peg X", 0.0);
 }
 
-double CameraHandler::GetAngle() {
-	return GetTargetNormalizedCenter() * GYRO_GAIN;
+double CameraHandler::GetPegAngle() {
+	return GetPegTargetNormalizedCenter() * GYRO_GAIN;
 }
 
-bool CameraHandler::seeTarget() {
-	if (fabs(GetTargetNormalizedCenter()) > 0.0) {
+bool CameraHandler::seePegTarget() {
+	if (fabs(GetPegTargetNormalizedCenter()) > 0.0) {
 		return true;
 	} else {
 		return false;
