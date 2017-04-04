@@ -404,7 +404,7 @@ public:
 				}
 				break;
 			case 9:
-				if (autonTurnFinished(m_cameraHandler.GetPegAngle()+ m_drivetrain.getYaw()) == true) {
+				if (autonTurnFinished(m_cameraHandler.GetBoilerAngle()+ m_drivetrain.getYaw()) == true) {
 					m_autonCase++;
 					SmartDashboard::PutNumber("TUNE9_ANGLE", m_drivetrain.getAngle());
 					SmartDashboard::PutNumber("TUNE9_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());

@@ -31,3 +31,19 @@ bool CameraHandler::seePegTarget() {
 		return false;
 	}
 }
+
+double CameraHandler::GetBoilerTargetNormalizedCenter() {
+	return SmartDashboard::GetNumber("Boiler X", 0.0);
+}
+
+double CameraHandler::GetBoilerAngle() {
+	return GetBoilerTargetNormalizedCenter() * GYRO_GAIN;
+}
+
+bool CameraHandler::seeBoilerTarget() {
+	if (fabs(GetBoilerTargetNormalizedCenter()) > 0.0) {
+		return true;
+	} else {
+		return false;
+	}
+}

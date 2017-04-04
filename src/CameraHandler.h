@@ -20,6 +20,10 @@ public:
 	double GetPegTargetNormalizedCenter();
 	double GetPegAngle();
 	bool seePegTarget();
+
+	double GetBoilerTargetNormalizedCenter();
+	double GetBoilerAngle();
+	bool seeBoilerTarget();
 };
 
 #endif /* CAMERAHANDLER_H_ */
