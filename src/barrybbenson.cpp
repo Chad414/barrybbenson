@@ -114,6 +114,10 @@ private:
 	double totalDriveCurrent;
 
 	double m_autonInitialDistance;
+	double m_autonSecondaryDistance;
+
+	double m_autonPegAngle;
+
 	double m_autonBackUpAngle;
 	double m_autonBackUpDistance;
 	double m_autonDropOffDistance;
@@ -151,7 +155,7 @@ public:
         m_camera.SetFPS(30);
         m_camera2.SetResolution(160, 120);
         m_camera2.SetExposureHoldCurrent();
-        m_camera2.SetBrightness(2);
+        m_camera2.SetBrightness(10);
         m_camera2.SetFPS(30);
         while(true) {
         	m_camera.SetExposureManual(SmartDashboard::GetNumber("m_exposure", 10));
@@ -263,7 +267,8 @@ public:
 			placeGear = true;
 		}
 		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = -83.0;
+			m_autonInitialDistance = -88.0;
+
 			m_autonBackUpAngle = 0;
 			m_autonBackUpDistance = 0;
 			m_autonDropOffDistance = 10;
@@ -339,17 +344,21 @@ public:
 
 		SmartDashboard::PutNumber("DRIVE P Value", m_drivetrain.GetAngleP());
 
+		SmartDashboard::PutNumber("Angle - Boiler", m_cameraHandler.GetBoilerAngle());
+
 		if (m_autonCenterGear == true) {
 			switch(m_autonCase) {
 			case 0:
+				SmartDashboard::PutNumber("PegAngleTest", m_autonPegAngle);
 				if(autonArmFinished(GEAR_PLACE_FIRST) == true) {
 					std::cout << "autonCenterGearFinished" << std::endl;
 					m_autonCase++;
 				}
 				break;
 			case 1:
-				if(autonDriveFinished(m_autonInitialDistance, 0) == true) {
+				if(autonDriveFinished(m_autonInitialDistance, 0)) {
 					std::cout << "autonDriveFinished" << std::endl;
+					m_drivetrain.zeroDriveEncoders();
 					m_autonCase++;
 				}
 				break;
@@ -357,6 +366,7 @@ public:
 				if (autonReleaseGear() == true) {
 					m_autonCase++;
 					m_drivetrain.setDistancePIDSpeed(0.45);
+					m_gear.SetGearRollerSpeed(-0.7);
 					m_drivetrain.zeroDriveEncoders();
 					m_timer.Reset();
 					m_timer.Start();
@@ -364,6 +374,7 @@ public:
 				break;
 			case 3:
 				if (autonPauseFinished(0.75) == true) {
+					m_gear.SetGearArmPosition(0.0);
 					m_autonCase++;
 					//m_drivetrain.resetGyro();
 				}
@@ -413,9 +424,13 @@ public:
 				}
 				break;
 			case 10:
-				//if (autonDriveFinished(-100, 0) == true) {
+				if (autonTurnFinished(m_cameraHandler.GetBoilerAngle()+ m_drivetrain.getYaw()) == true) {
 					m_autonCase++;
-				//}
+					SmartDashboard::PutNumber("TUNE10_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE10_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+					//m_drivetrain.resetGyro();
+					m_drivetrain.zeroDriveEncoders();
+				}
 				break;
 			}
 		} else {
@@ -684,7 +699,7 @@ public:
 
 		if (m_operator->ButtonStart()) {
 			m_shoot.SetShootMode(true);
-			m_shoot.RunShoot(3200); //3200
+			m_shoot.RunShoot(3300); //3200
 		} else {
 			m_shoot.SetShootMode(false);
 			m_shoot.RunShoot(0.0);

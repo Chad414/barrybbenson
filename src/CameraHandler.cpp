@@ -33,7 +33,7 @@ bool CameraHandler::seePegTarget() {
 }
 
 double CameraHandler::GetBoilerTargetNormalizedCenter() {
-	return SmartDashboard::GetNumber("Boiler X", 0.0);
+	return SmartDashboard::GetNumber("xBoiler", 0.0);
 }
 
 double CameraHandler::GetBoilerAngle() {
