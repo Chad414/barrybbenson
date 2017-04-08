@@ -391,7 +391,7 @@ public:
 					//m_drivetrain.resetGyro();
 					m_drivetrain.zeroDriveEncoders();
 					m_drivetrain.setDistancePIDSpeed(0.9);
-					m_drivetrain.setAngleP(0.38);
+					m_drivetrain.setAngleP(0.4);
 				}
 				break;
 			case 5:
