@@ -79,7 +79,7 @@
 	 * 		BACK -
 	 *
 	 */
-
+/*
 enum autonType {
 	kDoNothing = 0,
 	kBlueLeftGear = 1,
@@ -91,7 +91,7 @@ enum autonType {
 	kDriveStraight5Ft = 7,
 	kAutonCase = 8
 };
-
+*/
 class barrybbenson: public HotBot {
 private:
 
@@ -107,10 +107,14 @@ private:
 	Intake m_intake;
 	CameraHandler m_cameraHandler;
 
-	autonType m_autonType;
+	//autonType m_autonType;
 
 	Timer m_currentTimer;
 	Timer m_rollTimer;
+
+	double autonType;
+
+
 	double totalDriveCurrent;
 
 	double m_autonInitialDistance;
@@ -132,6 +136,8 @@ private:
 	double m_autonCrossLineAngle;
 	bool m_placeGear;
 
+	bool m_autonShoot;
+
 	int placeGear = 0;
 	unsigned m_autonCase = 0;
 	bool m_autonCenterGear = 0;
@@ -146,7 +152,7 @@ public:
 		m_driver = new HotJoystick(0);
 		m_operator = new HotJoystick(1);
 
-		m_autonType = kDoNothing;
+		autonType = 0;
 	}
 
 
@@ -178,41 +184,132 @@ public:
         m_gear.ZeroGearArmPosition();
         m_shoot.ZeroShootEncoder();
         m_drivetrain.zeroDriveEncoders();
-        m_autonType = kDoNothing;
+        autonType = 0;
+        m_autonShoot = false;
 	}
 
 	void DisabledPeriodic() {
 
-		SmartDashboard::PutNumber("Auton Type", m_autonType);
+		SmartDashboard::PutBoolean("Auton Shoot?", m_autonShoot);
 
-		/*SmartDashboard::PutNumber("Gear Timer", m_rollTimer.Get());
-		SmartDashboard::PutNumber("Gear Position", m_gear.GetGearArmPosition());
-		SmartDashboard::PutBoolean("Gear Mode", m_gear.GetGearMode());
-		SmartDashboard::PutNumber("Gear Raw Position", m_gear.GetRawGearArmPosition());
-		SmartDashboard::PutNumber("Gear Commanded", m_gear.GetGearCommandedSpeed());
-		SmartDashboard::PutNumber("Gear Error", m_gear.GetGearError());
-		SmartDashboard::PutNumber("Gear Place", placeGear);
-		SmartDashboard::PutNumber("Gear Roller Speed", m_gear.GetGearRollerCommandedSpeed());*/
+		if (autonType == 1) { //blue left gear
+			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = 60;
+			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
 
-		/*
-		SmartDashboard::PutNumber("Right Shooter Raw", m_shoot.GetRRawShooter());
-		SmartDashboard::PutNumber("Left Shooter Raw", m_shoot.GetLRawShooter());
+			m_autonBackUpDistanceInitial = -53;
+			m_autonBackUpDistanceSecondary = -18;
 
-		SmartDashboard::PutBoolean("Shooter Mode", m_shoot.GetShootMode());
-		SmartDashboard::PutNumber("Shooter Power", shooterSpeed);
+			m_autonDropOffDistance = 10;
 
-		SmartDashboard::PutNumber("Left Shooter Speed", m_shoot.GetLShootSpeed());
-		SmartDashboard::PutNumber("Right Shooter Speed", m_shoot.GetRShootSpeed());
+			m_autonLineAngle = 55.0;
+			m_autonCrossLine = 65.0;
+			placeGear = true;
+			m_autonShoot = true;
+		}
+		else if (autonType == 2) { //blue center gear
+			m_autonInitialDistance = -88.0;
 
-		SmartDashboard::PutNumber("Left Shooter Encoder", m_shoot.getLeftShoot());
-		SmartDashboard::PutNumber("Right Shooter Encoder", m_shoot.getRightShoot());
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			m_autonDropOffDistance = 10;
+			m_autonAwayFromCenterGearPeg = 0;
+			m_autonLineAngle = 70;
+			m_autonCrossLine = 90;
+			placeGear = true;
+			m_autonCenterGear = true;
 
-		SmartDashboard::PutNumber("Drive Left Front Talon Get", m_drivetrain.getLeftEncoder());
-		SmartDashboard::PutNumber("Drive Right Front Talon Get", m_drivetrain.getRightEncoder());
-		*/
+		}
+		else if (autonType == 3) { //blue right gear
+			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = -60;
+			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
+
+			m_autonBackUpDistanceInitial = -53;
+			m_autonBackUpDistanceSecondary = -18;
+
+			m_autonDropOffDistance = 20;
+
+			m_autonLineAngle = 45.0;
+			m_autonCrossLine = -80.0;
+			placeGear = true;
+			m_autonShoot = false;
+
+		}
+		else if (autonType == 4) { //red left gear
+
+			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = 60;
+			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
+
+			m_autonBackUpDistanceInitial = -53;
+			m_autonBackUpDistanceSecondary = -18;
+
+			m_autonDropOffDistance = 20;
+
+			m_autonLineAngle = -45.0;
+			m_autonCrossLine = -80.0;
+			placeGear = true;
+			m_autonShoot = false;
+		}
+		else if (autonType == 5) { //red center gear
+			m_autonInitialDistance = -88.0;
+
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			m_autonDropOffDistance = 10;
+			m_autonAwayFromCenterGearPeg = 0;
+			m_autonLineAngle = -70;
+			m_autonCrossLine = 90;
+			placeGear = true;
+			m_autonCenterGear = true;
+
+		}
+		else if (autonType == 6) { //red right gear
+			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonBackUpAngle = -60;
+			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
+
+			m_autonBackUpDistanceInitial = -53;
+			m_autonBackUpDistanceSecondary = -18;
+
+			m_autonDropOffDistance = 10;
+
+			m_autonLineAngle = -55.0;
+			m_autonCrossLine = 65.0;
+			placeGear = true;
+			m_autonShoot = true;
+		}
+		else if (autonType == 7) { //drive straight
+			m_autonInitialDistance = -150.0; //-150
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+			m_autonShoot = false;
+		}
+		else if (autonType == 8) {
+			m_autonInitialDistance = -69.0;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+			m_autonShoot = false;
+		}
+		else {
+			m_autonInitialDistance = 0;
+			m_autonBackUpAngle = 0;
+			m_autonBackUpDistance = 0;
+			placeGear = false;
+			m_autonShoot = false;
+		}
+
+
+
 
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
-		m_autonType = (autonType)SmartDashboard::GetNumber("Auto Selector", 0);
+		autonType = SmartDashboard::GetNumber("Auto Selector", 0);
+
+		SmartDashboard::PutNumber("* Test", SmartDashboard::GetNumber("Auto Selector", 0));
+		SmartDashboard::PutNumber("Auton Type", autonType);
 
 		SmartDashboard::PutNumber("m_exposure", 10);
 
@@ -221,7 +318,7 @@ public:
 	void AutonomousInit() {
 		m_autonCase = 0;
 
-		m_autonCenterGear = false;
+		//m_autonCenterGear = false;
 		m_drivetrain.setShift(false);
 		m_drivetrain.resetGyro();
 
@@ -243,100 +340,12 @@ public:
 		m_shoot.RunPaddle(0.0);
 
 
-		if (m_autonType == 1) { //blue left gear
-			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
-			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
-
-			m_autonBackUpDistanceInitial = -53;
-			m_autonBackUpDistanceSecondary = -18;
-
-			m_autonDropOffDistance = 10;
-
-			m_autonLineAngle = 55.0;
-			m_autonCrossLine = 65.0;
-			placeGear = true;
-		}
-		else if (m_autonType == 2) { //blue center gear
-			m_autonInitialDistance = -88.0;
-
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			m_autonDropOffDistance = 10;
-			m_autonAwayFromCenterGearPeg = 0;
-			m_autonLineAngle = 70;
-			m_autonCrossLine = 90;
-			placeGear = true;
-			m_autonCenterGear = true;
-
-		}
-		else if (m_autonType == 3) { //blue right gear
-			m_autonInitialDistance = -103.0; // 86.0 for comp bot, 77.0 for practice
-			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -64.0; //-61.0
-			m_autonLineAngle = 70.0;
-			m_autonCrossLine = -72.0;
-			placeGear = true;
-		}
-		else if (m_autonType == 4) { //red left gear
-			m_autonInitialDistance = -103.0; // 86.0 for comp bot, 77.0 for practice
-			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -64.0; //-61.0
-			m_autonLineAngle = -70.0;
-			m_autonCrossLine = -72.0;
-			placeGear = true;
-		}
-		else if (m_autonType == 5) { //red center gear
-			m_autonInitialDistance = -88.0;
-
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			m_autonDropOffDistance = 10;
-			m_autonAwayFromCenterGearPeg = 0;
-			m_autonLineAngle = -70;
-			m_autonCrossLine = 90;
-			placeGear = true;
-			m_autonCenterGear = true;
-		}
-		else if (m_autonType == 6) { //red right gear
-			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
-			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
-
-			m_autonBackUpDistanceInitial = -53;
-			m_autonBackUpDistanceSecondary = -18;
-
-			m_autonDropOffDistance = 10;
-
-			m_autonLineAngle = -55.0;
-			m_autonCrossLine = 65.0;
-			placeGear = true;
-		}
-		else if (m_autonType == 7) { //drive straight
-			m_autonInitialDistance = -150.0; //-150
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = false;
-		}
-		else if (m_autonType == 8) {
-			m_autonInitialDistance = -69.0;
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = false;
-		}
-		else {
-			m_autonInitialDistance = 0;
-			m_autonBackUpAngle = 0;
-			m_autonBackUpDistance = 0;
-			placeGear = false;
-		}
-
-	}
+			}
 
 	void AutonomousPeriodic() {
 
 		SmartDashboard::PutNumber("Auton Case", m_autonCase);
-		SmartDashboard::PutNumber("Auton Type", m_autonType);
+		SmartDashboard::PutNumber("Auton Type", autonType);
 
 		//m_drivetrain.setShift(true);
 		//SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
@@ -371,6 +380,8 @@ public:
 		SmartDashboard::PutNumber("DRIVE P Value", m_drivetrain.GetAngleP());
 
 		SmartDashboard::PutNumber("Angle - Boiler", m_cameraHandler.GetBoilerAngle());
+
+		SmartDashboard::PutBoolean("Auton Shoot?", m_autonShoot);
 
 		if (m_autonCenterGear == true) {
 			switch(m_autonCase) {
@@ -619,8 +630,11 @@ public:
 				break;
 			case 12:
 
-				m_shoot.SetShootMode(true);
-				m_shoot.RunShoot(3300);
+				if (m_autonShoot == true) {
+					m_shoot.SetShootMode(true);
+					m_shoot.RunShoot(3300);
+				}
+
 
 				if (autonTurnFinished(m_autonLineAngle) == true) {
 					m_autonCase++;
@@ -654,7 +668,10 @@ public:
 				}
 				break;
 			case 17:
-				m_shoot.RunPaddle(-1.0);
+
+				if (m_autonShoot == true) {
+					m_shoot.RunPaddle(-1.0);
+				}
 				m_autonCase++;
 			}
 		}
