@@ -811,8 +811,8 @@ public:
 		m_drivetrain.DisablePID();
 		m_drivetrain.zeroDriveEncoders();
 		m_drivetrain.resetGyro();
-		//SmartDashboard::PutNumber("m_exposure", 80);
-		//SmartDashboard::PutNumber("m_brightness", 50);
+		SmartDashboard::PutNumber("m_exposure", 80);
+		SmartDashboard::PutNumber("m_brightness", 50);
 
 		m_shoot.SetShootMode(true);
 		m_shoot.RunShoot(0);
