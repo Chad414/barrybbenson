@@ -51,11 +51,13 @@
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
-#define ANGLE_P 0.4 //1.15
+#define ANGLE_P 0.35 //1.15
 #define ANGLE_I 0
 #define ANGLE_D 0.0
 
 #define SHIFT_THRESH 0.0
+
+#define FLASH_LIGHT 2
 
 class Drivetrain {
 public:
@@ -169,6 +171,8 @@ public:
 
 	void setAngleP(double p);
 
+	void flashLightOn(bool on);
+
 	virtual ~Drivetrain();
 
 private:
@@ -241,6 +245,8 @@ private:
 	PIDController m_anglePID;
 
 	PigeonImu m_pidgey;
+
+	Relay m_flashLight;
 
 	double m_turn, m_speed;
 

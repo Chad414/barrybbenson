@@ -111,6 +111,7 @@ private:
 
 	Timer m_currentTimer;
 	Timer m_rollTimer;
+	Timer m_autonCaseTimeout;
 
 	double autonType;
 
@@ -164,6 +165,7 @@ public:
         m_camera.SetExposureHoldCurrent();
         m_camera.SetBrightness(2);
         m_camera.SetFPS(30);
+
         m_camera2.SetResolution(160, 120);
         m_camera2.SetExposureHoldCurrent();
         m_camera2.SetBrightness(10);
@@ -190,12 +192,14 @@ public:
 
 	void DisabledPeriodic() {
 
+		m_drivetrain.flashLightOn(false);
+
 		SmartDashboard::PutBoolean("Auton Shoot?", m_autonShoot);
 
 		if (autonType == 1) { //blue left gear
-			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -88;//-8
 			m_autonBackUpAngle = 60;
-			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
+			m_autonBackUpDistance = -74.0;//-64.0; //-61.0
 
 			m_autonBackUpDistanceInitial = -53;
 			m_autonBackUpDistanceSecondary = -18;
@@ -266,9 +270,9 @@ public:
 
 		}
 		else if (autonType == 6) { //red right gear
-			m_autonInitialDistance = -84;//-103.0; // 86.0 for comp bot, 77.0 for pactice
+			m_autonInitialDistance = -88;//-103.0; // 86.0 for comp bot, 77.0 for pactice
 			m_autonBackUpAngle = -60;
-			m_autonBackUpDistance = -70.0;//-64.0; //-61.0
+			m_autonBackUpDistance = -74.0;//-64.0; //-61.0
 
 			m_autonBackUpDistanceInitial = -53;
 			m_autonBackUpDistanceSecondary = -18;
@@ -286,6 +290,7 @@ public:
 			m_autonBackUpDistance = 0;
 			placeGear = false;
 			m_autonShoot = false;
+
 		}
 		else if (autonType == 8) {
 			m_autonInitialDistance = -69.0;
@@ -339,8 +344,16 @@ public:
 
 		m_shoot.RunPaddle(0.0);
 
+		//m_intake.SetHopper(true);
 
-			}
+		m_drivetrain.flashLightOn(false);
+
+		//Start timeout for next case
+		m_autonCaseTimeout.Stop();
+		m_autonCaseTimeout.Reset();
+		m_autonCaseTimeout.Start();
+
+		}
 
 	void AutonomousPeriodic() {
 
@@ -350,40 +363,24 @@ public:
 		//m_drivetrain.setShift(true);
 		//SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 
-		SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
+		//SmartDashboard::PutBoolean("Drive PID Enabled", m_drivetrain.IsPIDEnabled());
 		//SmartDashboard::PutNumber("Drive Rotation Error", m_drivetrain.GetRotationPIDError());
 		//SmartDashboard::PutNumber("Drive Distance Error", m_drivetrain.GetDistancePIDError());
-		SmartDashboard::PutNumber("Drive Angle Error", m_drivetrain.GetAnglePIDError());
+		//SmartDashboard::PutNumber("Drive Angle Error", m_drivetrain.GetAnglePIDError());
 
-		SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
-		SmartDashboard::PutNumber("Drive Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
-		SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
+		//SmartDashboard::PutNumber("Drive Angle Setpoint", m_drivetrain.GetAnglePIDSetpoint());
+		//SmartDashboard::PutNumber("Drive Distance Setpoint", m_drivetrain.GetDistancePIDSetpoint());
+		//SmartDashboard::PutBoolean("Drive Angle PID Is Enabled", m_drivetrain.AnglePIDIsEnabled());
 
 		SmartDashboard::PutNumber("Peg X", SmartDashboard::GetNumber("xPeg", 0));
 		SmartDashboard::PutNumber("Boiler X", SmartDashboard::GetNumber("xBoiler", 0));
 
-		SmartDashboard::PutNumber("Drive Left Front Talon Get", m_drivetrain.getLeftEncoder());
-		SmartDashboard::PutNumber("Drive Right Front Talon Get", m_drivetrain.getRightEncoder());
+		//SmartDashboard::PutNumber("Drive Left Front Talon Get", m_drivetrain.getLeftEncoder());
+		//SmartDashboard::PutNumber("Drive Right Front Talon Get", m_drivetrain.getRightEncoder());
 		SmartDashboard::PutNumber("Angle", m_drivetrain.getYaw());
 		SmartDashboard::PutNumber("Tune Angle", m_cameraHandler.GetPegAngle());
-		SmartDashboard::PutNumber("Peg Distance", SmartDashboard::GetNumber("dPeg", 0.0));
-
-		SmartDashboard::PutNumber("Peg X (Offset)", m_cameraHandler.GetPegTargetNormalizedCenter());
-
-		/*SmartDashboard::PutNumber("Auton Initial Distance", m_autonInitialDistance);
-		SmartDashboard::PutNumber("Auton Backup Angle", m_autonBackUpAngle);
-		SmartDashboard::PutNumber("Auton Backup Distance", m_autonBackUpDistance);
-		SmartDashboard::PutBoolean("Auton Place Gear", placeGear);
-		SmartDashboard::PutBoolean("Auton Center Gear", m_autonCenterGear);*/
-
-
-		//std::cout << "Roller Timer" << m_rollTimer.Get() << std::endl;
-
-		SmartDashboard::PutNumber("DRIVE P Value", m_drivetrain.GetAngleP());
-
 		SmartDashboard::PutNumber("Angle - Boiler", m_cameraHandler.GetBoilerAngle());
 
-		SmartDashboard::PutBoolean("Auton Shoot?", m_autonShoot);
 
 		if (m_autonCenterGear == true) {
 			switch(m_autonCase) {
@@ -458,46 +455,65 @@ public:
 			case 8:
 				if (autonArmFinished(GEAR_PACKAGE) == true) {
 					m_autonCase++;
-					SmartDashboard::PutNumber("TUNE8_ANGLE", m_drivetrain.getAngle());
+					SmartDashboard::PutNumber("TUNE8_ANGLE", m_drivetrain.getYaw());
 					SmartDashboard::PutNumber("TUNE8_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
 				}
 				break;
 			case 9:
 				SmartDashboard::PutNumber("TUNE9_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
-				SmartDashboard::PutNumber("TUNE9_ANGLE", m_drivetrain.getAngle());
+				SmartDashboard::PutNumber("TUNE9_ANGLE", m_drivetrain.getYaw());
 				SmartDashboard::PutNumber("TUNE9_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
 
 				if (autonTurnFinished(m_cameraHandler.GetBoilerAngle()+ m_drivetrain.getYaw()) == true) {
 					m_autonCase++;
 					//m_drivetrain.resetGyro();
 					m_drivetrain.zeroDriveEncoders();
+
 				}
 				break;
 			case 10:
-				SmartDashboard::PutNumber("TUNE10_ANGLE", m_drivetrain.getAngle());
+				SmartDashboard::PutNumber("TUNE10_ANGLE", m_drivetrain.getYaw());
 				SmartDashboard::PutNumber("TUNE10_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
 				SmartDashboard::PutNumber("TUNE10_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
 
-				if (autonTurnFinished(m_cameraHandler.GetBoilerAngle()+ m_drivetrain.getYaw()) == true) {
+				if ((autonTurnFinished(m_cameraHandler.GetBoilerAngle()+ m_drivetrain.getYaw()) == true) || (m_autonCaseTimeout.Get() < 12.0)) {
 					m_autonCase++;
 
 					//m_drivetrain.resetGyro();
 					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.setAngleP(0.43);
 				}
 				break;
 			case 11:
+				m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_cameraHandler.GetBoilerAngle() + m_drivetrain.getYaw());
+
+				SmartDashboard::PutNumber("TUNE11_ANGLE", m_drivetrain.getYaw());
+				SmartDashboard::PutNumber("TUNE11_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+				SmartDashboard::PutNumber("TUNE11_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
+
+				if (fabs(m_drivetrain.GetAnglePIDError()) < 2.5 || m_autonCaseTimeout.Get() < 12.0) {
+					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.DisablePID();
+					m_drivetrain.resetAnglePID();
+					m_drivetrain.resetDistancePID();
+					m_autonCase++;
+				} else {
+					m_drivetrain.EnablePID();
+				}
+				break;
+			case 12:
 				m_shoot.RunPaddle(-1.0);
 				m_autonCase++;
 			}
 		} else {
 			m_drivetrain.SetAngleAbsoluteTolerance(0.0);
 
-			SmartDashboard::PutNumber("Auton Peg Angle", m_autonPegAngle);
-			SmartDashboard::PutNumber("Angle Setpoint", m_autonPegAngle);
+			//SmartDashboard::PutNumber("Auton Peg Angle", m_autonPegAngle);
+			//SmartDashboard::PutNumber("Angle Setpoint", m_autonPegAngle);
 
 			switch (m_autonCase){
 			case 0:
-				m_drivetrain.setDistancePIDSpeed(0.85);
+				m_drivetrain.setDistancePIDSpeed(0.9);
 				//m_autonCase++;
 				if (autonDriveFinished(m_autonInitialDistance, 0) == true) {
 					m_autonCase++;
@@ -519,6 +535,7 @@ public:
 					SmartDashboard::PutNumber("TUNE1_XPEG", SmartDashboard::GetNumber("xPeg", 0));
 					SmartDashboard::PutNumber("TUNE1_ANGLE_ERROR", m_drivetrain.GetAnglePIDError());
 					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.DisablePID();
 					//m_drivetrain.resetGyro();
 					m_autonCase++;
 
@@ -528,7 +545,7 @@ public:
 				}
 				break;
 			case 2:
-				if (autonPauseFinished(0.2) == true) {
+				if (autonPauseFinished(0.25) == true) {
 					m_autonPegAngle = (m_drivetrain.getYaw() + m_cameraHandler.GetPegAngle());
 
 					SmartDashboard::PutNumber("TUNE2_ANGLE", m_drivetrain.getYaw());
@@ -561,29 +578,44 @@ public:
 				}
 				break;
 			case 4:
-				m_autonPegAngle = (m_drivetrain.getYaw() + m_cameraHandler.GetPegAngle());
+				if (autonPauseFinished(0.3) == true) {
+					m_autonPegAngle = (m_drivetrain.getYaw() + m_cameraHandler.GetPegAngle());
 
-				SmartDashboard::PutNumber("TUNE4_ANGLE", m_drivetrain.getYaw());
-				SmartDashboard::PutNumber("TUNE4_DISTANCE", m_drivetrain.GetAverageDistance());
-				SmartDashboard::PutNumber("TUNE4_XPEG", SmartDashboard::GetNumber("xPeg", 0));
-				SmartDashboard::PutNumber("TUNE4_XPEG_OFFSET", m_cameraHandler.GetPegTargetNormalizedCenter());
-				SmartDashboard::PutNumber("TUNE4_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());
-				SmartDashboard::PutNumber("TUNE4_ANGLE_SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+					SmartDashboard::PutNumber("TUNE4_ANGLE", m_drivetrain.getYaw());
+					SmartDashboard::PutNumber("TUNE4_DISTANCE", m_drivetrain.GetAverageDistance());
+					SmartDashboard::PutNumber("TUNE4_XPEG", SmartDashboard::GetNumber("xPeg", 0));
+					SmartDashboard::PutNumber("TUNE4_XPEG_OFFSET", m_cameraHandler.GetPegTargetNormalizedCenter());
+					SmartDashboard::PutNumber("TUNE4_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());
+					SmartDashboard::PutNumber("TUNE4_ANGLE_SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
 
-				m_autonCase++;
+					m_autonCase++;
+					//m_drivetrain.resetGyro();
+				}
 				break;
 			case 5:
-				m_autonCase++;
-				m_drivetrain.zeroDriveEncoders();
-				//m_autonPegAngle = (m_drivetrain.getYaw() + m_cameraHandler.GetPegAngle());
+				if (autonTurnFinished(m_autonPegAngle) == true) {
+					SmartDashboard::PutNumber("TUNE5_ANGLE", m_drivetrain.getYaw());
+					SmartDashboard::PutNumber("TUNE5_DISTANCE", m_drivetrain.GetAverageDistance());
+					SmartDashboard::PutNumber("TUNE5_XPEG", SmartDashboard::GetNumber("xPeg", 0));
+					SmartDashboard::PutNumber("TUNE5_XPEG_OFFSET", m_cameraHandler.GetPegTargetNormalizedCenter());
+					SmartDashboard::PutNumber("TUNE5_ANGLE-ERROR", m_drivetrain.GetAnglePIDError());
+					SmartDashboard::PutNumber("TUNE5_ANGLE_SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
 
-				m_timer.Stop();
-				m_timer.Reset();
-				m_timer.Start();
+					m_autonCase++;
+					m_drivetrain.zeroDriveEncoders();
+					m_autonPegAngle = (m_drivetrain.getYaw() + m_cameraHandler.GetPegAngle());
+				}
 				break;
 			case 6:
+				if (autonTurnFinished(m_autonPegAngle) == true) {
+					m_autonCase++;
+					m_drivetrain.zeroDriveEncoders();
+					//m_autonPegAngle = (m_drivetrain.getYaw() + m_cameraHandler.GetPegAngle());
+				}
+				break;
+			case 7:
 //for the higher peg, remove at competition the +2
-				if (autonArmFinished(GEAR_PLACE_FIRST +2) == true) {
+				if (autonArmFinished(GEAR_PLACE_FIRST) == true) {
 					m_autonCase++;
 
 					m_timer.Stop();
@@ -593,10 +625,8 @@ public:
 					m_drivetrain.setTurnPIDSpeed(0.5);
 				}
 				break;
-			case 7:
-
+			case 8:
 				m_drivetrain.SetPIDSetpoint(m_autonBackUpDistance, m_autonPegAngle);
-
 				if ((fabs(m_drivetrain.GetDistancePIDError()) < 4) && (fabs(m_drivetrain.GetAnglePIDError()) < 1.0)) {
 					//m_drivetrain.zeroDriveEncoders();
 					m_drivetrain.DisablePID();
@@ -606,7 +636,6 @@ public:
 
 					m_drivetrain.setAngleP(ANGLE_P);
 					m_drivetrain.zeroDriveEncoders();
-					m_autonCase++;
 
 					m_timer.Stop();
 					m_timer.Reset();
@@ -615,52 +644,57 @@ public:
 				else {
 					m_drivetrain.EnablePID();
 				}
-
-				break;
-			case 8:
-				if (autonPauseFinished(1.0) == true) {
-					m_autonCase++;
-					//m_drivetrain.resetGyro();
-				}
 				break;
 			case 9:
+				if (autonPauseFinished(0.3) == true) {
+					m_autonCase++;
+					//m_drivetrain.resetGyro();
+					SmartDashboard::PutNumber("TUNE9_ANGLE", m_drivetrain.getYaw());
+				}
+				break;
+			case 10:
 				if (autonReleaseGear() == true) {
 					m_autonCase++;
 					//m_drivetrain.setDistancePIDSpeed(0.45);
 					m_drivetrain.zeroDriveEncoders();
-
+					m_gear.SetGearRollerSpeed(-1.0);
 					m_timer.Stop();
 					m_timer.Reset();
 					m_timer.Start();
 				}
 				break;
-			case 10:
-				if (autonPauseFinished(1.0) == true) {
-					m_autonCase++;
-					m_drivetrain.setDistancePIDSpeed(0.45);
-				}
-				break;
 			case 11:
-				if (autonDropOff() == true) {
+				if (autonPauseFinished(0.7) == true) {
 					m_autonCase++;
-					m_drivetrain.zeroDriveEncoders();
-					m_drivetrain.setDistancePIDSpeed(0.85);
-					m_drivetrain.setAngleP(ANGLE_P);
+					m_gear.SetGearRollerSpeed(0);
+					m_drivetrain.setDistancePIDSpeed(0.5);
 				}
 				break;
 			case 12:
-
+				if (autonDropOff() == true) {
+					m_autonCase++;
+					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.setDistancePIDSpeed(0.9);
+					m_drivetrain.setAngleP(ANGLE_P);
+				}
+				break;
+			case 13:
 				if (m_autonShoot == true) {
 					m_shoot.SetShootMode(true);
-					m_shoot.RunShoot(3300);
+					m_shoot.RunShoot(3350);
 				}
 				if (autonTurnFinished(m_autonLineAngle) == true) {
 					m_autonCase++;
 					m_drivetrain.zeroDriveEncoders();
 				}
 				break;
-			case 13:
+			case 14:
 				if (autonDriveFinished(m_autonCrossLine, m_autonLineAngle) == true) {
+
+					SmartDashboard::PutNumber("TUNE14_ANGLE", m_drivetrain.getYaw());
+					SmartDashboard::PutNumber("TUNE14_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+					SmartDashboard::PutNumber("TUNE14_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
+
 					m_autonCase++;
 					m_drivetrain.zeroDriveEncoders();
 					m_timer.Stop();
@@ -668,25 +702,64 @@ public:
 					m_timer.Start();
 				}
 				break;
-			case 14 :
+			case 15:
 				if (autonArmFinished(GEAR_PACKAGE) == true) {
 					m_autonCase++;
 				}
 				break;
-			case 15:
+			case 16:
 				if (m_timer.Get() < 0.2) {
+
+					SmartDashboard::PutNumber("TUNE16_ANGLE", m_drivetrain.getYaw());
+					SmartDashboard::PutNumber("TUNE16_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+					SmartDashboard::PutNumber("TUNE16_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
+					SmartDashboard::PutNumber("TUNE16_ANGLE BOILER", m_autonBoilerAngle);
+					SmartDashboard::PutNumber("TUNE16_BOILER X", m_cameraHandler.GetBoilerTargetNormalizedCenter());
+
 					m_autonBoilerAngle = m_drivetrain.getYaw() + m_cameraHandler.GetBoilerAngle();
 					m_autonCase++;
 				}
 				break;
-			case 16:
-				if (autonTurnFinished(m_autonBoilerAngle) == true) {
-					m_autonCase++;
+			case 17:
+				m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_autonBoilerAngle);
+
+				SmartDashboard::PutNumber("TUNE17_ANGLE", m_drivetrain.getYaw());
+				SmartDashboard::PutNumber("TUNE17_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+				SmartDashboard::PutNumber("TUNE17_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
+				SmartDashboard::PutNumber("TUNE17_ANGLE BOILER", m_autonBoilerAngle);
+				SmartDashboard::PutNumber("TUNE17_BOILER X", m_cameraHandler.GetBoilerTargetNormalizedCenter());
+
+				if (fabs(m_drivetrain.GetAnglePIDError()) < 2.5  || (m_autonCaseTimeout.Get() < 12.0)) {
 					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.DisablePID();
+					m_drivetrain.resetAnglePID();
+					m_drivetrain.resetDistancePID();
+					m_autonBoilerAngle = m_drivetrain.getYaw() + m_cameraHandler.GetBoilerAngle();
+					m_autonCase++;
+				} else {
+					m_drivetrain.EnablePID();
 				}
 				break;
-			case 17:
+			case 18:
+				m_drivetrain.SetPIDSetpoint(m_drivetrain.GetAverageDistance(), m_autonBoilerAngle);
 
+				SmartDashboard::PutNumber("TUNE18_ANGLE", m_drivetrain.getYaw());
+				SmartDashboard::PutNumber("TUNE18_ANGLE SETPOINT", m_drivetrain.GetAnglePIDSetpoint());
+				SmartDashboard::PutNumber("TUNE18_ANGLE ERROR", m_drivetrain.GetAnglePIDError());
+				SmartDashboard::PutNumber("TUNE18_ANGLE BOILER", m_autonBoilerAngle);
+				SmartDashboard::PutNumber("TUNE18_BOILERX", m_cameraHandler.GetBoilerTargetNormalizedCenter());
+
+				if (fabs(m_drivetrain.GetAnglePIDError()) < 2.5  || (m_autonCaseTimeout.Get() < 12.0)) {
+					m_drivetrain.zeroDriveEncoders();
+					m_drivetrain.DisablePID();
+					m_drivetrain.resetAnglePID();
+					m_drivetrain.resetDistancePID();
+					m_autonCase++;
+				} else {
+					m_drivetrain.EnablePID();
+				}
+				break;
+			case 19:
 				if (m_autonShoot == true) {
 					m_shoot.RunPaddle(-1.0);
 				}
@@ -818,6 +891,8 @@ public:
 		m_shoot.RunShoot(0);
 
 		m_shoot.RunPaddle(0.0);
+
+		m_drivetrain.flashLightOn(true);
 	}
 
 	void TeleopPeriodic() {
@@ -837,7 +912,6 @@ public:
 		SmartDashboard::PutNumber("Peg Distance", SmartDashboard::GetNumber("dPeg", 0.0));
 
 		*/
-
 
 		TeleopDrive();
 		TeleopShoot();

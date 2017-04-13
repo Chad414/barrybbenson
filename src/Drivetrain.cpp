@@ -30,7 +30,8 @@ Drivetrain::Drivetrain()
 	m_anglePIDWrapper(this),
 	m_distancePID(DISTANCE_P, DISTANCE_I, DISTANCE_D, &m_distancePIDWrapper, &m_distancePIDWrapper, 0.05),
 	m_anglePID(ANGLE_P, ANGLE_I, ANGLE_D, &m_anglePIDWrapper, &m_anglePIDWrapper, 0.05),
-	m_pidgey(&m_lDriveR)
+	m_pidgey(&m_lDriveR),
+	m_flashLight(FLASH_LIGHT)
 {
 	m_turn = 0;
 	m_speed = 0;
@@ -429,6 +430,15 @@ void Drivetrain::setDriveToCoastMode() {
 
 void Drivetrain::setAngleP(double p) {
 	m_anglePID.SetPID(p, ANGLE_I, ANGLE_D);
+}
+
+void Drivetrain::flashLightOn(bool on) {
+	if (on) {
+		m_flashLight.Set(Relay::kForward);
+	} else {
+		m_flashLight.Set(Relay::kReverse);
+	}
+
 }
 
 Drivetrain::~Drivetrain() {
