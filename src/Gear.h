@@ -34,7 +34,7 @@
 //gear arm constant to make degree
 #define GEAR_DEGREE_CONST 165.75
 
-#define GEAR_GROUND -91.0
+#define GEAR_GROUND -93.0
 #define GEAR_PACKAGE 0.0
 #define GEAR_PLACE_FIRST -32.0 //70.0
 #define GEAR_PLACE_SECOND 0.0
