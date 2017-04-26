@@ -975,10 +975,10 @@ public:
 
 	void TeleopShoot() {
 		if (m_driver->AxisLT() > 0.2) {
-			m_shoot.RunPaddle(1.0);
+			m_shoot.RunPaddle(1.0);   /* mark changed feed speed, was 1.0 */
 		}
 		else if (m_driver->AxisRT() > 0.2) {
-			m_shoot.RunPaddle(-1.0);
+			m_shoot.RunPaddle(-1.0);    /* mark changed feed speed, was -1.0 */
 		}
 		else {
 			m_shoot.RunPaddle(0.0);
@@ -1136,31 +1136,8 @@ public:
 			m_gear.SetGearArmPosition(GEAR_GROUND);
 		}
 		else if (m_operator->ButtonB()){
-			switch (placeGear){
-				case 0:
-					m_gear.SetGearMode(true);
-					m_gear.SetGearArmPosition(GEAR_PLACE_FIRST);
-					if (m_gear.GetGearError() < 5) {
-						placeGear++;
-						m_rollTimer.Stop();
-						m_rollTimer.Reset();
-						m_rollTimer.Start();
-					}
-					break;
-				case 1:
-					//m_gear.SetGearRollerSpeed(-0.7);
-					if (m_rollTimer.Get() > 3.0) {
-						//m_gear.SetGearRollerSpeed(0.0);
-						placeGear++;
-					}
-					break;
-				case 2:
-					m_gear.SetGearArmPosition(GEAR_PLACE_SECOND);
-					if (m_gear.GetGearError() < 5) {
-						placeGear++;
-					}
-			}
-
+			m_gear.SetGearMode(true);
+			m_gear.SetGearArmPosition(-3.0);
 		}
 		else if (m_operator->ButtonX()) {
 			m_gear.SetGearMode(true);
