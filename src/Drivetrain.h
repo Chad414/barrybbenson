@@ -51,7 +51,7 @@
 #define DISTANCE_I 0
 #define DISTANCE_D 0
 
-#define ANGLE_P 0.35 //1.15
+#define ANGLE_P 0.23 //0.35
 #define ANGLE_I 0
 #define ANGLE_D 0.0
 

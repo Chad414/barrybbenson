@@ -17,7 +17,7 @@ CameraHandler::~CameraHandler() {
 }
 
 double CameraHandler::GetPegTargetNormalizedCenter() {
-	return (SmartDashboard::GetNumber("Peg X", 0.0));
+	return (SmartDashboard::GetNumber("xPeg", 0.0));
 }
 
 double CameraHandler::GetPegAngle() {
