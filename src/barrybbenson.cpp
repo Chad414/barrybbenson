@@ -1,8 +1,8 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
-#include "CANTalon.h"
+#include "ctrlib/CANTalon.h"
 
-class barrybbenson: public HotBot {
+class barrybbenson: public HotBot {   
 private:
 
 	HotJoystick* m_driver;
@@ -69,25 +69,17 @@ public:
 
 		potentio = m_pot->Get();
 		speed = potentio/360;
-		double slider0 = SmartDashboard::GetNumber("DB/Slider 0", 0.0);
-		double slider1 = SmartDashboard::GetNumber("DB/Slider 1", 0.0);
-		double slider2 = SmartDashboard::GetNumber("DB/Slider 2", 0.0);
-		double slider3 = SmartDashboard::GetNumber("DB/Slider 3", 0.0);
 
-		m_CANmotor1->Set(slider0);
-		m_CANmotor2->Set(slider1);
-		m_PWMmotor0->Set(slider2);
-		m_PWMmotor1->Set(slider3);
+//		m_CANmotor1->Set(speed);
+//		m_CANmotor2->Set(speed);
+//		m_PWMmotor0->Set(speed);
+		m_PWMmotor1->Set(speed);
 
 
 		SmartDashboard::PutNumber("speed", speed);
 		SmartDashboard::PutBoolean("A Button", previousAButton);
 		SmartDashboard::PutBoolean("X Button", previousXButton);
 		SmartDashboard::PutNumber("Pot", potentio);
-		SmartDashboard::PutNumber("CAN1", slider0);
-		SmartDashboard::PutNumber("CAN2", slider1);
-		SmartDashboard::PutNumber("PWM0", slider2);
-		SmartDashboard::PutNumber("PWM1", slider3);
 	}
 
 	void TestPeriodic() {
