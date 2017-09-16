@@ -2,7 +2,7 @@
 #include "RobotUtils/RobotUtils.h"
 #include "ctrlib/CANTalon.h"
 
-class barrybbenson: public HotBot {   
+class barrybbenson: public HotBot {
 private:
 
 	HotJoystick* m_driver;
