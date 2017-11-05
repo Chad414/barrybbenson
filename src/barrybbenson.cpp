@@ -6,38 +6,30 @@ class barrybbenson: public HotBot {
 private:
 
 	HotJoystick* m_driver;
-	HotJoystick* m_operator;
 
 	Victor* m_PWMmotor0;
 	Victor* m_PWMmotor1;
 	CANTalon* m_CANmotor1;
 	CANTalon* m_CANmotor2;
 
-	PowerDistributionPanel* m_pdp;
-
-	AnalogPotentiometer* m_pot;
-
-	double speed;
-	bool previousAButton;
-	bool previousXButton;
-	double potentio;
+	bool aButton;
+	bool bButton;
+	bool xButton;
+	bool yButton;
+	float joystickRaw[4];
+	float spdCmd[4];
 
 public:
 	barrybbenson() {
 		m_driver = new HotJoystick(0);
-		m_operator = new HotJoystick(1);
 
 		m_PWMmotor0 = new Victor(0);
 		m_PWMmotor1 = new Victor(1);
 
 		m_CANmotor1 = new CANTalon(1);
 		m_CANmotor2 = new CANTalon(2);
-		//m_motor1->SetControlMode(CANSpeedController::kSpeed);
 
-		m_pdp = new PowerDistributionPanel(0);
 
-		AnalogInput *ai = new AnalogInput(0);
-		m_pot = new AnalogPotentiometer(ai, 360, 0);
 	}
 	void RobotInit() {
 	}
@@ -52,34 +44,53 @@ public:
 	}
 
 	void TeleopInit() {
-		speed = 0;
-		previousAButton = false;
-		previousXButton = false;
-		potentio = 0.0F;
+
 	}
 
 	void TeleopPeriodic() {
-	 TeleopShoot();
+		 aButton= m_driver->ButtonA();
+		 bButton= m_driver->ButtonB();
+		 xButton= m_driver->ButtonX();
+		 yButton= m_driver->ButtonY();
 
-	 previousAButton= m_driver->ButtonA();
-	 previousXButton= m_driver->ButtonX();
+		 joystickRaw[0] = m_driver->AxisLX();  /* Uses Left Stick, X axis */
+		 joystickRaw[1] = m_driver->AxisLY();  /* Uses Left Stick, Y axis */
+		 joystickRaw[2] = m_driver->AxisRX();  /* Uses Right Stick, X axis */
+		 joystickRaw[3] = m_driver->AxisRY();  /* Uses Right Stick, Y axis */
+
+		 /* Need to deadband inputs */
+		 for (int i = 0; i < 4; i++) {
+			 if ((joystickRaw[i] > -0.2) && (joystickRaw[i] < 0.2)) {
+				 spdCmd[i] = 0.0;
+			 } else if (joystickRaw[i] < 0.0) {
+				 spdCmd[i] = (joystickRaw[i] + 0.2)/0.8;
+
+			 } else {
+				 spdCmd[i] = (joystickRaw[i] - 0.2)/0.8;
+			 }
+		 }
+
+		 m_CANmotor1->Set(spdCmd[0]);
+		 m_CANmotor2->Set(spdCmd[1]);
+		 m_PWMmotor0->Set(spdCmd[2]);
+		 m_PWMmotor1->Set(spdCmd[3]);
+
+		 DashboardOutput();
 	}
 
-	void TeleopShoot() {
-
-		potentio = m_pot->Get();
-		speed = potentio/360;
-
-//		m_CANmotor1->Set(speed);
-//		m_CANmotor2->Set(speed);
-//		m_PWMmotor0->Set(speed);
-		m_PWMmotor1->Set(speed);
-
-
-		SmartDashboard::PutNumber("speed", speed);
-		SmartDashboard::PutBoolean("A Button", previousAButton);
-		SmartDashboard::PutBoolean("X Button", previousXButton);
-		SmartDashboard::PutNumber("Pot", potentio);
+	void DashboardOutput() {
+		SmartDashboard::PutBoolean("ButtonA", aButton);
+		SmartDashboard::PutBoolean("ButtonB", bButton);
+		SmartDashboard::PutBoolean("ButtonX", xButton);
+		SmartDashboard::PutBoolean("ButtonY", yButton);
+		SmartDashboard::PutNumber("Joy0[LX]", joystickRaw[0]);
+		SmartDashboard::PutNumber("Joy1[LY]", joystickRaw[1]);
+		SmartDashboard::PutNumber("Joy2[RX]", joystickRaw[2]);
+		SmartDashboard::PutNumber("Joy3[RY]", joystickRaw[3]);
+		SmartDashboard::PutNumber("SpdCmd(CAN1)", spdCmd[0]);
+		SmartDashboard::PutNumber("SpdCmd(CAN2)", spdCmd[1]);
+		SmartDashboard::PutNumber("SpdCmd(PWM0)", spdCmd[2]);
+		SmartDashboard::PutNumber("SpdCmd(PWM1)", spdCmd[3]);
 	}
 
 	void TestPeriodic() {
