@@ -2,7 +2,7 @@
 #include "RobotUtils/RobotUtils.h"
 #include "ctrlib/CANTalon.h"
 
-class barrybbenson: public HotBot {
+class benchTest: public HotBot {
 private:
 
 	HotJoystick* m_driver;
@@ -13,19 +13,20 @@ private:
 	CANTalon* m_CANmotor2;
 
 	bool aButton;
-	bool bButton;
-	bool xButton;
-	bool yButton;
-	float joystickRaw[4];
+	bool aButtonOld = 0;
+
+	float joystickRaw;
+	float joystickMod;
 	float spdCmd[4];
 
+	int motorSelect = 0;
+
 public:
-	barrybbenson() {
+	benchTest() {
 		m_driver = new HotJoystick(0);
 
 		m_PWMmotor0 = new Victor(0);
 		m_PWMmotor1 = new Victor(1);
-
 		m_CANmotor1 = new CANTalon(1);
 		m_CANmotor2 = new CANTalon(2);
 
@@ -48,45 +49,42 @@ public:
 	}
 
 	void TeleopPeriodic() {
+
+		 /* Read inputs from Joystick */
 		 aButton= m_driver->ButtonA();
-		 bButton= m_driver->ButtonB();
-		 xButton= m_driver->ButtonX();
-		 yButton= m_driver->ButtonY();
+		 joystickRaw = m_driver->AxisLX();  /* Uses Left Stick, X axis */
 
-		 joystickRaw[0] = m_driver->AxisLX();  /* Uses Left Stick, X axis */
-		 joystickRaw[1] = m_driver->AxisLY();  /* Uses Left Stick, Y axis */
-		 joystickRaw[2] = m_driver->AxisRX();  /* Uses Right Stick, X axis */
-		 joystickRaw[3] = m_driver->AxisRY();  /* Uses Right Stick, Y axis */
 
-		 /* Need to deadband inputs */
-		 for (int i = 0; i < 4; i++) {
-			 if ((joystickRaw[i] > -0.2) && (joystickRaw[i] < 0.2)) {
-				 spdCmd[i] = 0.0;
-			 } else if (joystickRaw[i] < 0.0) {
-				 spdCmd[i] = (joystickRaw[i] + 0.2)/0.8;
+		 /* Deadband input, determine joystickMod */
+		 /* Needs to be done by students */
 
-			 } else {
-				 spdCmd[i] = (joystickRaw[i] - 0.2)/0.8;
-			 }
-		 }
 
-		 m_CANmotor1->Set(spdCmd[0]);
-		 m_CANmotor2->Set(spdCmd[1]);
-		 m_PWMmotor0->Set(spdCmd[2]);
-		 m_PWMmotor1->Set(spdCmd[3]);
+
+		 /* Process button press to determine motorSelect */
+		 /* Needs to be done by students */
+
+
+
+		 /* Use motorSelect to define speed commands to motors */
+		 /* Needs to be done by students */
+
+
+
+		 /* Command speeds to motor controllers */
+		 m_CANmotor1->Set(joystickRaw);
+		 m_CANmotor2->Set(0.0);
+		 m_PWMmotor0->Set(0.0);
+		 m_PWMmotor1->Set(0.0);
 
 		 DashboardOutput();
 	}
 
 	void DashboardOutput() {
+		/* Writes variables to Dashboard */
 		SmartDashboard::PutBoolean("ButtonA", aButton);
-		SmartDashboard::PutBoolean("ButtonB", bButton);
-		SmartDashboard::PutBoolean("ButtonX", xButton);
-		SmartDashboard::PutBoolean("ButtonY", yButton);
-		SmartDashboard::PutNumber("Joy0[LX]", joystickRaw[0]);
-		SmartDashboard::PutNumber("Joy1[LY]", joystickRaw[1]);
-		SmartDashboard::PutNumber("Joy2[RX]", joystickRaw[2]);
-		SmartDashboard::PutNumber("Joy3[RY]", joystickRaw[3]);
+		SmartDashboard::PutNumber("joystickRaw", joystickRaw);
+		SmartDashboard::PutNumber("joystickMod", joystickMod);
+		SmartDashboard::PutNumber("motorSelect", motorSelect);
 		SmartDashboard::PutNumber("SpdCmd(CAN1)", spdCmd[0]);
 		SmartDashboard::PutNumber("SpdCmd(CAN2)", spdCmd[1]);
 		SmartDashboard::PutNumber("SpdCmd(PWM0)", spdCmd[2]);
@@ -98,4 +96,4 @@ public:
 
 };
 
-START_ROBOT_CLASS(barrybbenson)
+START_ROBOT_CLASS(benchTest)
