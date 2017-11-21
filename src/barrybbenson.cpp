@@ -13,13 +13,19 @@ private:
 	CANTalon* m_CANmotor2;
 
 	bool aButton;
-	bool aButtonOld = 0;
+	bool aButtonOld = false;
+	bool transitionInProcess = false;
 
 	float joystickRaw;
 	float joystickMod;
-	float spdCmd[4];
+	float spdCmd;
 
-	int motorSelect = 0;
+	int motorSelect = 4;
+	     /* 0: CANTalon1
+		    1: CANTalon2
+			2: Victor0
+			3: Victor1
+			4: No Motor Selected */
 
 public:
 	benchTest() {
@@ -56,25 +62,70 @@ public:
 
 
 		 /* Deadband input, determine joystickMod */
-		 /* Needs to be done by students */
 
+		 if(joystickRaw <= 0.2 && joystickRaw >= -0.2){
+			 joystickMod = 0.0;
+		 }else if(joystickRaw > 0.2){
+			 joystickMod = (joystickRaw - 0.2) * 1.25;
+		 }else{
+			 joystickMod = (joystickRaw + 0.2) * 1.25;
+		 }
 
+		 spdCmd = joystickMod;
 
 		 /* Process button press to determine motorSelect */
-		 /* Needs to be done by students */
-
-
+		 if ((aButton == true) && (aButtonOld == false)) {
+			 transitionInProcess = true;
+		 } else {
+			 transitionInProcess = false;
+		 }
 
 		 /* Use motorSelect to define speed commands to motors */
-		 /* Needs to be done by students */
+		 if (transitionInProcess == true) {
+			 if (motorSelect < 4) {
+				 motorSelect++;
+			 } else {
+				 motorSelect = 0;
+			 }
 
-
+		 }
 
 		 /* Command speeds to motor controllers */
-		 m_CANmotor1->Set(joystickRaw);
-		 m_CANmotor2->Set(0.0);
-		 m_PWMmotor0->Set(0.0);
-		 m_PWMmotor1->Set(0.0);
+		 switch (motorSelect) {
+		 case 0:
+			 m_CANmotor1->Set(spdCmd);
+			 m_CANmotor2->Set(0.0);
+			 m_PWMmotor0->Set(0.0);
+			 m_PWMmotor1->Set(0.0);
+			 break;
+		 case 1:
+			 m_CANmotor1->Set(0.0);
+			 m_CANmotor2->Set(spdCmd);
+			 m_PWMmotor0->Set(0.0);
+			 m_PWMmotor1->Set(0.0);
+			 break;
+		 case 2:
+			 m_CANmotor1->Set(0.0);
+			 m_CANmotor2->Set(0.0);
+			 m_PWMmotor0->Set(spdCmd);
+			 m_PWMmotor1->Set(0.0);
+			 break;
+		 case 3:
+			 m_CANmotor1->Set(0.0);
+			 m_CANmotor2->Set(0.0);
+			 m_PWMmotor0->Set(0.0);
+			 m_PWMmotor1->Set(spdCmd);
+			 break;
+		 case 4:
+			 m_CANmotor1->Set(0.0);
+			 m_CANmotor2->Set(0.0);
+			 m_PWMmotor0->Set(0.0);
+			 m_PWMmotor1->Set(0.0);
+			 break;
+		 }
+
+		 /* Preserve knowledge of previous loop button state */
+		 aButtonOld = aButton;
 
 		 DashboardOutput();
 	}
@@ -85,11 +136,9 @@ public:
 		SmartDashboard::PutNumber("joystickRaw", joystickRaw);
 		SmartDashboard::PutNumber("joystickMod", joystickMod);
 		SmartDashboard::PutNumber("motorSelect", motorSelect);
-		SmartDashboard::PutNumber("SpdCmd(CAN1)", spdCmd[0]);
-		SmartDashboard::PutNumber("SpdCmd(CAN2)", spdCmd[1]);
-		SmartDashboard::PutNumber("SpdCmd(PWM0)", spdCmd[2]);
-		SmartDashboard::PutNumber("SpdCmd(PWM1)", spdCmd[3]);
+		SmartDashboard::PutNumber("SpdCmd", spdCmd);
 	}
+
 
 	void TestPeriodic() {
 	}
