@@ -1,15 +1,15 @@
 #include "WPILib.h"
 #include "RobotUtils/RobotUtils.h"
 #include "ctrlib/CANTalon.h"
-
+/*open the CANTalon library*/
 class benchTest: public HotBot {
 private:
 
 	HotJoystick* m_driver;
 
-	Victor* m_PWMmotor0;
-	Victor* m_PWMmotor1;
+	CANTalon* m_CANmotor4;
 	CANTalon* m_CANmotor1;
+	CANTalon* m_CANmotor3;
 	CANTalon* m_CANmotor2;
 
 	bool aButton;
@@ -23,17 +23,17 @@ private:
 	int motorSelect = 4;
 	     /* 0: CANTalon1
 		    1: CANTalon2
-			2: Victor0
-			3: Victor1
+			2: CANTalon3
+			3: CANTalon4
 			4: No Motor Selected */
 
 public:
 	benchTest() {
 		m_driver = new HotJoystick(0);
 
-		m_PWMmotor0 = new Victor(0);
-		m_PWMmotor1 = new Victor(1);
+		m_CANmotor4 = new CANTalon(4);
 		m_CANmotor1 = new CANTalon(1);
+		m_CANmotor3 = new CANTalon(3);
 		m_CANmotor2 = new CANTalon(2);
 
 
@@ -95,32 +95,32 @@ public:
 		 case 0:
 			 m_CANmotor1->Set(spdCmd);
 			 m_CANmotor2->Set(0.0);
-			 m_PWMmotor0->Set(0.0);
-			 m_PWMmotor1->Set(0.0);
+			 m_CANmotor3->Set(0.0);
+			 m_CANmotor4->Set(0.0);
 			 break;
 		 case 1:
 			 m_CANmotor1->Set(0.0);
 			 m_CANmotor2->Set(spdCmd);
-			 m_PWMmotor0->Set(0.0);
-			 m_PWMmotor1->Set(0.0);
+			 m_CANmotor3->Set(0.0);
+			 m_CANmotor4->Set(0.0);
 			 break;
 		 case 2:
 			 m_CANmotor1->Set(0.0);
 			 m_CANmotor2->Set(0.0);
-			 m_PWMmotor0->Set(spdCmd);
-			 m_PWMmotor1->Set(0.0);
+			 m_CANmotor3->Set(spdCmd);
+			 m_CANmotor4->Set(0.0);
 			 break;
 		 case 3:
 			 m_CANmotor1->Set(0.0);
 			 m_CANmotor2->Set(0.0);
-			 m_PWMmotor0->Set(0.0);
-			 m_PWMmotor1->Set(spdCmd);
+			 m_CANmotor3->Set(0.0);
+			 m_CANmotor4->Set(spdCmd);
 			 break;
 		 case 4:
 			 m_CANmotor1->Set(0.0);
 			 m_CANmotor2->Set(0.0);
-			 m_PWMmotor0->Set(0.0);
-			 m_PWMmotor1->Set(0.0);
+			 m_CANmotor3->Set(0.0);
+			 m_CANmotor4->Set(0.0);
 			 break;
 		 }
 
